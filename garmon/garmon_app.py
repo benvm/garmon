@@ -155,8 +155,6 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.notebook.set_border_width(5)
         
         self.main_vbox.pack_start(self.notebook)
-               
-        self.connect('window_state_event', self._update_resize_grip)
         
         self.obd = OBDDevice()
         
@@ -269,13 +267,6 @@ class GarmonApp(gtk.Window, PropertyObject):
     def _scheduler_notify_working_cb(self, scheduler, pspec):
         self.ui.get_widget('/ToolBar/Monitor').set_active(scheduler.working)
         self.ui.get_widget('/MenuBar/DeviceMenu/Monitor').set_active(scheduler.working)
-       
-        
-    def _update_resize_grip(self, widget, event):
-        mask = gtk.gdk.WINDOW_STATE_MAXIMIZED | gtk.gdk.WINDOW_STATE_FULLSCREEN
-        if (event.changed_mask & mask):
-            self._statusbar.set_has_resize_grip(not (event.new_window_state & mask))
-            
             
             
     def _toggle_fullscreen(self, action):

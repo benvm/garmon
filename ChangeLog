@@ -1,5 +1,10 @@
 2008-04-15  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/garmon_app.py:
+	    Removed _update_resize_grip method
+
+2008-04-15  Ben Van Mechelen  <me@benvm.be>
+
 	* TODO.tasks:
 	    Removed some completed tasks
 
