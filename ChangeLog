@@ -1,5 +1,11 @@
 2008-04-15  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/sensor_list/Makefile.am:
+	* plugins/sensor_list/sensor_list.py:
+	    Removed sensor_list plugin for version 0.1
+
+2008-04-15  Ben Van Mechelen  <me@benvm.be>
+
 	* TODO.tasks:
 	    Removed some completed tasks
 
