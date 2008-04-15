@@ -1,3 +1,8 @@
+2008-04-15  Ben Van Mechelen  <ben@chevrolet>
+
+	* configure.ac:
+        Remove plugins/sensor_list/Makefile from from AC_OUTPUT
+
 2008-04-15  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/sensor_list/Makefile.am:
