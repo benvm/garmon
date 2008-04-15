@@ -1,0 +1,422 @@
+# Dutch translation of GOSS.
+# Copyright (C) 2007 Ben Van Mechelen
+# This file is distributed under the same license as the GOSS package.
+# Ben Van Mechelen <me@benvm.be>, 2007.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: GOSS 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-29 21:56+0100\n"
+"PO-Revision-Date: 2007-11-29 21:57+0100\n"
+"Last-Translator: Ben Van Mechelen <me@benvm.be>\n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../data/goss.desktop.in.in.h:1
+msgid "Connect to an ELM based OBD tool"
+msgstr "Maak verbinding met een OBD toestel"
+
+#: ../data/goss.desktop.in.in.h:2
+msgid "Gnome OBD Scanner"
+msgstr "Gnome OBD Scanner"
+
+#: ../plugins/dashboard/dashboard.py:34
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: ../plugins/dashboard/dashboard.py:37
+msgid "A dashboard-like plugin with meters showing OBD information"
+msgstr "Een dashboard-achtige plugin met OBD info in de vorm van meters"
+
+#: ../plugins/dtc_clearer/dtc_clearer.py:28
+msgid "DTC Clearer"
+msgstr "DTC Wisser"
+
+#: ../plugins/dtc_clearer/dtc_clearer.py:31
+msgid "Clears the stored trouble codes in the vehicle"
+msgstr "Wist de opgeslagen foutcodes in het voertuig"
+
+#: ../plugins/dtc_clearer/dtc_clearer.py:67
+msgid "_Clear DTC"
+msgstr "_Wis DTC"
+
+#: ../plugins/dtc_clearer/dtc_clearer.py:68
+msgid "Clear stored trouble codes"
+msgstr "Wis opgeslagen foutcodes"
+
+#: ../plugins/dtc_clearer/dtc_clearer.py:79
+msgid ""
+"Are You Sure You want to clear the trouble codes?\n"
+"\t\t\t\t\n"
+"\tThis will reset the Malfunction Indicator Light.\n"
+"\tBesides that it will also:\n"
+"\n"
+"\t - reset the number of trouble codes\n"
+"\t - erase any diagnostic trouble codes\n"
+"\t - erase any stored freeze frame data\n"
+"\t - erase the DTC that initiated the freeze frame\n"
+"\t - erase all oxygen sensor test data\n"
+"\t - erase mode 06 and 07 information\n"
+"\n"
+"\tYour vehicle may run poorly for a short period of time,\n"
+"\twhile it performs a recalibration."
+msgstr ""
+"Bent U zeker dat U de foutcodes wil wissen?\n"
+"\t\t\t\t\n"
+"\tDit zal het Storings Indicator Lampje uitzetten.\n"
+"\tBehalve dat gebeurt ook het volgende:\n"
+"\n"
+"\t - het aantal foutcodes wordt gereset\n"
+"\t - eventuele diagnostische foutcodes worden gewist\n"
+"\t - freeze-frame data wordt gewist\n"
+"\t - de foutcode die het freeze-frame veroorzaakte wordt gewist\n"
+"\t - alle lambdasonde data wordt gewist\n"
+"\t - alle mode 6 en 7 data wordt gewist\n"
+"\n"
+"\tHet is mogelijk dat het voertuig gedurende een korte periode slecht "
+"rijdt,\n"
+"\tdaar het een rekalibratie uitvoert"
+
+#: ../plugins/dtc_clearer/dtc_clearer.py:104
+msgid ""
+"An error occurred while trying to reset the dtc.\n"
+"\n"
+"Please make sure your device is connected"
+msgstr ""
+"Er werd een fout veroorzaakt bij de poging om de dtc te wissen.\n"
+"\n"
+"Zorgt U er alstublieft voor dat Uw toestel verbonden is."
+
+#: ../plugins/dtc_reader/dtc_reader.py:27
+msgid "DTC Reader"
+msgstr "DTC Lezer"
+
+#: ../plugins/dtc_reader/dtc_reader.py:30
+msgid "Reads the stored trouble codes from the vehicle"
+msgstr "Leest de opgeslagen foutcodes uit het voertuig"
+
+#: ../plugins/dtc_reader/dtc_reader.py:97
+msgid "DTC"
+msgstr "DTC"
+
+#: ../plugins/live_data/live_data.py:33
+msgid "Live Data"
+msgstr "Live Data"
+
+#: ../plugins/live_data/live_data.py:36
+msgid ""
+"View the most imported live data like:\n"
+" *Fuel System\n"
+" *Intake\n"
+" *VIN\n"
+" *...\n"
+msgstr ""
+"Bekijk de belangrijkste live data zoals:\n"
+" *Brandstof Systeem\n"
+" *Inlaat\n"
+" *VIN\n"
+" *...\n"
+
+#: ../plugins/live_data/live_data.glade.h:2
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: ../plugins/live_data/live_data.glade.h:3
+msgid "<b>Fuel System</b>"
+msgstr "<b>Brandstof Systeem</b>"
+
+#: ../plugins/live_data/live_data.glade.h:4
+msgid "<b>Fuel Trim</b>"
+msgstr "<b>Brandstof mengsel</b>"
+
+#: ../plugins/live_data/live_data.glade.h:5
+msgid "<b>General</b>"
+msgstr "<b>Algemeen</b>"
+
+#: ../plugins/live_data/live_data.glade.h:6
+msgid "<b>Intake</b>"
+msgstr "<b>Inlaat</b>"
+
+#: ../plugins/live_data/live_data.glade.h:7
+msgid "<b>OBD Designation</b>"
+msgstr "<b>OBD Aanduiding</b>"
+
+#: ../plugins/live_data/live_data.glade.h:8
+msgid "<b>Protocol</b>"
+msgstr "<b>Protocol</b>"
+
+#: ../plugins/live_data/live_data.glade.h:9
+msgid "<b>System Info</b>"
+msgstr "<b>Systeem Info</b>"
+
+#: ../plugins/live_data/live_data.glade.h:10
+msgid "<b>Trouble Codes</b>"
+msgstr "<b>Foutcodes</b>"
+
+#: ../plugins/live_data/live_data.glade.h:11
+msgid "<b>VIN</b>"
+msgstr "<b>VIN</b>"
+
+#: ../plugins/live_data/live_data.glade.h:12
+msgid "<b>Voltage</b>"
+msgstr "<b>Spanning</b>"
+
+#: ../plugins/live_data/live_data.glade.h:13
+msgid "Air Flow Rate"
+msgstr "Lucht Debiet"
+
+#: ../plugins/live_data/live_data.glade.h:14
+msgid "Air Temp"
+msgstr "Lucht Temperatuur"
+
+#: ../plugins/live_data/live_data.glade.h:15
+msgid "Coolant Temp"
+msgstr "Koelvloeistof Temperatuur"
+
+#: ../plugins/live_data/live_data.glade.h:16
+msgid "Engine RPM"
+msgstr "Motor Toerental"
+
+#: ../plugins/live_data/live_data.glade.h:17
+msgid "Engine load"
+msgstr "Motor Belasting"
+
+#: ../plugins/live_data/live_data.glade.h:18
+msgid "Feedback Status"
+msgstr "Feedback Status"
+
+#: ../plugins/live_data/live_data.glade.h:19
+msgid "Fuel Pressure"
+msgstr "Brandstof Druk"
+
+#: ../plugins/live_data/live_data.glade.h:20
+msgid "Long Term Bank 1 "
+msgstr "Lange Termijn Bank 1"
+
+#: ../plugins/live_data/live_data.glade.h:21
+msgid "Long Term Bank 2"
+msgstr "Lange Termijn Bank 2"
+
+#: ../plugins/live_data/live_data.glade.h:22
+msgid "MIL"
+msgstr "MIL"
+
+#: ../plugins/live_data/live_data.glade.h:23
+msgid "Manifold pressure"
+msgstr "Spruitstuk Druk"
+
+#: ../plugins/live_data/live_data.glade.h:24
+msgid "Secondary Air Status"
+msgstr "Tweede Lucht Status"
+
+#: ../plugins/live_data/live_data.glade.h:25
+msgid "Short Term Bank 1"
+msgstr "Korte Termijn Bank 1"
+
+#: ../plugins/live_data/live_data.glade.h:26
+msgid "Short Term Bank 2"
+msgstr "Korte Termijn Bank 2"
+
+#: ../plugins/live_data/live_data.glade.h:27
+msgid "System 1"
+msgstr "Systeem 1"
+
+#: ../plugins/live_data/live_data.glade.h:28
+msgid "System 2"
+msgstr "Systeem 2"
+
+#: ../plugins/live_data/live_data.glade.h:29
+msgid "Throttle"
+msgstr "Gasklep"
+
+#: ../plugins/live_data/live_data.glade.h:30
+msgid "Timing Adv"
+msgstr "Timing Vervroeging"
+
+#: ../plugins/live_data/live_data.glade.h:31
+msgid "V"
+msgstr "V"
+
+#: ../plugins/live_data/live_data.glade.h:32
+msgid "Vehicle Speed"
+msgstr "Voertuig Snelheid"
+
+#: ../plugins/live_data/live_data.glade.h:33
+msgid "g/s"
+msgstr "g/s"
+
+#: ../plugins/live_data/live_data.glade.h:34
+msgid "kPa"
+msgstr "kPa"
+
+#: ../plugins/live_data/live_data.glade.h:35
+msgid "km/h"
+msgstr "km/h"
+
+#: ../plugins/live_data/live_data.glade.h:36
+msgid "rpm"
+msgstr "rpm"
+
+#: ../plugins/live_data/live_data.glade.h:37
+msgid "°"
+msgstr "°"
+
+#: ../plugins/live_data/live_data.glade.h:38
+msgid "°C"
+msgstr "°C"
+
+#: ../plugins/sensor_list/sensor_list.py:32
+msgid "Sensor List"
+msgstr "Sensor List"
+
+#: ../plugins/sensor_list/sensor_list.py:35
+msgid "A list of all supported sensors"
+msgstr "Een lijst met alle ondersteunde sensors"
+
+#. column for PIDs
+#: ../plugins/sensor_list/sensor_list.py:106
+msgid "PID"
+msgstr "PID"
+
+#. columns for descriptions
+#: ../plugins/sensor_list/sensor_list.py:117
+msgid "Description"
+msgstr "Omschrijving"
+
+#. column for values
+#: ../plugins/sensor_list/sensor_list.py:123
+msgid "Value"
+msgstr "Waarde"
+
+#. column for units
+#: ../plugins/sensor_list/sensor_list.py:128
+msgid "Unit"
+msgstr "Eenheid"
+
+#. FIXME: gconf schemas not OK: Notify the user
+#: ../plugins/sensor_list/sensor_list.py:173 ../src/prefs.py:58
+msgid "Error"
+msgstr "Fout"
+
+#: ../src/goss.py:265
+msgid "Do You Really want to quit?"
+msgstr "Weet U zeker dat U wil afsluiten?"
+
+#: ../src/goss.py:342
+msgid "Please make sure the device is connected and your settings are correct"
+msgstr ""
+"Zorg er alstublieft voor dat het toestel aangesloten is en dat uw "
+"instellingen correct zijn."
+
+#: ../src/obd_port.py:67
+#, python-format
+msgid "Unable to open %s"
+msgstr "Kon %s niet openen"
+
+#: ../src/obd_port.py:86 ../src/obd_port.py:254
+msgid "Invalid index for that pid"
+msgstr "Ongeldige index voor die pid"
+
+#: ../src/obd_port.py:105
+msgid "No data available for this pid"
+msgstr "Geen data beschikbaar voor deze pid"
+
+#: ../src/obd_port.py:114
+msgid "No data was received from the device"
+msgstr "Er werd geen data van het toestel ontvangen"
+
+#: ../src/obd_port.py:123
+msgid "No designation reported"
+msgstr "Geen aanduiding gegeven"
+
+#: ../src/obd_port.py:197
+msgid "Unable to write to "
+msgstr "Onmogelijk te schrijven naar"
+
+#: ../src/obd_port.py:217
+msgid "Unable to read from "
+msgstr "Onmogelijk te lezen van"
+
+#: ../src/obd_port.py:273
+msgid "Not intended to meet any OBD requirements."
+msgstr "Niet bedoelt om aan enige OBD vereiste te voldoen."
+
+#: ../src/plugin_manager.py:52
+msgid "Goss Plugin Manager"
+msgstr "Goss Plugin Manager"
+
+#: ../src/plugin_manager.py:175
+msgid "failed to load plugin: "
+msgstr "Mislukt plugin te laden: "
+
+#: ../src/plugin_manager.py:193
+#, python-format
+msgid "Failed to activate plugin %s"
+msgstr "Mislukt plugin %s te activeren"
+
+#: ../src/plugin_manager.py:202
+#, python-format
+msgid "building menus failed: %s"
+msgstr "Menus maken gefaald: %S"
+
+#: ../src/plugin_manager.py:204
+#, python-format
+msgid "Plugin activated: %s"
+msgstr "Plugin geactiveerd: %s"
+
+#: ../src/plugin_manager.py:255
+#, python-format
+msgid "No %s.py file was found in %s, "
+msgstr "Er werd geen %s.py bestand gevonden in %s, "
+
+#: ../src/plugin_manager.py:256
+msgid "so no plugin could be loaded"
+msgstr "Er kon dus geen plugin geladen worden"
+
+#: ../src/plugin_manager.py:387
+msgid "<b>Version: </b>"
+msgstr "<b>Versie</b>"
+
+#: ../src/plugin_manager.py:400
+msgid "<b>Author: </b>"
+msgstr "<b>Auteur</b>"
+
+#: ../src/plugin_manager.py:413
+msgid "<b>Description: </b>"
+msgstr "<b>Omschrijving</b>"
+
+#: ../src/prefs.py:31
+msgid "Goss Preferences"
+msgstr "Goss voorkeuren"
+
+#: ../src/prefs.py:48
+msgid "<b>Serial Port: </b>"
+msgstr "<b>Seriele Poort: </b>"
+
+#: ../src/prefs.py:71
+msgid "<b>Units: </b>"
+msgstr "<b>Eenheden: </b>"
+
+#: ../src/prefs.py:76
+msgid "Metric"
+msgstr "Metrisch"
+
+#: ../src/prefs.py:77
+msgid "Imperial"
+msgstr "Engels"
+
+#. setup 'save plugins'
+#: ../src/prefs.py:94
+msgid "Remember active plugins"
+msgstr "Onthoud actieve plugins"
+
+#: ../src/prefs.py:110
+msgid "Error!"
+msgstr "Fout!"
+
