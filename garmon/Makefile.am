@@ -1,28 +1,26 @@
 ## Process this file with automake to produce Makefile.in
 ## Created by Anjuta
 
-SUBDIRS = garmon data plugins po
+## The main script
+## Directory where .class files will be installed
+garmondir = $(pythondir)/garmon
 
-garmondocdir = ${prefix}/doc/garmon
-garmondoc_DATA = \
-	README\
-	COPYING\
-	AUTHORS\
-	ChangeLog\
-	INSTALL\
-	NEWS
-	
+garmon_PYTHON = \
+	prefs.py \
+	plugin.py \
+	plugin_manager.py \
+	trouble_codes.py \
+	pyconsole.py \
+	backdoor.py \
+	sensor.py \
+	property_object.py \
+	scheduler.py \
+	widgets.py \
+	obd_device.py \
+	__init__.py \
+	garmon_app.py \
+	defs.py
 
-	
-EXTRA_DIST = $(garmondoc_DATA)
-				
+bin_SCRIPTS=garmon
 
-				
-# Copy all the spec files. Of cource, only one is actually used.
-dist-hook:
-	for specfile in *.spec; do \
-		if test -f $$specfile; then \
-			cp -p $$specfile $(distdir); \
-		fi \
-	done
-
+EXTRA_DIST = $(bin_SCRIPTS)
