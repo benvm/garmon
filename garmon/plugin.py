@@ -58,19 +58,3 @@ class Plugin(object):
         if response == gtk.RESPONSE_YES:
             self.garmon.activate_reset(None)
    
-   
-class NotebookPlugin(Plugin, gtk.VBox):
-
-    __gsignals__ = {
-        'status-changed': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                      (gobject.TYPE_INT,)),
-    }
-
-
-    def __init__(self):
-        gtk.VBox.__init__(self)
-        
-    def _update_status(self, status):
-        if self.status != status:
-            self.status = status
-            self.emit('status-changed', status)
