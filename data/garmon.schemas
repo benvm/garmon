@@ -1,0 +1,59 @@
+<gconfschemafile>
+  <schemalist>
+    <schema>
+      <key>/schemas/apps/garmon/port</key>
+      <applyto>/apps/garmon/port</applyto>
+      <owner>garmon</owner>
+      <type>string</type>
+      <locale name="C">
+        <default>/dev/ttyUSB0</default>
+        <short>Serial port</short>
+        <long>The serial port used to connect to the scan device</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/units</key>
+      <applyto>/apps/garmon/units</applyto>
+      <owner>garmon</owner>
+      <type>string</type>
+      <locale name="C">
+        <default>Metric</default>
+        <short>Units</short>
+        <long>Whether to use metric or imperial units</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/save_plugins</key>
+      <applyto>/apps/garmon/save_plugins</applyto>
+      <owner>garmon</owner>
+      <type>bool</type>
+      <locale name="C">
+        <default>True</default>
+        <short>Save Plugins</short>
+        <long>Whether to save the active plugins on application exit</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/start_plugins</key>
+      <applyto>/apps/garmon/start_plugins</applyto>
+      <owner>garmon</owner>
+      <type>bool</type>
+      <locale name="C">
+        <default>True</default>
+        <short>Start Plugins</short>
+        <long>Whether to start the saved plugins on application start</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/active_plugins</key>
+      <applyto>/apps/garmon/active_plugins</applyto>
+      <owner>garmon</owner>
+      <type>string</type>
+      <locale name="C">
+        <default>LiveData,DTCReader,DTCClearer</default>
+        <short>Active Plugins</short>
+        <long>The plugins to activate when the app is started</long>
+      </locale>
+    </schema>
+  </schemalist>
+</gconfschemafile>
