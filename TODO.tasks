@@ -7,9 +7,9 @@
       <comment>More gauges should be added to the dashboard.</comment>
     </item>
     <item>
-      <attribute id="1206058433" priority="1" done="0" start_date="733122" enddate="99999999" notify="0" endtime="-60" last_edited="1206058433"/>
+      <attribute id="1206058433" priority="1" done="1" start_date="733122" completed_date="733147" notify="0" last_edited="1208218954"/>
       <summary>Rename Meter to Gauge?</summary>
-      <comment/>
+      <comment></comment>
     </item>
   </category>
   <category title="plugin: DTCClearer" place="1"/>
