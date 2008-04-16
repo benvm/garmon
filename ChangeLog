@@ -1,5 +1,11 @@
 2008-04-16  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/sensor.py:
+	* plugins/live_data/live_data.py:
+	    Fixed a bug in the MIL LiveDataView
+
+2008-04-16  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/obd_device.py:
 	    fixed some import errors
 	* garmon/scheduler.py:

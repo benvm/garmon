@@ -300,7 +300,7 @@ class LiveDataView(GObject, SensorProxyMixin,
                 self.units_widget.set_text(units)
 
 def mil_helper(view):
-    if view.sensor.data:
+    if view.sensor.metric_value == 'On':
         view.value_widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#F7D30D'))
     else:
         view.value_widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#AAAAAA'))

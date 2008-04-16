@@ -167,9 +167,9 @@ def dtc_decode_num(code):
 def dtc_decode_mil(code):
     num = eval ("0x%s" % code[0])
     if num & 8:
-        mil = 1
+        mil = 'On'
     else:
-        mil = 0
+        mil = 'Off'
     return (mil, mil)
 
 
