@@ -9,21 +9,14 @@
     <item>
       <attribute id="1206058433" priority="1" done="1" start_date="733122" completed_date="733147" notify="0" last_edited="1208218954"/>
       <summary>Rename Meter to Gauge?</summary>
-      <comment></comment>
+      <comment/>
     </item>
   </category>
   <category title="plugin: DTCClearer" place="1"/>
   <category title="plugin: DTCReader" place="2"/>
   <category title="plugin: LiveData" place="3"/>
   <category title="plugin: SensorList" place="4"/>
-  <category title="OBDPort" place="5">
-    <item>
-      <attribute id="1206058794" priority="1" done="0" start_date="733122" enddate="99999999" notify="0" endtime="-60" last_edited="1206059002"/>
-      <summary>gettextize all sensors</summary>
-      <comment>Make all strings in the list of sensors translatable</comment>
-    </item>
-  </category>
-  <category title="trouble codes" place="6">
+  <category title="trouble codes" place="5">
     <item>
       <attribute id="1206058681" priority="1" done="0" start_date="733122" enddate="99999999" notify="0" endtime="-60" last_edited="1206058810"/>
       <summary>gettextize trouble codes</summary>
@@ -34,6 +27,14 @@
       <summary>Add "extra info" to trouble codes</summary>
       <comment>it would be nice if we had some extra info with trouble codes.
 Maybe we can give possible causes or solutions.</comment>
+    </item>
+  </category>
+  <category title="OBDDevice" place="6"/>
+  <category title="Scheduler" place="7">
+    <item>
+      <attribute id="1208353502" priority="2" done="0" start_date="733148" enddate="99999999" notify="0" endtime="-60" last_edited="1208353502"/>
+      <summary>add a oneshot queue to Scheduler</summary>
+      <comment></comment>
     </item>
   </category>
 </gtodo>
