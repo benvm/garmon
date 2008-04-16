@@ -38,6 +38,7 @@ class MILEntry(gtk.Entry, PropertyObject):
         PropertyObject.__init__(self)
         self.set_text('MIL')
         self.set_property('editable', False)
+        self.set_property('width-chars', 3)
         
     def __post_init__(self):
         self.connect('notify::on', self._notify_cb)

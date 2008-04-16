@@ -33,7 +33,8 @@ import garmon.sensor
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.obd_device import OBDDataError, OBDPortError, get_sensor_units
-from garmon.sensor import OBDSensor, StateMixin, UnitMixin, SensorProxyMixin
+from garmon.sensor import StateMixin, UnitMixin, SensorProxyMixin
+from garmon.widgets import MILWidget
 
 
 __name = _('Live Data')
@@ -82,6 +83,13 @@ class LiveData (Plugin, gtk.VBox):
         self.os_views = []
 
         xml = self.glade_xml
+
+        mil = MILWidget()
+        #mil.set_property('width-request', 50)
+        #FIXME: change colors according to gconf
+        mil.connect('active-changed', self._view_active_changed_cb)
+        xml.get_widget('mil_alignment').add(mil)
+        self.views.append(mil)
 
         for item in SENSORS: 
             label = button = entry = unit = None
@@ -299,20 +307,12 @@ class LiveDataView(GObject, SensorProxyMixin,
             if self.units_widget:
                 self.units_widget.set_text(units)
 
-def mil_helper(view):
-    if view.sensor.metric_value == 'On':
-        view.value_widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#F7D30D'))
-    else:
-        view.value_widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#AAAAAA'))
+        
+(PID, INDEX, ONE_SHOT, HELPER, LABEL, BUTTON, ENTRY, UNIT) = range (8)     
 
-        
-(PID, INDEX, ONE_SHOT, HELPER, LABEL, BUTTON, ENTRY, UNIT) = range (8)                
-        
 SENSORS= [
         ('0101', 0, False, None,
          'dtc_label', None, 'dtc_entry', None),
-        ('0101', 1, False, mil_helper,
-         None, None, 'mil_entry', None),
         ('0104', 0, False, None, 
          None, 'load_button', 'load_entry', 'load_unit_label'),
         ('0105', 0, False, None, 
