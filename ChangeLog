@@ -1,3 +1,8 @@
+2008-04-16  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/plugin_manager.py:
+        Removed reference to NotebookPlugin
+
 2008-04-15  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/plugin.py:

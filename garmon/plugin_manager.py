@@ -31,7 +31,7 @@ import gtk
 
 import garmon
 
-from garmon.plugin import Plugin, NotebookPlugin
+from garmon.plugin import Plugin
 from garmon.property_object import PropertyObject, gproperty, gsignal
 
 
