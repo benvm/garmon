@@ -31,7 +31,7 @@ from property_object import PropertyObject, gproperty, gsignal
 
 import garmon
 import garmon.sensor as sensor
-from garmon.sensor import OBDSensor, SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
+from garmon.sensor import OBDData, SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
 from garmon.sensor import dtc_decode_num, dtc_decode_mil
  
 

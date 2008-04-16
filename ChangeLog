@@ -1,5 +1,12 @@
 2008-04-16  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/obd_device.py:
+	    fixed some import errors
+	* garmon/scheduler.py:
+	    Add a oneshot queue
+
+2008-04-16  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/scheduler.py:
 	    Add a QueueItem class. We now add OBDData with the same pid
 	    to the same QueueItem so we have to query the device only once.

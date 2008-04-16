@@ -23,9 +23,10 @@ import gobject
 from gobject import GObject
 import gtk
 
-from obd_device import OBDDevice
-from property_object import PropertyObject, gproperty
-from sensor import OBDData
+import garmon
+from garmon.obd_device import OBDDevice
+from garmon.property_object import PropertyObject, gproperty
+from garmon.sensor import OBDData
 
 
 class QueueItem(str):
@@ -68,6 +69,7 @@ class Scheduler (GObject, PropertyObject):
         GObject.__init__(self)
         PropertyObject.__init__(self, obd_device=obd_device, timeout=timeout)
         self._queue = []
+        self._os_queue = []
         self._timeout = None
      
     def __post_init__(self):
@@ -80,6 +82,7 @@ class Scheduler (GObject, PropertyObject):
         gobject.source_remove(self._timeout)
         self._timeout = gobject.timeout_add(self.timeout, self._timeout_cb)
     
+    
     def _timeout_cb(self):
         if self.obd_device:
             if self.working:
@@ -89,13 +92,18 @@ class Scheduler (GObject, PropertyObject):
             print 'Scheduler Error: obd=None' 
         return True
         
+        
     def _execute_next_item(self):
-        if len(self._queue):
+        if len(self._os_queue):
+            obd_data = self._os_queue.pop(0)
+            self.obd_device.update_obd_data(obd_data)  
+        elif len(self._queue):
             queue_item = self._queue.pop(0)
             self._queue.append(queue_item)
             data = self.obd_device.get_obd_data(queue_item)
             for obd_data in queue_item.list:
                 obd_data.data = data
+    
     
     def _obd_device_connected_cb(self, obd_device, connected):
         if not connected:
@@ -111,13 +119,15 @@ class Scheduler (GObject, PropertyObject):
         """
         if not isinstance(obd_data, OBDData):
             raise ValueError, 'obd_data should be an instance of OBDData'
-
-        if item.pid in self._queue:
-            queue_item = self._queue[self._queue.index(item.pid)]
+        if oneshot:
+            self._os_queue.append(obd_data)
         else:
-            queue_item = QueueItem(obd_data.pid)
-            self._queue.append(queue_item)
-        queue_item.list.append(obd_data)
+            if obd_data.pid in self._queue:
+                queue_item = self._queue[self._queue.index(obd_data.pid)]
+            else:
+                queue_item = QueueItem(obd_data.pid)
+                self._queue.append(queue_item)
+            queue_item.list.append(obd_data)
            
     def remove(self, obd_data):
         """Remove an item from the queue
