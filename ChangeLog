@@ -1,5 +1,10 @@
 2008-04-16  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/widgets.py:
+	    Created a new MILWidget class
+
+2008-04-16  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/sensor.py:
 	* plugins/live_data/live_data.py:
 	    Fixed a bug in the MIL LiveDataView
