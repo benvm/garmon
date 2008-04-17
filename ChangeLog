@@ -1,5 +1,23 @@
 2008-04-17  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/__init__.py:
+	* garmon/garmon_app.py:
+	* garmon/prefs.py:
+	    Created a Preferences class from which the prefs can be obtained
+	* garmon/property_object.py:
+	    fixed a typo
+	* garmon/widgets.py:
+	* plugins/live_data/live_data.py:
+	    MilWidget updates itself according to color preferences
+
+2008-04-17  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/__init__.py:
+	* garmon/prefs.py:
+	    replace print with debug()
+
+2008-04-17  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/garmon_app.py:
 	* garmon/prefs.py:
 	    renamed GarmonPrefs to PrefsDialog

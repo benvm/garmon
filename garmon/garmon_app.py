@@ -43,7 +43,7 @@ gtk.glade.textdomain('garmon')
 import garmon
 import garmon.plugin_manager as plugin_manager
 
-from garmon.prefs import PrefsDialog
+from garmon.prefs import PrefsDialog, Preferences
 from garmon.obd_device import OBDDevice, OBDError, OBDDataError, OBDPortError
 from garmon.scheduler import Scheduler
 from garmon.property_object import PropertyObject, gproperty, gsignal
@@ -105,9 +105,13 @@ class GarmonApp(gtk.Window, PropertyObject):
     gsignal('units-change', str)
     
     gproperty('units', object, flags=gobject.PARAM_READABLE)
+    gproperty('prefs', object, flags=gobject.PARAM_READABLE)
     
     def prop_get_units(self):
         return self._units
+        
+    def prop_get_prefs(self):
+        return self._prefs
 
 
     def __init__(self, parent=None):
@@ -162,6 +166,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
         
         self._setup_prefs()
+        self._prefs = Preferences(self.gclient)
         
         self._plugman = plugin_manager.PluginManager(self, self.gclient)
         if self.gclient.get_bool('/apps/garmon/start_plugins'):

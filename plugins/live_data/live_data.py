@@ -84,7 +84,7 @@ class LiveData (Plugin, gtk.VBox):
 
         xml = self.glade_xml
 
-        mil = MILWidget()
+        mil = MILWidget(self.app)
         #FIXME: change colors according to gconf
         mil.connect('active-changed', self._view_active_changed_cb)
         xml.get_widget('mil_alignment').add(mil)
