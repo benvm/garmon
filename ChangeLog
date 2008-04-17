@@ -1,5 +1,11 @@
 2008-04-17  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/garmon_app.py:
+	* garmon/prefs.py:
+	    renamed GarmonPrefs to PrefsDialog
+
+2008-04-17  Ben Van Mechelen  <me@benvm.be>
+
 	* data/garmon.schemas:
 	* data/prefs.glade:
 	* garmon/prefs.py:

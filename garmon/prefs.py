@@ -31,7 +31,7 @@ import gconf
 import garmon
 from garmon import GLADE_DIR
 
-class GarmonPrefs (gtk.Dialog):
+class PrefsDialog (gtk.Dialog):
 
     def __init__(self, app):
         gtk.Dialog.__init__(self, _("Garmon Preferences"), app, 

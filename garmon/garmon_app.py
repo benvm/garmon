@@ -41,9 +41,9 @@ gettext.textdomain('garmon')
 gtk.glade.textdomain('garmon')
 
 import garmon
-import garmon.prefs as prefs
 import garmon.plugin_manager as plugin_manager
 
+from garmon.prefs import PrefsDialog
 from garmon.obd_device import OBDDevice, OBDError, OBDDataError, OBDPortError
 from garmon.scheduler import Scheduler
 from garmon.property_object import PropertyObject, gproperty, gsignal
@@ -220,7 +220,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         return action_group
 
     def _activate_prefs_dialog(self, action):
-        dialog = prefs.GarmonPrefs(self)
+        dialog = PrefsDialog(self)
         dialog.run()
         dialog.destroy()
         
