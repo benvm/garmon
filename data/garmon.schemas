@@ -55,5 +55,27 @@
         <long>The plugins to activate when the app is started</long>
       </locale>
     </schema>
+    <schema>
+      <key>/schemas/apps/garmon/mil_on_color</key>
+      <applyto>/apps/garmon/mil_on_color</applyto>
+      <owner>garmon</owner>
+      <type>string</type>
+      <locale name="C">
+        <default>#F7D30D</default>
+        <short>MIL ON color</short>
+        <long>The color of the MIL when it is on</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/mil_off_color</key>
+      <applyto>/apps/garmon/mil_off_color</applyto>
+      <owner>garmon</owner>
+      <type>string</type>
+      <locale name="C">
+        <default>#AAAAAA</default>
+        <short>MIL OFF color</short>
+        <long>The color of the MIL when it is off</long>
+      </locale>
+    </schema>
   </schemalist>
 </gconfschemafile>

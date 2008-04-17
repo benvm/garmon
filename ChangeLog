@@ -1,5 +1,14 @@
 2008-04-17  Ben Van Mechelen  <me@benvm.be>
 
+	* data/garmon.schemas:
+	* data/prefs.glade:
+	* garmon/prefs.py:
+	* garmon/widgets.py:
+	* plugins/live_data/live_data.py:
+	    Added preferences for the colors of the MIL widget
+
+2008-04-17  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/widgets.py:
 	* plugins/live_data/live_data.glade:
 	* plugins/live_data/live_data.py:

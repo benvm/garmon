@@ -82,7 +82,21 @@ class GarmonPrefs (gtk.Dialog):
         self._start_plugins_check.set_active(active)
         self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/start_plugins",
                                                   self._start_plugins_change_notify))                
- 
+
+        color = self._gclient.get_string("/apps/garmon/mil_on_color")
+        if not color:
+            color = '#F7D30D'
+        self._mil_on_colorbutton.set_color(gtk.gdk.color_parse(color))
+        self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/mil_on_color",
+                                        self._mil_on_color_notify))
+
+        color = self._gclient.get_string("/apps/garmon/mil_off_color")
+        if not color:
+            color = '#AAAAAA'
+        self._mil_off_colorbutton.set_color(gtk.gdk.color_parse(color))
+        self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/mil_off_color",
+                                        self._mil_off_color_notify))
+                                                                                 
  
     def _setup_gui(self):
         fname = os.path.join(GLADE_DIR, 'prefs.glade')
@@ -104,7 +118,41 @@ class GarmonPrefs (gtk.Dialog):
         self._start_plugins_check = self._glade.get_widget('start_plugins_check')
         self._start_plugins_check.connect('toggled', self._start_plugins_check_toggled)
         
+        self._mil_on_colorbutton = self._glade.get_widget('mil_on_colorbutton')
+        self._mil_on_colorbutton.connect('color-set', self._mil_on_color_set)
+        
+        self._mil_off_colorbutton = self._glade.get_widget('mil_off_colorbutton')
+        self._mil_off_colorbutton.connect('color-set', self._mil_off_color_set)
 
+
+    def _mil_on_color_notify(self, gclient, cnxn_id, entry, args):
+        value = entry.value.get_string()
+        try:
+            self._mil_on_colorbutton.set_color(gtk.gdk.color_parse(value))
+        except ValueError:
+            print 'We got an invalid colorspec from gconf for mil_on_color'
+            self._mil_on_colorbutton.set_color(gtk.gdk.color_parse('#F7D30D'))
+            
+            
+    def _mil_off_color_notify(self, gclient, cnxn_id, entry, args):
+        value = entry.value.get_string()
+        try:
+            self._mil_off_colorbutton.set_color(gtk.gdk.color_parse(value))
+        except ValueError:
+            print 'We got an invalid colorspec from gconf for mil_off_color'
+            self._mil_off_colorbutton.set_color(gtk.gdk.color_parse('#AAAAAA'))
+
+        
+    def _mil_on_color_set(self, button):
+        color = button.get_color().to_string()
+        self._gclient.set_string ("/apps/garmon/mil_on_color", color)
+    
+
+    def _mil_off_color_set(self, button):
+        color = button.get_color().to_string()
+        self._gclient.set_string ("/apps/garmon/mil_off_color", color)
+        
+                    
     def _port_change_notify(self, gclient, cnxn_id, entry, args):
         if (not entry.value) or (entry.value.type != gconf.VALUE_STRING):
             self._port_entry.set_text (_("Error!"))

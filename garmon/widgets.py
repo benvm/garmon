@@ -41,6 +41,7 @@ class MILEntry(gtk.Entry, PropertyObject):
         self.set_property('width-chars', 3)
         
     def __post_init__(self):
+        self.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.off_color))
         self.connect('notify::on', self._notify_cb)
         self.connect('notify::on-color', self._notify_cb)
         self.connect('notify::off-color', self._notify_cb)
