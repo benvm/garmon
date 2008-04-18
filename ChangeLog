@@ -1,5 +1,17 @@
 2008-04-18  Ben Van Mechelen  <me@benvm.be>
 
+	* data/prefs.glade:
+	* garmon/garmon_app.py:
+	* garmon/plugin_manager.py:
+	* garmon/prefs.py:
+	* garmon/widgets.py:
+	* plugins/dashboard/dashboard.py:
+	* plugins/live_data/live_data.py:
+	    plugins now using new PreferencesManager interface
+	
+
+2008-04-18  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/garmon_app.py:  
 	* garmon/plugin_manager.py:
 	    Use the new PreferencesManager

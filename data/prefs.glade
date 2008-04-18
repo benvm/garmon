@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.2 on Fri Apr 18 04:18:27 2008 -->
+<!--Generated with glade3 3.4.2 on Fri Apr 18 16:33:36 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -567,7 +567,7 @@
                               </widget>
                             </child>
                             <child>
-                              <widget class="GtkColorButton" id="preference;color;str;mil.on_color">
+                              <widget class="GtkColorButton" id="preference;color;str;mil.on-color">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
@@ -597,7 +597,7 @@
                               </widget>
                             </child>
                             <child>
-                              <widget class="GtkColorButton" id="preference;color;str;mil.off_color">
+                              <widget class="GtkColorButton" id="preference;color;str;mil.off-color">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>

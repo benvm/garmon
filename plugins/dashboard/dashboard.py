@@ -47,13 +47,24 @@ class DashBoard (Plugin, gtk.VBox):
     __gtype_name__='DashBoard'
     def __init__(self, app) :
         gtk.VBox.__init__(self)
+    
+        self._pref_cbs = []
 
         self.app = app
-        self.unit_standard = app.units
         
+        if app.prefs.get_preference('imperial'):
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
+            
+        cb_id = app.prefs.preference_notify_add('imperial', 
+                                                self._notify_units_cb)
+        self._pref_cbs.append(cb_id)
+
         self.dir = os.path.dirname(__file__)
         self.status = STATUS_STOP
         
+        #TODO: get from prefs
         self.color = '#FDC62D'
         self.background = '#000000'
         
@@ -62,7 +73,6 @@ class DashBoard (Plugin, gtk.VBox):
         self._set_gauges_background()
         
         app.connect('reset', self._on_reset)
-        app.connect('units-change', self._on_units_changed)
         app.notebook.connect('switch-page', self._notebook_page_change_cb)
 
         self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)        
@@ -105,7 +115,7 @@ class DashBoard (Plugin, gtk.VBox):
             self.layout.put(gauge, x, y)
             gauge.show_all()
             
-            gauge.unit_standard = self.unit_standard
+            gauge.unit_standard = self._unit_standard
             gauge.idle()
             self.gauges.append(gauge)
                          
@@ -124,18 +134,21 @@ class DashBoard (Plugin, gtk.VBox):
         if visible:
             self.start()
 
+
     def _scheduler_notify_working_cb(self, scheduler, pspec):
         if not scheduler.working:
             for gauge in self.gauges:
                 gauge.idle()
     
         
-    def _on_units_changed(self, app, unit_standard):
-        self.unit_standard = unit_standard
+    def _notify_units_cb(self, pname, pvalue, ptype, args):
+        if pname == 'imperial' and pvalue:
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
         for gauge in self.gauges:
-            gauge.unit_standard = self.unit_standard
-        
-        
+            gauge.unit_standard = self._unit_standard
+       
         
     def _notebook_page_change_cb (self, notebook, no_use, page):
         plugin = notebook.get_nth_page(page)
@@ -180,6 +193,8 @@ class DashBoard (Plugin, gtk.VBox):
             
     def unload(self):
         self.app.notebook.remove(self)
+        for cb_id in self._pref_cbs:
+            self.app.prefs.preference_notify_remove(cb_id)
         
 
 class Gauge (gtk.DrawingArea, SensorProxyMixin,

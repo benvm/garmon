@@ -50,7 +50,17 @@ class LiveData (Plugin, gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.app = app
-        self.unit_standard = app.units
+        
+        self._pref_cbs = []
+        
+        if app.prefs.get_preference('imperial'):
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
+            
+        cb_id = app.prefs.preference_notify_add('imperial', 
+                                                self._notify_units_cb)
+        self._pref_cbs.append(cb_id)
 
         self.status = STATUS_STOP
 
@@ -61,7 +71,6 @@ class LiveData (Plugin, gtk.VBox):
         self._setup_sensors()
 
         app.connect('reset', self._on_reset)
-        app.connect('units-change', self._on_units_changed)
         app.notebook.connect('switch-page', self._notebook_page_change_cb)
         
         self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
@@ -104,7 +113,7 @@ class LiveData (Plugin, gtk.VBox):
                 unit = xml.get_widget(item[UNIT])
             func = (item[HELPER])
             
-            view = LiveDataView(pid, index, units=self.unit_standard,
+            view = LiveDataView(pid, index, units=self._unit_standard,
                        active_widget=button, name_widget=label,
                        value_widget=entry, units_widget=unit,
                        helper=func)
@@ -183,11 +192,15 @@ class LiveData (Plugin, gtk.VBox):
             self.start()
 
 
-    def _on_units_changed(self, app, units):
-        self.unit_standard = units
+    def _notify_units_cb(self, pname, pvalue, ptype, args):
+        if pname == 'imperial' and pvalue:
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
+        
         for views in (self.views, self.os_views):
             for view in self.views:
-                view.unit_standard = self.unit_standard
+                view.unit_standard = self._unit_standard
             
             
     def _notebook_page_change_cb (self, notebook, no_use, page):
@@ -202,7 +215,8 @@ class LiveData (Plugin, gtk.VBox):
             
     def unload(self):
         self.app.notebook.remove(self)
-
+        for cb_id in self._pref_cbs:
+            self.app.prefs.preference_notify_remove(cb_id)
         
 
 class LiveDataView(GObject, SensorProxyMixin, 
@@ -225,6 +239,7 @@ class LiveDataView(GObject, SensorProxyMixin,
                                       name_widget=name_widget,
                                       value_widget=value_widget,
                                       units_widget=units_widget,
+                                      unit_standard=units,
                                       helper=helper)
         SensorProxyMixin.__init__(self, pid, index)
         

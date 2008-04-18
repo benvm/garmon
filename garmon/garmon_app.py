@@ -102,13 +102,8 @@ class GarmonApp(gtk.Window, PropertyObject):
     
     ################# Properties and signals ###############
     gsignal('reset')
-    gsignal('units-change', str)
     
-    gproperty('units', object, flags=gobject.PARAM_READABLE)
     gproperty('prefs', object, flags=gobject.PARAM_READABLE)
-    
-    def prop_get_units(self):
-        return self._units
         
     def prop_get_prefs(self):
         return self._prefs
@@ -120,7 +115,8 @@ class GarmonApp(gtk.Window, PropertyObject):
         #Create the toplevel window
         gtk.Window.__init__(self)
         
-        self._units = 'Metric'
+        self._prefs = PreferenceManager('/apps/garmon')
+        
         self._backdoor = None
         
         try:
@@ -166,9 +162,9 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
         
         self._setup_prefs()
-        self._prefs = PreferenceManager('/apps/garmon')
+
         
-        self._plugman = plugin_manager.PluginManager(self, self.gclient)
+        self._plugman = plugin_manager.PluginManager(self)
         if self._prefs.get_preference('plugins.start'):
             self._plugman.activate_saved_plugins()
         
@@ -300,11 +296,8 @@ class GarmonApp(gtk.Window, PropertyObject):
         
         self.gconf_ids.append (self.gclient.notify_add ("/apps/garmon/port",
                                                     self._port_change_notify))
-        self.gconf_ids.append (self.gclient.notify_add ("/apps/garmon/units",
-                                                    self._units_change_notify))
 
         self.gclient.notify("/apps/garmon/port")
-        self.gclient.notify("/apps/garmon/units")
 
         
     def _port_change_notify(self, gclient, cnxn_id, entry, args):
@@ -313,15 +306,6 @@ class GarmonApp(gtk.Window, PropertyObject):
         else:
             self._port = entry.value.get_string()
             self.obd.portname = self._port
-
-
-    def _units_change_notify(self, gclient, cnxn_id, entry, args):
-        if (not entry.value) or (entry.value.type != gconf.VALUE_STRING):
-            pass #FIXME: handle error
-        else:
-            if self._units != entry.value.get_string():
-                self._units = entry.value.get_string()
-                self.emit('units-change', self._units)
 
 
     def _activate_reset(self, action):

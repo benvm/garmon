@@ -40,20 +40,27 @@ class MILWidget(gtk.Entry, SensorProxyMixin,
         SensorProxyMixin.__init__(self, '0101', 1)
         PropertyObject.__init__(self)
         
+        self._pref_cbs = []
+        
         self.app = app
         self.set_text('MIL')
         self.set_property('editable', False)
         self.set_property('width-chars', 3)
         
     def __post_init__(self):
-        self.on_color = self.app.prefs.mil_on_color
-        self.off_color = self.app.prefs.mil_off_color
-        self.app.prefs.connect('notify::mil-on-color', self._prefs_change_cb)
-        self.app.prefs.connect('notify::mil-off-color', self._prefs_change_cb)
+        self.on_color = self.app.prefs.get_preference('mil.on-color')
+        self.off_color = self.app.prefs.get_preference('mil.off-color')
+        cb_id = self.app.prefs.preference_notify_add('mil.on-color',
+                                                     self._notify_prefs_cb)
+        self._pref_cbs.append(cb_id)
+        cb_id = self.app.prefs.preference_notify_add('mil.off-color',
+                                                     self._notify_prefs_cb)
+        self._pref_cbs.append(cb_id)
+                                                     
         self.connect('notify::on', self._notify_cb)
         self.connect('notify::on-color', self._notify_cb)
         self.connect('notify::off-color', self._notify_cb)
-        
+        self.notify('on')
         
     def _notify_cb(self, o, pspec):
         if self.on:
@@ -62,12 +69,11 @@ class MILWidget(gtk.Entry, SensorProxyMixin,
             self.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.off_color))
 
 
-    def _prefs_change_cb(self, prefs, pspec):
-        print pspec.name
-        if pspec.name == 'mil-on-color':
-            self.on_color = prefs.mil_on_color
-        elif pspec.name == 'mil-off-color':
-            self.off_color = prefs.mil_off_color
+    def _notify_prefs_cb(self, pname, pvalue, ptype, args):
+        if pname == 'mil.on-color':
+            self.on_color = pvalue
+        elif pname == 'mil.off-color':
+            self.off_color = pvalue
     
     
     def _sensor_data_changed_cb(self, sensor, data):

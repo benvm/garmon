@@ -80,16 +80,14 @@ class PluginManager(gtk.Dialog, PropertyObject):
         return plugins
                               
                               
-    def __init__(self, app, gclient):
+    def __init__(self, app):
         """ @param app: GarmonApp
-            @param gclient: gconf client
         """
         gtk.Dialog.__init__(self, _("Garmon Plugin Manager"),
                                   app, gtk.DIALOG_DESTROY_WITH_PARENT,
                                   (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE,))
         PropertyObject.__init__(self)
                                   
-        self.gclient = gclient
         self.app = app
 
         
@@ -302,12 +300,10 @@ class PluginManager(gtk.Dialog, PropertyObject):
         string = ''
         for name, plugin in self._active_plugins:
             string += name + ','
-        #self.gclient.set_string ("/apps/garmon/active_plugins", string)
         self.app.prefs.set_preference('plugins.saved', string)
                     
 
     def activate_saved_plugins(self):
-        #string = self.gclient.get_string ("/apps/garmon/active_plugins")
         string = self.app.prefs.get_preference('plugins.saved')
         plugins = string.split(',')
         if plugins:

@@ -71,10 +71,6 @@ class Preference(object):
 class PreferenceManager(GObject, PropertyObject):
     __gtype_name__ = 'PreferenceManager'
 
-    gproperty('portname', str, '/dev/ttyUSB0', flags=gobject.PARAM_READABLE)
-    gproperty('unit-standard', str, 'Metric', flags=gobject.PARAM_READABLE)
-    gproperty('save-plugins', bool, True, flags=gobject.PARAM_READABLE)
-    gproperty('start-plugins', bool, True, flags=gobject.PARAM_READABLE)
     gproperty('mil_on_color', str, '#F7D30D', flags=gobject.PARAM_READABLE)
     gproperty('mil_off_color', str, '#AAAAAA', flags=gobject.PARAM_READABLE)
     
@@ -142,8 +138,8 @@ class PreferenceManager(GObject, PropertyObject):
         
         #FOR TESTING
         
-        self.register_preference('mil.on_color', str, '#F7D30D')
-        self.register_preference('mil.off_color', str, '#AAAAAA')
+        self.register_preference('mil.on-color', str, '#F7D30D')
+        self.register_preference('mil.off-color', str, '#AAAAAA')
         self.register_preference('port', str, '/dev/ttyUSB0')
         self.register_preference('metric', bool, True)
         self.register_preference('imperial', bool, False)
@@ -278,7 +274,7 @@ class PreferenceManager(GObject, PropertyObject):
         for pref in self._preferences:
             if pref.name == pname:
                 return pref.value
-        raise ValueError, 'No pref with name "%s" found' % name 
+        raise ValueError, 'No pref with name "%s" found' % pname 
         
     
     def set_preference(self, pname, pvalue):
