@@ -43,7 +43,7 @@ gtk.glade.textdomain('garmon')
 import garmon
 import garmon.plugin_manager as plugin_manager
 
-from garmon.prefs import PrefsDialog, PreferenceManager
+from garmon.prefs import PreferenceManager
 from garmon.obd_device import OBDDevice, OBDError, OBDDataError, OBDPortError
 from garmon.scheduler import Scheduler
 from garmon.property_object import PropertyObject, gproperty, gsignal
@@ -166,10 +166,10 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
         
         self._setup_prefs()
-        self._prefs = PreferenceManager(self.gclient)
+        self._prefs = PreferenceManager('/apps/garmon')
         
         self._plugman = plugin_manager.PluginManager(self, self.gclient)
-        if self.gclient.get_bool('/apps/garmon/start_plugins'):
+        if self._prefs.get_preference('plugins.start'):
             self._plugman.activate_saved_plugins()
         
         self.show_all()
@@ -225,9 +225,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         return action_group
 
     def _activate_prefs_dialog(self, action):
-        #dialog = PrefsDialog(self)
         self.prefs.show_dialog()
-        #dialog.destroy()
         
 
     def _activate_plugin_dialog(self, action):
@@ -260,7 +258,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog.show()
         res = dialog.run()
         if res == gtk.RESPONSE_OK:
-            if self.gclient.get_bool('/apps/garmon/save_plugins'):
+            if self._prefs.get_preference('plugins.save'):
                 self._plugman.save_active_plugins()
             #TODO: Clean things up
             gtk.main_quit()

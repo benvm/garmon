@@ -302,11 +302,13 @@ class PluginManager(gtk.Dialog, PropertyObject):
         string = ''
         for name, plugin in self._active_plugins:
             string += name + ','
-        self.gclient.set_string ("/apps/garmon/active_plugins", string)
+        #self.gclient.set_string ("/apps/garmon/active_plugins", string)
+        self.app.prefs.set_preference('plugins.saved', string)
                     
 
     def activate_saved_plugins(self):
-        string = self.gclient.get_string ("/apps/garmon/active_plugins")
+        #string = self.gclient.get_string ("/apps/garmon/active_plugins")
+        string = self.app.prefs.get_preference('plugins.saved')
         plugins = string.split(',')
         if plugins:
             self._treemodel.foreach(self._activate_saved_plugins_cb, plugins)        

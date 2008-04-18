@@ -38,188 +38,22 @@ from garmon.property_object import PropertyObject, gproperty, gsignal
 
 class PrefsDialog (gtk.Dialog):
 
-    def __init__(self, gclient):
+    def __init__(self):
         gtk.Dialog.__init__(self, _("Garmon Preferences"), None, 
                                 gtk.DIALOG_DESTROY_WITH_PARENT,
                                 (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE,))
                                 
         self.set_resizable(False)
         
-        self._gclient = gclient
-        self._gconf_ids = []
-        
         self.vbox.set_border_width(5)
         self.vbox.set_spacing(10)
         
-        self._glade = None
-        self.notebook = None
-        
-        self._setup_gui()
-        self._setup_gconf()
-        
-        self.connect('destroy', self._on_dialog_destroy)
-        #self.show_all()
-        
-        
-    def _setup_gconf(self):
-        port = self._gclient.get_string("/apps/garmon/port")
-        if port:
-            self._port_entry.set_text(port)
-        else:
-            #FIXME: gconf schemas not OK: Notify the user
-            self._port_entry.set_text(_("Error"))
-        self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/port",
-                                        self._port_change_notify))
-
-        units = self._gclient.get_string("/apps/garmon/units")
-        if units == 'Metric':
-            self._metric_radio.set_active(True)
-        else:
-            self._imperial_radio.set_active(True)
-        self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/units",
-                                      self._units_change_notify))
-
-        active = self._gclient.get_bool('/apps/garmon/save_plugins')
-        self._save_plugins_check.set_active(active)
-        self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/save_plugins",
-                                                  self._save_plugins_change_notify))
-                                                                                                 
-        active = self._gclient.get_bool('/apps/garmon/start_plugins')
-        self._start_plugins_check.set_active(active)
-        self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/start_plugins",
-                                                  self._start_plugins_change_notify))                
-
-        color = self._gclient.get_string("/apps/garmon/mil_on_color")
-        if not color:
-            color = '#F7D30D'
-        self._mil_on_colorbutton.set_color(gtk.gdk.color_parse(color))
-        self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/mil_on_color",
-                                        self._mil_on_color_notify))
-
-        color = self._gclient.get_string("/apps/garmon/mil_off_color")
-        if not color:
-            color = '#AAAAAA'
-        self._mil_off_colorbutton.set_color(gtk.gdk.color_parse(color))
-        self._gconf_ids.append (self._gclient.notify_add ("/apps/garmon/mil_off_color",
-                                        self._mil_off_color_notify))
-                                                                                 
- 
-    def _setup_gui(self):
-        fname = os.path.join(GLADE_DIR, 'prefs.glade')
-        self._glade = gtk.glade.XML(fname, 'notebook1', 'garmon')
-        
-        self.notebook = self._glade.get_widget('notebook1')
-        
-        self.vbox.pack_start(self._glade.get_widget('notebook1'))
-        self._port_entry = self._glade.get_widget('port_entry')
-        self._port_entry.connect ("focus_out_event", self._port_entry_commit)
-        self._port_entry.connect ("activate", self._port_entry_commit)
-        
-        self._metric_radio = self._glade.get_widget('metric_radio')
-        self._imperial_radio = self._glade.get_widget('imperial_radio')
-        self._metric_radio.connect ("toggled", self._units_radio_toggled, 'Metric')
-        self._imperial_radio.connect ("toggled", self._units_radio_toggled, 'Imperial')       
-        
-        self._save_plugins_check = self._glade.get_widget('save_plugins_check')
-        self._save_plugins_check.connect('toggled', self._save_plugins_check_toggled)
-        
-        self._start_plugins_check = self._glade.get_widget('start_plugins_check')
-        self._start_plugins_check.connect('toggled', self._start_plugins_check_toggled)
-        
-        self._mil_on_colorbutton = self._glade.get_widget('mil_on_colorbutton')
-        self._mil_on_colorbutton.connect('color-set', self._mil_on_color_set)
-        
-        self._mil_off_colorbutton = self._glade.get_widget('mil_off_colorbutton')
-        self._mil_off_colorbutton.connect('color-set', self._mil_off_color_set)
-
-
-    def _mil_on_color_notify(self, gclient, cnxn_id, entry, args):
-        value = entry.value.get_string()
-        try:
-            self._mil_on_colorbutton.set_color(gtk.gdk.color_parse(value))
-        except ValueError:
-            debug('We got an invalid colorspec from gconf for mil_on_color')
-            self._mil_on_colorbutton.set_color(gtk.gdk.color_parse('#F7D30D'))
-            
-            
-    def _mil_off_color_notify(self, gclient, cnxn_id, entry, args):
-        value = entry.value.get_string()
-        try:
-            self._mil_off_colorbutton.set_color(gtk.gdk.color_parse(value))
-        except ValueError:
-            debug('We got an invalid colorspec from gconf for mil_off_color')
-            self._mil_off_colorbutton.set_color(gtk.gdk.color_parse('#AAAAAA'))
-
-        
-    def _mil_on_color_set(self, button):
-        color = button.get_color().to_string()
-        self._gclient.set_string ("/apps/garmon/mil_on_color", color)
+        self.notebook = gtk.Notebook()
+        self.vbox.pack_start(self.notebook)
     
-
-    def _mil_off_color_set(self, button):
-        color = button.get_color().to_string()
-        self._gclient.set_string ("/apps/garmon/mil_off_color", color)
-        
-                    
-    def _port_change_notify(self, gclient, cnxn_id, entry, args):
-        if (not entry.value) or (entry.value.type != gconf.VALUE_STRING):
-            self._port_entry.set_text (_("Error!"))
-        else:
-            self._port_entry.set_text (entry.value.get_string())
-            
-        
-    def _port_entry_commit(self, entry, *args):
-        self._gclient.set_string ("/apps/garmon/port", entry.get_text())
-        
-        
-
-    def _units_change_notify(self, gclient, cnxn_id, entry, args):
-        if (not entry.value) or (entry.value.type != gconf.VALUE_STRING):
-            units = 'Metric'
-        else:
-            units = entry.value.get_string()
-        
-        if units == 'Metric':
-            self._metric_radio.set_active(True)
-        else:
-            self._imperial_radio.set_active(True)
-        
-
-    def _save_plugins_change_notify(self, gclient, cnxn_id, entry, args):
-        value = entry.value.get_bool()
-        if value:
-            self._save_plugins_check.set_active(True)
-        else:
-            self._save_plugins_check.set_active(False)
-
-
-    def _start_plugins_change_notify(self, gclient, cnxn_id, entry, args):
-        value = entry.value.get_bool()
-        if value:
-            self._start_plugins_check.set_active(True)
-        else:
-            self._start_plugins_check.set_active(False)
-                        
-     
-    def _save_plugins_check_toggled(self, toggle):
-        active = toggle.get_active()
-        self._gclient.set_bool ("/apps/garmon/save_plugins", active)
-
-
-    def _start_plugins_check_toggled(self, toggle):
-        active = toggle.get_active()
-        self._gclient.set_bool ("/apps/garmon/start_plugins", active)
-
-        
-    def _units_radio_toggled(self, toggle, units):
-        if toggle.get_active():
-            self._gclient.set_string ("/apps/garmon/units", units)
-        
-        
-        
-    def _on_dialog_destroy(self, dialog):
-        for id in self._gconf_ids:
-            self._gclient.notify_remove (id)
+    def run(self):
+        self.show_all()
+        gtk.Dialog.run(self)    
 
 
 
@@ -263,11 +97,13 @@ class PreferenceManager(GObject, PropertyObject):
         return self._mil_off_color
 
 
-    def __init__(self, gclient):
+    def __init__(self, base):
         GObject.__init__(self)
         PropertyObject.__init__(self)
         
-        self._gclient = gclient
+        self._gclient = gconf.client_get_default()
+        self._gclient.add_dir (base, gconf.CLIENT_PRELOAD_NONE)
+        
         self._gconf_ids = []
         
         self._preferences = []
@@ -293,7 +129,7 @@ class PreferenceManager(GObject, PropertyObject):
         self._gclient.notify_add ("/apps/garmon/mil_off_color",
                                         self._mil_off_color_notify)
                                         
-        self._dialog = PrefsDialog(gclient)
+        self._dialog = PrefsDialog()
 
     def __post_init__(self):
         self._gclient.notify("/apps/garmon/port")
@@ -313,7 +149,7 @@ class PreferenceManager(GObject, PropertyObject):
         self.register_preference('imperial', bool, False)
         self.register_preference('plugins.save', bool, True)
         self.register_preference('plugins.start', bool, True)
-        self.register_preference('plugins.active', str, '')
+        self.register_preference('plugins.saved', str, '')
         
         fname = os.path.join(GLADE_DIR, 'prefs.glade')
         xml = gtk.glade.XML(fname, 'new_prefs_vbox', 'garmon')
@@ -445,7 +281,7 @@ class PreferenceManager(GObject, PropertyObject):
         raise ValueError, 'No pref with name "%s" found' % name 
         
     
-    def _set_preference(self, pname, pvalue):
+    def set_preference(self, pname, pvalue):
         for pref in self._preferences:
             if pref.name == pname:
                 if not pref.ptype is type(pvalue):
@@ -567,17 +403,17 @@ class PreferenceManager(GObject, PropertyObject):
               
     def _toggle_widget_cb(self, toggle, pname):
         active = toggle.get_active()
-        self._set_preference(pname, active)
+        self.set_preference(pname, active)
         
         
     def _text_widget_cb(self, widget, pname):
         value = widget.get_text()
-        self._set_preference(pname, value)
+        self.set_preference(pname, value)
         
         
     def _color_widget_cb(self, widget, pname):
         value = widget.get_color().to_string()
-        self._set_preference(pname, value)
+        self.set_preference(pname, value)
         
         
     
