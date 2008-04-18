@@ -1,3 +1,12 @@
+2008-04-18  Ben Van Mechelen  <me@benvm.be>
+
+	* data/prefs.glade:
+	* garmon/garmon_app.py:
+	* garmon/prefs.py:
+	    We now have a PreferencesManager class. New prefs can 
+	    be registered. These prefs can then be read. It is also possible
+	    to connect to a notify signal when a value is changed.
+
 2008-04-17  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/__init__.py:
