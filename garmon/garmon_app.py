@@ -41,6 +41,8 @@ gettext.textdomain('garmon')
 gtk.glade.textdomain('garmon')
 
 import garmon
+from garmon import GLADE_DIR
+
 import garmon.plugin_manager as plugin_manager
 
 from garmon.prefs import PreferenceManager
@@ -116,6 +118,21 @@ class GarmonApp(gtk.Window, PropertyObject):
         gtk.Window.__init__(self)
         
         self._prefs = PreferenceManager('/apps/garmon')
+        self._pref_cbs = []
+
+        self._prefs.register_preference('mil.on-color', str, '#F7D30D')
+        self._prefs.register_preference('mil.off-color', str, '#AAAAAA')
+        self._prefs.register_preference('port', str, '/dev/ttyUSB0')
+        self._prefs.register_preference('metric', bool, True)
+        self._prefs.register_preference('imperial', bool, False)
+        self._prefs.register_preference('plugins.save', bool, True)
+        self._prefs.register_preference('plugins.start', bool, True)
+        self._prefs.register_preference('plugins.saved', str, '')
+        
+        fname = os.path.join(GLADE_DIR, 'prefs.glade')
+        xml = gtk.glade.XML(fname, 'new_prefs_vbox', 'garmon')
+        self._prefs.add_dialog_page(xml, 'new_prefs_vbox', 'General')
+        
         
         self._backdoor = None
         
@@ -161,12 +178,12 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.scheduler = Scheduler(self.obd, 50)
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
         
-        self._setup_prefs()
-
-        
         self._plugman = plugin_manager.PluginManager(self)
         if self._prefs.get_preference('plugins.start'):
             self._plugman.activate_saved_plugins()
+        
+        cb_id = self._prefs.preference_notify_add('port', self._notify_port_cb)
+        self._pref_cbs.append(cb_id)
         
         self.show_all()
 
@@ -219,6 +236,10 @@ class GarmonApp(gtk.Window, PropertyObject):
         action_group.add_toggle_actions(toggle_entries)
 
         return action_group
+
+    
+    def _notify_port_cb(self, pname, pvalue, ptype, args):
+        self.obd.portname = pvalue
 
     def _activate_prefs_dialog(self, action):
         self.prefs.show_dialog()
@@ -285,27 +306,6 @@ class GarmonApp(gtk.Window, PropertyObject):
         else:
             if self._backdoor:
                 self._backdoor.hide()           
-
-            
-    def _setup_prefs(self):
-        #Set up gconf
-        self._port = None
-        self.gconf_ids = []
-        self.gclient = gconf.client_get_default()
-        self.gclient.add_dir ("/apps/garmon", gconf.CLIENT_PRELOAD_NONE)
-        
-        self.gconf_ids.append (self.gclient.notify_add ("/apps/garmon/port",
-                                                    self._port_change_notify))
-
-        self.gclient.notify("/apps/garmon/port")
-
-        
-    def _port_change_notify(self, gclient, cnxn_id, entry, args):
-        if (not entry.value) or (entry.value.type != gconf.VALUE_STRING):
-            pass #FIXME: handle error
-        else:
-            self._port = entry.value.get_string()
-            self.obd.portname = self._port
 
 
     def _activate_reset(self, action):

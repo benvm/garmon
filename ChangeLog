@@ -1,3 +1,10 @@
+2008-04-19  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
+	* garmon/prefs.py:
+	    Remove obsolete code from PluginManager and GarmonApp
+
+
 2008-04-18  Ben Van Mechelen  <me@benvm.be>
 
 	* data/prefs.glade:
