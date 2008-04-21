@@ -1,5 +1,11 @@
 2008-04-21  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/prefs.py:
+	    rename Preference to _Preference 
+
+
+2008-04-21  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/garmon_app.py:
 	    Specify the portname in obd_device.open() when resetting 
 	* garmon/obd_device.py:

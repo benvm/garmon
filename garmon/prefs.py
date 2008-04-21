@@ -56,7 +56,7 @@ class PrefsDialog (gtk.Dialog):
 
 
 
-class Preference(object):
+class _Preference(object):
     def __init__(self, pname, ptype, default, value=None):
         self.name = pname
         self.ptype = ptype
@@ -236,7 +236,7 @@ class PreferenceManager(GObject):
         elif ptype is float:
             value = self._gclient.get_float(key)
         
-        pref = Preference(pname, ptype, default, value)    
+        pref = _Preference(pname, ptype, default, value)    
         pref.key = key    
         self._preferences.append(pref)
         gconf_id = self._gclient.notify_add(key, self._gconf_key_change_notify, pref)

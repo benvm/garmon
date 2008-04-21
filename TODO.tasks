@@ -14,7 +14,7 @@
     <item>
       <attribute id="1208581720" priority="1" done="0" start_date="733151" enddate="99999999" notify="0" endtime="-60" last_edited="1208581744"/>
       <summary>Create prefs for background and needle color</summary>
-      <comment></comment>
+      <comment/>
     </item>
   </category>
   <category title="plugin: DTCClearer" place="1"/>
@@ -34,7 +34,13 @@
 Maybe we can give possible causes or solutions.</comment>
     </item>
   </category>
-  <category title="OBDDevice" place="6"/>
+  <category title="OBDDevice" place="6">
+    <item>
+      <attribute id="1208797398" priority="1" done="0" start_date="733153" enddate="99999999" notify="0" endtime="-60" last_edited="1208797398"/>
+      <summary>Move the reset action to OBDDevice</summary>
+      <comment>the OBDDevice class should handle the reset action and emit a signal when it has completed the reset.</comment>
+    </item>
+  </category>
   <category title="Scheduler" place="7">
     <item>
       <attribute id="1208353502" priority="1" done="0" start_date="733148" enddate="99999999" notify="0" endtime="-60" last_edited="1208581738"/>
