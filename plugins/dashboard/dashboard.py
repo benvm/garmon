@@ -47,11 +47,27 @@ class DashBoard (Plugin, gtk.VBox):
     __gtype_name__='DashBoard'
     def __init__(self, app) :
         gtk.VBox.__init__(self)
-    
-        self._pref_cbs = []
-
-        self.app = app
         
+        self.app = app
+        self.dir = os.path.dirname(__file__)
+        self._pref_cbs = []
+                
+        app.prefs.register_preference('dashboard.needle-color', str, '#FDC62D')
+        app.prefs.register_preference('dashboard.background', str, '#000000')
+
+        fname = os.path.join(self.dir, 'dashboard.glade')
+        xml = gtk.glade.XML(fname, 'prefs-vbox', 'garmon')
+        app.prefs.add_dialog_page(xml, 'prefs-vbox', 'Dashboard')
+        
+        self._needle_color = app.prefs.get_preference('dashboard.needle-color')
+        self._background = app.prefs.get_preference('dashboard.background')
+        cb_id = app.prefs.preference_notify_add('dashboard.needle-color', 
+                                                self._prefs_notify_color_cb)
+        self._pref_cbs.append(cb_id)
+        cb_id = app.prefs.preference_notify_add('dashboard.background', 
+                                                self._prefs_notify_color_cb)
+        self._pref_cbs.append(cb_id)
+
         if app.prefs.get_preference('imperial'):
             self._unit_standard = 'Imperial'
         else:
@@ -61,12 +77,7 @@ class DashBoard (Plugin, gtk.VBox):
                                                 self._notify_units_cb)
         self._pref_cbs.append(cb_id)
 
-        self.dir = os.path.dirname(__file__)
         self.status = STATUS_STOP
-        
-        #TODO: get from prefs
-        self.color = '#FDC62D'
-        self.background = '#000000'
         
         self._setup_gui()
         self._setup_gauges()
@@ -76,12 +87,23 @@ class DashBoard (Plugin, gtk.VBox):
         app.notebook.connect('switch-page', self._notebook_page_change_cb)
 
         self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)        
-        
+
+
+    def _prefs_notify_color_cb(self, pname, pvalue, ptype, args):
+        if pname == 'dashboard.needle-color':
+            self._needle_color = pvalue
+            for gauge in self.gauges:
+                gauge.needle_color = self._needle_color
+        elif pname == 'dashboard.background':
+            self._background = pvalue
+            self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self._background))
+            self._set_gauges_background()
+       
         
     def _setup_gui (self) :
         self.layout = gtk.Layout()
         self.pack_start(self.layout, True, True)
-        self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.background))
+        self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self._background))
         self.show_all()
         
         
@@ -116,13 +138,16 @@ class DashBoard (Plugin, gtk.VBox):
             gauge.show_all()
             
             gauge.unit_standard = self._unit_standard
+            gauge.needle_color = self._needle_color
             gauge.idle()
             self.gauges.append(gauge)
                          
     
     def _set_gauges_background(self):
+        color = gtk.gdk.color_parse(self._background)
         for item in self.layout.get_children():
-            item.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.background))
+            print 'will set bg on %s' % item
+            item.modify_bg(gtk.STATE_NORMAL, color)
        
       
     def _on_reset(self, app):
@@ -317,10 +342,13 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         
         needle = self._construct_needle()
         self._pixmap.draw_polygon(self._needle_gc, True, needle)
-        self._pixmap.draw_arc(bg_gc, True, 
-                                         self._needle_origin_x - self._circle_radius, 
-                                         self._needle_origin_y - self._circle_radius, 
-                                         self._circle_radius * 2, self._circle_radius * 2, 0, 360 * 64)
+        
+        fg_gc = self.get_style().fg_gc[gtk.STATE_NORMAL]
+        fg_gc.set_foreground(gtk.gdk.color_parse('#000000'))
+        self._pixmap.draw_arc(fg_gc, True, 
+                                     self._needle_origin_x - self._circle_radius, 
+                                     self._needle_origin_y - self._circle_radius, 
+                                     self._circle_radius * 2, self._circle_radius * 2, 0, 360 * 64)
                                          
         self.queue_draw()
 

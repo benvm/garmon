@@ -11,6 +11,11 @@
       <summary>Rename Meter to Gauge?</summary>
       <comment/>
     </item>
+    <item>
+      <attribute id="1208581720" priority="1" done="0" start_date="733151" enddate="99999999" notify="0" endtime="-60" last_edited="1208581744"/>
+      <summary>Create prefs for background and needle color</summary>
+      <comment></comment>
+    </item>
   </category>
   <category title="plugin: DTCClearer" place="1"/>
   <category title="plugin: DTCReader" place="2"/>
@@ -32,9 +37,9 @@ Maybe we can give possible causes or solutions.</comment>
   <category title="OBDDevice" place="6"/>
   <category title="Scheduler" place="7">
     <item>
-      <attribute id="1208353502" priority="2" done="0" start_date="733148" enddate="99999999" notify="0" endtime="-60" last_edited="1208353502"/>
+      <attribute id="1208353502" priority="1" done="0" start_date="733148" enddate="99999999" notify="0" endtime="-60" last_edited="1208581738"/>
       <summary>add a oneshot queue to Scheduler</summary>
-      <comment></comment>
+      <comment/>
     </item>
   </category>
 </gtodo>
