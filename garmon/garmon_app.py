@@ -322,7 +322,7 @@ class GarmonApp(gtk.Window, PropertyObject):
             self.obd.close()
 
         try:
-            self.obd.open()
+            self.obd.open(self.prefs.get_preference('port'))
         except OBDPortError, e:
             err, msg = e
             dialog = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,

@@ -146,7 +146,6 @@ class DashBoard (Plugin, gtk.VBox):
     def _set_gauges_background(self):
         color = gtk.gdk.color_parse(self._background)
         for item in self.layout.get_children():
-            print 'will set bg on %s' % item
             item.modify_bg(gtk.STATE_NORMAL, color)
        
       
@@ -256,7 +255,6 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
                                       metric_overlay=metric,
                                       imperial_overlay=imperial)
 
-         
         width = self.metric_overlay.get_width()
         height = self.metric_overlay.get_height()    
         self.set_size_request(width, height)    
@@ -285,6 +283,7 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
             self._value = self.metric_value
         self._draw()
         self.emit('notify::value')
+        
         
     def _notify_must_redraw(self, o, pspec):
         self._draw()

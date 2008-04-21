@@ -216,8 +216,11 @@ class OBDDevice(GObject, PropertyObject):
                 
     def open(self, portname=None):
         self._supported_pids = []
-        if not portname is None:
+        if portname:
             self.portname = portname
+        if not self.portname:
+            raise OBDPortError('OpenPortFailed', 
+                                _('No portname has been set.'))
             
         try:
             self._port = serial.Serial(self.portname, 19200, 

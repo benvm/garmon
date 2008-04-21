@@ -1,5 +1,15 @@
 2008-04-21  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/garmon_app.py:
+	    Specify the portname in obd_device.open() when resetting 
+	* garmon/obd_device.py:
+	    Add error checking in open method
+	* plugins/dashboard/dashboard.py:
+	    Some visual clean-ups
+
+
+2008-04-21  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/dashboard/dashboard.glade:
 	* plugins/dashboard/dashboard.py:
 	    Add the plugin prefs including a notebook page to PrefsManager
