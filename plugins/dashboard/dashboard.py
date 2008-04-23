@@ -303,7 +303,7 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
            
                
     def _set_default_values(self):
-        print 'HEY! Use a subclass!!'
+        raise NotImplementedError, 'Use one of the subclasses please'
         
         
     def _construct_needle (self) :
@@ -394,10 +394,14 @@ class ExCentricGauge (Gauge) :
         self.max_angle = 120.0
         self.min_angle = 60.0
         
-'''   
-class LowGauge (ExCentricGauge):
-    pass
-'''    
+
+ 
+class LowGauge (Gauge):
+    __gtype_name__="LowGauge"
+    
+    def _set_default_values(self):
+        pass
+   
 
     
 class CentricGauge (Gauge) :

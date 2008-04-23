@@ -1,3 +1,9 @@
+2008-04-23  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/dashboard/dashboard.py:
+	    new gauge type: LowGauge
+	    
+
 2008-04-21  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/prefs.py:
