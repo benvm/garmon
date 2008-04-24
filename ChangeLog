@@ -1,3 +1,12 @@
+2008-04-25  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/dashboard/dashboard.py:
+	* plugins/dtc_reader/dtc_reader.py:
+	    disconnect from signals on plugin deactivation
+	* scripts/elm_sim.py:
+	    change baudrate to 9600
+	    
+
 2008-04-23  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/dashboard/dashboard.py:

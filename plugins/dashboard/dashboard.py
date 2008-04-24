@@ -51,6 +51,9 @@ class DashBoard (Plugin, gtk.VBox):
         self.app = app
         self.dir = os.path.dirname(__file__)
         self._pref_cbs = []
+        self._app_cbs = []
+        self._notebook_cbs = []
+        self._scheduler_cbs = []
                 
         app.prefs.register_preference('dashboard.needle-color', str, '#FDC62D')
         app.prefs.register_preference('dashboard.background', str, '#000000')
@@ -83,10 +86,12 @@ class DashBoard (Plugin, gtk.VBox):
         self._setup_gauges()
         self._set_gauges_background()
         
-        app.connect('reset', self._on_reset)
-        app.notebook.connect('switch-page', self._notebook_page_change_cb)
+        self._app_cbs.append(app.connect('reset', self._on_reset))
+        self._notebook_cbs.append(app.notebook.connect('switch-page', 
+                                                self._notebook_page_change_cb))
 
-        self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)        
+        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working', 
+                                             self._scheduler_notify_working_cb))        
 
 
     def _prefs_notify_color_cb(self, pname, pvalue, ptype, args):
@@ -219,6 +224,12 @@ class DashBoard (Plugin, gtk.VBox):
         self.app.notebook.remove(self)
         for cb_id in self._pref_cbs:
             self.app.prefs.preference_notify_remove(cb_id)
+        for cb_id in self._app_cbs:
+            self.app.disconnect(cb_id)
+        for cb_id in self._notebook_cbs:
+            self.app.notebook.disconnect(cb_id)
+        for cb_id in self._scheduler_cbs:
+            self.app.scheduler.disconnect(cb_id)
         
 
 class Gauge (gtk.DrawingArea, SensorProxyMixin,

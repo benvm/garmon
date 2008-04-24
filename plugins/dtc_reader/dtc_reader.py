@@ -89,8 +89,9 @@ class DTCReader (Plugin, gtk.VBox):
         
         self.show_all()
         
-        app.connect("reset", self._on_reset)
-        app.notebook.connect('switch-page', self._notebook_page_change_cb)
+        self._reset_cbid = app.connect("reset", self._on_reset)
+        self._switch_cbid = app.notebook.connect('switch-page', 
+                                              self._notebook_page_change_cb)
         
 
     def _on_reset(self, garmon):
@@ -145,6 +146,8 @@ class DTCReader (Plugin, gtk.VBox):
                 
                 
     def unload(self):
+        self.app.notebook.disconnect(self._switch_cbs)    
+        self.app.disconnect(self._reset_cbid)
         self.app.notebook.remove(self)
         
 
