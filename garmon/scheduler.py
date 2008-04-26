@@ -45,7 +45,6 @@ class Scheduler (GObject, PropertyObject):
     
     ################# Properties and signals ###############    
     gproperty('working', bool, False)
-    gproperty('timeout', int, 500)
     gproperty('obd-device', object)
 
     def prop_set_obd_device(self, device):
@@ -62,47 +61,51 @@ class Scheduler (GObject, PropertyObject):
         return working
         
                
-    def __init__(self, obd_device, timeout):
+    def __init__(self, obd_device):
         """ @param obd_device: the OBDDevice to send commands
             @param timeout: the time between two commands
         """
         GObject.__init__(self)
-        PropertyObject.__init__(self, obd_device=obd_device, timeout=timeout)
+        PropertyObject.__init__(self, obd_device=obd_device)
         self._queue = []
         self._os_queue = []
-        self._timeout = None
      
     def __post_init__(self):
-        self._timeout = gobject.timeout_add(self.timeout, self._timeout_cb)
-        self.connect('notify::timeout', self._notify_timeout_cb)
+        self.connect('notify::working', self._notify_working_cb)
         self.obd_device.connect('connected', self._obd_device_connected_cb)
-        
-            
-    def _notify_timeout_cb(self, o, pspsec):
-        gobject.source_remove(self._timeout)
-        self._timeout = gobject.timeout_add(self.timeout, self._timeout_cb)
     
     
-    def _timeout_cb(self):
-        if self.obd_device:
-            if self.working:
-                self._execute_next_item()
-        else:
-            self.working = False
-            print 'Scheduler Error: obd=None' 
-        return True
+    def _notify_working_cb(self, o, pspec):
+        if self.working:
+            self._execute_next_command()    
+    
+    
+    def _command_success_cb(self, cmd, result, args):
+        for obd_data in cmd.list:
+            obd_data.data = result
+        if self.working:
+            self._execute_next_command()
         
+    def _command_error_cb(self, cmd, msg, args):
+        debug('Scheduler._command_error_cb: command was: %s' % cmd)
+        debug('Scheduler._command_error_cb: msg is %s' % msg)
+        if self.working:
+            self._execute_next_command()    
+    
         
-    def _execute_next_item(self):
+    def _execute_next_command(self):
         if len(self._os_queue):
             obd_data = self._os_queue.pop(0)
             self.obd_device.update_obd_data(obd_data)  
         elif len(self._queue):
             queue_item = self._queue.pop(0)
             self._queue.append(queue_item)
-            data = self.obd_device.get_obd_data(queue_item)
-            for obd_data in queue_item.list:
-                obd_data.data = data
+            self.obd_device.read_obd_data(queue_item, 
+                                          self._command_success_cb,
+                                          self._command_error_cb)
+        else:
+            #no commands anymore
+            self.working = False
     
     
     def _obd_device_connected_cb(self, obd_device, connected):

@@ -175,7 +175,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         
         self.obd = OBDDevice()
         
-        self.scheduler = Scheduler(self.obd, 50)
+        self.scheduler = Scheduler(self.obd)
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
         
         self._plugman = plugin_manager.PluginManager(self)

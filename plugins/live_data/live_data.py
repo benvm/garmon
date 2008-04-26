@@ -70,7 +70,7 @@ class LiveData (Plugin, gtk.VBox):
         self._setup_gui()
         self._setup_sensors()
 
-        app.connect('reset', self._on_reset)
+        app.obd.connect('connected', self._obd_connected_cb)
         app.notebook.connect('switch-page', self._notebook_page_change_cb)
         
         self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
@@ -179,9 +179,9 @@ class LiveData (Plugin, gtk.VBox):
             self.status = STATUS_STOP
         
         
-    def _on_reset(self, app):
-        page = app.notebook.get_current_page()
-        visible = app.notebook.get_nth_page(page) is self
+    def _obd_connected_cb(self, obd, connected):
+        page = self.app.notebook.get_current_page()
+        visible = self.app.notebook.get_nth_page(page) is self
         if visible:
             self.stop()
         self._update_supported_views()

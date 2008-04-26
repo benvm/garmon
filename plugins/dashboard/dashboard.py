@@ -86,7 +86,7 @@ class DashBoard (Plugin, gtk.VBox):
         self._setup_gauges()
         self._set_gauges_background()
         
-        self._app_cbs.append(app.connect('reset', self._on_reset))
+        self._app_cbs.append(app.obd.connect('connected', self._obd_connected_cb))
         self._notebook_cbs.append(app.notebook.connect('switch-page', 
                                                 self._notebook_page_change_cb))
 
@@ -154,9 +154,9 @@ class DashBoard (Plugin, gtk.VBox):
             item.modify_bg(gtk.STATE_NORMAL, color)
        
       
-    def _on_reset(self, app):
-        page = app.notebook.get_current_page()
-        visible = app.notebook.get_nth_page(page) is self
+    def _obd_connected_cb(self, obd, connected):
+        page = self.app.notebook.get_current_page()
+        visible = self.app.notebook.get_nth_page(page) is self
         if visible:
             self.stop()
         self._update_supported_gauges()
