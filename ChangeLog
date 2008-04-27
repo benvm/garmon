@@ -1,5 +1,11 @@
 2008-04-27  Ben Van Mechelen  <me@benvm.be>
 
+	* configure.ac:
+	    remove sensor_list from AC_OUTPUT
+
+
+2008-04-27  Ben Van Mechelen  <me@benvm.be>
+
 	* data/garmon.schemas:
 	    change the default plugins
 	* garmon/obd_device.py:
