@@ -1,5 +1,11 @@
 2008-04-27  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/dashboard/dashboard.py:
+	    prevent the gauges from pointing beyond their range
+
+
+2008-04-27  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/obd_device.py:
 	* garmon/scheduler.py:
 	* plugins/dashboard/dashboard.py:

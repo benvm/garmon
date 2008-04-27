@@ -282,14 +282,14 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         self.connect("configure_event", self._configure_event)
     
     def __post_init__(self):
-        self.connect('notify::data', self._notify_data_cb)
+        #self.connect('notify::data', self._notify_data_cb)
         self.connect('notify::needle-length', self._notify_must_redraw)
         self.connect('notify::metric-overlay', self._notify_must_redraw)
         self.connect('notify::imperial-overlay', self._notify_must_redraw)
         self.connect('notify::needle-color', self._notify_needle_cb)
         self.connect('notify::needle-width', self._notify_needle_cb)
         
-    
+    """
     def _notify_data_cb(self, o, pspec):
         if self.unit_standard == 'Imperial':
             self._value = self._imperial_value
@@ -297,7 +297,7 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
             self._value = self.metric_value
         self._draw()
         self.emit('notify::value')
-        
+    """        
         
     def _notify_must_redraw(self, o, pspec):
         self._draw()
@@ -323,7 +323,12 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
     def _construct_needle (self) :
         angle_range = self.max_angle - self.min_angle
         value_range = self.max_value - self.min_value
-        angle = (self._value - self.min_value) / value_range * angle_range + self.min_angle
+        value = self._value
+        if value < self.min_value:
+            value = self.min_value
+        if value > self.max_value:
+            value = self.max_value
+        angle = (value - self.min_value) / value_range * angle_range + self.min_angle
         
         point_x = int(self._needle_origin_x + self.needle_length * math.cos((angle + 180) * math.pi / 180))
         point_y = int(self._needle_origin_y + self.needle_length * math.sin((angle + 180) * math.pi / 180))
