@@ -15,4 +15,4 @@ else:
     GLADE_DIR =                 os.path.join(DIRECTORY, "data")
 
 def debug(msg):
-    print 'Garmon Info:  * ' + msg
+    print 'Garmon DebugInfo:  * ' + msg

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(garmon, 0.1)
+AC_INIT(garmon, 0.1.1)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -40,5 +40,6 @@ plugins/dashboard/Makefile
 plugins/dtc_clearer/Makefile
 plugins/dtc_reader/Makefile
 plugins/live_data/Makefile
+plugins/sensor_list/Makefile
 po/Makefile.in
 ])

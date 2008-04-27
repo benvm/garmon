@@ -33,11 +33,12 @@ import garmon.sensor
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.obd_device import OBDDataError, OBDPortError, get_sensor_units
-from garmon.sensor import OBDSensor, StateMixin, UnitMixin, SensorProxyMixin
+from garmon.sensor import StateMixin, UnitMixin, SensorProxyMixin
+from garmon.widgets import MILWidget
 
 
 __name = _('Live Data')
-__version = '0.1'
+__version = '0.1.1'
 __author = 'Ben Van Mechelen'
 __description = _('View the most imported live data like:\n *Fuel System\n *Intake\n *VIN\n *...\n')
 __class = 'LiveData'
@@ -49,7 +50,21 @@ class LiveData (Plugin, gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.app = app
-        self.unit_standard = app.units
+        
+        self._pref_cbs = []
+        self._app_cbs = []
+        self._notebook_cbs = []
+        self._scheduler_cbs = []
+        self._obd_cbs = []
+        
+        if app.prefs.get_preference('imperial'):
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
+            
+        cb_id = app.prefs.preference_notify_add('imperial', 
+                                                self._notify_units_cb)
+        self._pref_cbs.append(cb_id)
 
         self.status = STATUS_STOP
 
@@ -59,11 +74,13 @@ class LiveData (Plugin, gtk.VBox):
         self._setup_gui()
         self._setup_sensors()
 
-        app.connect('reset', self._on_reset)
-        app.connect('units-change', self._on_units_changed)
-        app.notebook.connect('switch-page', self._notebook_page_change_cb)
+        self._obd_cbs.append(app.obd.connect('connected', 
+                                             self._obd_connected_cb))
+        self._notebook_cbs.append(app.notebook.connect('switch-page', 
+                                                  self._notebook_page_change_cb))
         
-        self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
+        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
+                                             self._scheduler_notify_working_cb))
         
     
     def _setup_gui(self):
@@ -83,6 +100,12 @@ class LiveData (Plugin, gtk.VBox):
 
         xml = self.glade_xml
 
+        mil = MILWidget(self.app)
+        #FIXME: change colors according to gconf
+        mil.connect('active-changed', self._view_active_changed_cb)
+        xml.get_widget('mil_alignment').add(mil)
+        self.views.append(mil)
+
         for item in SENSORS: 
             label = button = entry = unit = None
             pid = item[PID]
@@ -97,7 +120,7 @@ class LiveData (Plugin, gtk.VBox):
                 unit = xml.get_widget(item[UNIT])
             func = (item[HELPER])
             
-            view = LiveDataView(pid, index, units=self.unit_standard,
+            view = LiveDataView(pid, index, units=self._unit_standard,
                        active_widget=button, name_widget=label,
                        value_widget=entry, units_widget=unit,
                        helper=func)
@@ -163,9 +186,9 @@ class LiveData (Plugin, gtk.VBox):
             self.status = STATUS_STOP
         
         
-    def _on_reset(self, app):
-        page = app.notebook.get_current_page()
-        visible = app.notebook.get_nth_page(page) is self
+    def _obd_connected_cb(self, obd, connected):
+        page = self.app.notebook.get_current_page()
+        visible = self.app.notebook.get_nth_page(page) is self
         if visible:
             self.stop()
         self._update_supported_views()
@@ -176,11 +199,15 @@ class LiveData (Plugin, gtk.VBox):
             self.start()
 
 
-    def _on_units_changed(self, app, units):
-        self.unit_standard = units
+    def _notify_units_cb(self, pname, pvalue, ptype, args):
+        if pname == 'imperial' and pvalue:
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
+        
         for views in (self.views, self.os_views):
             for view in self.views:
-                view.unit_standard = self.unit_standard
+                view.unit_standard = self._unit_standard
             
             
     def _notebook_page_change_cb (self, notebook, no_use, page):
@@ -195,8 +222,16 @@ class LiveData (Plugin, gtk.VBox):
             
     def unload(self):
         self.app.notebook.remove(self)
-
-        
+        for cb_id in self._pref_cbs:
+            self.app.prefs.preference_notify_remove(cb_id)
+        for cb_id in self._app_cbs:
+            self.app.disconnect(cb_id)
+        for cb_id in self._notebook_cbs:
+            self.app.notebook.disconnect(cb_id)
+        for cb_id in self._scheduler_cbs:
+            self.app.scheduler.disconnect(cb_id)
+        for cb_id in self._obd_cbs:
+            self.app.obd.disconnect(cb_id)
 
 class LiveDataView(GObject, SensorProxyMixin, 
                             StateMixin, UnitMixin, 
@@ -218,6 +253,7 @@ class LiveDataView(GObject, SensorProxyMixin,
                                       name_widget=name_widget,
                                       value_widget=value_widget,
                                       units_widget=units_widget,
+                                      unit_standard=units,
                                       helper=helper)
         SensorProxyMixin.__init__(self, pid, index)
         
@@ -299,20 +335,12 @@ class LiveDataView(GObject, SensorProxyMixin,
             if self.units_widget:
                 self.units_widget.set_text(units)
 
-def mil_helper(view):
-    if view.sensor.data:
-        view.value_widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#F7D30D'))
-    else:
-        view.value_widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse('#AAAAAA'))
+        
+(PID, INDEX, ONE_SHOT, HELPER, LABEL, BUTTON, ENTRY, UNIT) = range (8)     
 
-        
-(PID, INDEX, ONE_SHOT, HELPER, LABEL, BUTTON, ENTRY, UNIT) = range (8)                
-        
 SENSORS= [
         ('0101', 0, False, None,
          'dtc_label', None, 'dtc_entry', None),
-        ('0101', 1, False, mil_helper,
-         None, None, 'mil_entry', None),
         ('0104', 0, False, None, 
          None, 'load_button', 'load_entry', 'load_unit_label'),
         ('0105', 0, False, None, 

@@ -27,7 +27,7 @@ import garmon
 from garmon.plugin import Plugin
 
 __name = _('DTC Clearer')
-__version = '0.1'
+__version = '0.1.1'
 __author = 'Ben Van Mechelen'
 __description = _('Clears the stored trouble codes in the vehicle')
 __class = 'DTCClearer'

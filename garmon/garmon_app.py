@@ -41,9 +41,11 @@ gettext.textdomain('garmon')
 gtk.glade.textdomain('garmon')
 
 import garmon
-import garmon.prefs as prefs
+from garmon import GLADE_DIR
+
 import garmon.plugin_manager as plugin_manager
 
+from garmon.prefs import PreferenceManager
 from garmon.obd_device import OBDDevice, OBDError, OBDDataError, OBDPortError
 from garmon.scheduler import Scheduler
 from garmon.property_object import PropertyObject, gproperty, gsignal
@@ -102,12 +104,11 @@ class GarmonApp(gtk.Window, PropertyObject):
     
     ################# Properties and signals ###############
     gsignal('reset')
-    gsignal('units-change', str)
     
-    gproperty('units', object, flags=gobject.PARAM_READABLE)
-    
-    def prop_get_units(self):
-        return self._units
+    gproperty('prefs', object, flags=gobject.PARAM_READABLE)
+        
+    def prop_get_prefs(self):
+        return self._prefs
 
 
     def __init__(self, parent=None):
@@ -116,7 +117,23 @@ class GarmonApp(gtk.Window, PropertyObject):
         #Create the toplevel window
         gtk.Window.__init__(self)
         
-        self._units = 'Metric'
+        self._prefs = PreferenceManager('/apps/garmon')
+        self._pref_cbs = []
+
+        self._prefs.register_preference('mil.on-color', str, '#F7D30D')
+        self._prefs.register_preference('mil.off-color', str, '#AAAAAA')
+        self._prefs.register_preference('port', str, '/dev/ttyUSB0')
+        self._prefs.register_preference('metric', bool, True)
+        self._prefs.register_preference('imperial', bool, False)
+        self._prefs.register_preference('plugins.save', bool, True)
+        self._prefs.register_preference('plugins.start', bool, True)
+        self._prefs.register_preference('plugins.saved', str, '')
+        
+        fname = os.path.join(GLADE_DIR, 'prefs.glade')
+        xml = gtk.glade.XML(fname, 'new_prefs_vbox', 'garmon')
+        self._prefs.add_dialog_page(xml, 'new_prefs_vbox', 'General')
+        
+        
         self._backdoor = None
         
         try:
@@ -155,19 +172,18 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.notebook.set_border_width(5)
         
         self.main_vbox.pack_start(self.notebook)
-               
-        self.connect('window_state_event', self._update_resize_grip)
         
         self.obd = OBDDevice()
         
-        self.scheduler = Scheduler(self.obd, 50)
+        self.scheduler = Scheduler(self.obd)
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
         
-        self._setup_prefs()
-        
-        self._plugman = plugin_manager.PluginManager(self, self.gclient)
-        if self.gclient.get_bool('/apps/garmon/start_plugins'):
+        self._plugman = plugin_manager.PluginManager(self)
+        if self._prefs.get_preference('plugins.start'):
             self._plugman.activate_saved_plugins()
+        
+        cb_id = self._prefs.preference_notify_add('port', self._notify_port_cb)
+        self._pref_cbs.append(cb_id)
         
         self.show_all()
 
@@ -221,10 +237,12 @@ class GarmonApp(gtk.Window, PropertyObject):
 
         return action_group
 
+    
+    def _notify_port_cb(self, pname, pvalue, ptype, args):
+        self.obd.portname = pvalue
+
     def _activate_prefs_dialog(self, action):
-        dialog = prefs.GarmonPrefs(self)
-        dialog.run()
-        dialog.destroy()
+        self.prefs.show_dialog()
         
 
     def _activate_plugin_dialog(self, action):
@@ -257,7 +275,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog.show()
         res = dialog.run()
         if res == gtk.RESPONSE_OK:
-            if self.gclient.get_bool('/apps/garmon/save_plugins'):
+            if self._prefs.get_preference('plugins.save'):
                 self._plugman.save_active_plugins()
             #TODO: Clean things up
             gtk.main_quit()
@@ -269,13 +287,6 @@ class GarmonApp(gtk.Window, PropertyObject):
     def _scheduler_notify_working_cb(self, scheduler, pspec):
         self.ui.get_widget('/ToolBar/Monitor').set_active(scheduler.working)
         self.ui.get_widget('/MenuBar/DeviceMenu/Monitor').set_active(scheduler.working)
-       
-        
-    def _update_resize_grip(self, widget, event):
-        mask = gtk.gdk.WINDOW_STATE_MAXIMIZED | gtk.gdk.WINDOW_STATE_FULLSCREEN
-        if (event.changed_mask & mask):
-            self._statusbar.set_has_resize_grip(not (event.new_window_state & mask))
-            
             
             
     def _toggle_fullscreen(self, action):
@@ -296,39 +307,6 @@ class GarmonApp(gtk.Window, PropertyObject):
             if self._backdoor:
                 self._backdoor.hide()           
 
-            
-    def _setup_prefs(self):
-        #Set up gconf
-        self._port = None
-        self.gconf_ids = []
-        self.gclient = gconf.client_get_default()
-        self.gclient.add_dir ("/apps/garmon", gconf.CLIENT_PRELOAD_NONE)
-        
-        self.gconf_ids.append (self.gclient.notify_add ("/apps/garmon/port",
-                                                    self._port_change_notify))
-        self.gconf_ids.append (self.gclient.notify_add ("/apps/garmon/units",
-                                                    self._units_change_notify))
-
-        self.gclient.notify("/apps/garmon/port")
-        self.gclient.notify("/apps/garmon/units")
-
-        
-    def _port_change_notify(self, gclient, cnxn_id, entry, args):
-        if (not entry.value) or (entry.value.type != gconf.VALUE_STRING):
-            pass #FIXME: handle error
-        else:
-            self._port = entry.value.get_string()
-            self.obd.portname = self._port
-
-
-    def _units_change_notify(self, gclient, cnxn_id, entry, args):
-        if (not entry.value) or (entry.value.type != gconf.VALUE_STRING):
-            pass #FIXME: handle error
-        else:
-            if self._units != entry.value.get_string():
-                self._units = entry.value.get_string()
-                self.emit('units-change', self._units)
-
 
     def _activate_reset(self, action):
         self.reset()
@@ -344,7 +322,7 @@ class GarmonApp(gtk.Window, PropertyObject):
             self.obd.close()
 
         try:
-            self.obd.open()
+            self.obd.open(self.prefs.get_preference('port'))
         except OBDPortError, e:
             err, msg = e
             dialog = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,

@@ -35,7 +35,7 @@ from garmon.obd_device import OBDDataError, OBDPortError
 from garmon.trouble_codes import DTC_CODES, DTC_CODE_CLASSES
 
 __name = _('DTC Reader')
-__version = '0.1'
+__version = '0.1.1'
 __author = 'Ben Van Mechelen'
 __description = _('Reads the stored trouble codes from the vehicle')
 __class = 'DTCReader'
@@ -89,8 +89,9 @@ class DTCReader (Plugin, gtk.VBox):
         
         self.show_all()
         
-        app.connect("reset", self._on_reset)
-        app.notebook.connect('switch-page', self._notebook_page_change_cb)
+        self._reset_cbid = app.connect("reset", self._on_reset)
+        self._switch_cbid = app.notebook.connect('switch-page', 
+                                              self._notebook_page_change_cb)
         
 
     def _on_reset(self, garmon):
@@ -145,6 +146,8 @@ class DTCReader (Plugin, gtk.VBox):
                 
                 
     def unload(self):
+        self.app.notebook.disconnect(self._switch_cbs)    
+        self.app.disconnect(self._reset_cbid)
         self.app.notebook.remove(self)
         
 

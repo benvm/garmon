@@ -36,7 +36,7 @@ from garmon.property_object import PropertyObject, gproperty, gsignal
 
 
 __name = _('Dashboard')
-__version = '0.1'
+__version = '0.1.1'
 __author = 'Ben Van Mechelen'
 __description = _('A dashboard-like plugin with meters showing OBD information')
 __class = 'DashBoard'
@@ -47,31 +47,69 @@ class DashBoard (Plugin, gtk.VBox):
     __gtype_name__='DashBoard'
     def __init__(self, app) :
         gtk.VBox.__init__(self)
-
+        
         self.app = app
-        self.unit_standard = app.units
-        
         self.dir = os.path.dirname(__file__)
-        self.status = STATUS_STOP
+        self._pref_cbs = []
+        self._app_cbs = []
+        self._notebook_cbs = []
+        self._scheduler_cbs = []
+        self._obd_cbs = []
+                
+        app.prefs.register_preference('dashboard.needle-color', str, '#FDC62D')
+        app.prefs.register_preference('dashboard.background', str, '#000000')
+
+        fname = os.path.join(self.dir, 'dashboard.glade')
+        xml = gtk.glade.XML(fname, 'prefs-vbox', 'garmon')
+        app.prefs.add_dialog_page(xml, 'prefs-vbox', 'Dashboard')
         
-        self.color = '#FDC62D'
-        self.background = '#000000'
+        self._needle_color = app.prefs.get_preference('dashboard.needle-color')
+        self._background = app.prefs.get_preference('dashboard.background')
+        cb_id = app.prefs.preference_notify_add('dashboard.needle-color', 
+                                                self._prefs_notify_color_cb)
+        self._pref_cbs.append(cb_id)
+        cb_id = app.prefs.preference_notify_add('dashboard.background', 
+                                                self._prefs_notify_color_cb)
+        self._pref_cbs.append(cb_id)
+
+        if app.prefs.get_preference('imperial'):
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
+            
+        cb_id = app.prefs.preference_notify_add('imperial', 
+                                                self._notify_units_cb)
+        self._pref_cbs.append(cb_id)
+
+        self.status = STATUS_STOP
         
         self._setup_gui()
         self._setup_gauges()
         self._set_gauges_background()
         
-        app.connect('reset', self._on_reset)
-        app.connect('units-change', self._on_units_changed)
-        app.notebook.connect('switch-page', self._notebook_page_change_cb)
+        self._obd_cbs.append(app.obd.connect('connected', self._obd_connected_cb))
+        self._notebook_cbs.append(app.notebook.connect('switch-page', 
+                                                self._notebook_page_change_cb))
 
-        self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)        
-        
+        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working', 
+                                             self._scheduler_notify_working_cb))        
+
+
+    def _prefs_notify_color_cb(self, pname, pvalue, ptype, args):
+        if pname == 'dashboard.needle-color':
+            self._needle_color = pvalue
+            for gauge in self.gauges:
+                gauge.needle_color = self._needle_color
+        elif pname == 'dashboard.background':
+            self._background = pvalue
+            self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self._background))
+            self._set_gauges_background()
+       
         
     def _setup_gui (self) :
         self.layout = gtk.Layout()
         self.pack_start(self.layout, True, True)
-        self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.background))
+        self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self._background))
         self.show_all()
         
         
@@ -105,24 +143,27 @@ class DashBoard (Plugin, gtk.VBox):
             self.layout.put(gauge, x, y)
             gauge.show_all()
             
-            gauge.unit_standard = self.unit_standard
+            gauge.unit_standard = self._unit_standard
+            gauge.needle_color = self._needle_color
             gauge.idle()
             self.gauges.append(gauge)
                          
     
     def _set_gauges_background(self):
+        color = gtk.gdk.color_parse(self._background)
         for item in self.layout.get_children():
-            item.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.background))
+            item.modify_bg(gtk.STATE_NORMAL, color)
        
       
-    def _on_reset(self, app):
-        page = app.notebook.get_current_page()
-        visible = app.notebook.get_nth_page(page) is self
+    def _obd_connected_cb(self, obd, connected):
+        page = self.app.notebook.get_current_page()
+        visible = self.app.notebook.get_nth_page(page) is self
         if visible:
             self.stop()
         self._update_supported_gauges()
         if visible:
             self.start()
+
 
     def _scheduler_notify_working_cb(self, scheduler, pspec):
         if not scheduler.working:
@@ -130,12 +171,14 @@ class DashBoard (Plugin, gtk.VBox):
                 gauge.idle()
     
         
-    def _on_units_changed(self, app, unit_standard):
-        self.unit_standard = unit_standard
+    def _notify_units_cb(self, pname, pvalue, ptype, args):
+        if pname == 'imperial' and pvalue:
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
         for gauge in self.gauges:
-            gauge.unit_standard = self.unit_standard
-        
-        
+            gauge.unit_standard = self._unit_standard
+       
         
     def _notebook_page_change_cb (self, notebook, no_use, page):
         plugin = notebook.get_nth_page(page)
@@ -180,6 +223,16 @@ class DashBoard (Plugin, gtk.VBox):
             
     def unload(self):
         self.app.notebook.remove(self)
+        for cb_id in self._pref_cbs:
+            self.app.prefs.preference_notify_remove(cb_id)
+        for cb_id in self._app_cbs:
+            self.app.disconnect(cb_id)
+        for cb_id in self._notebook_cbs:
+            self.app.notebook.disconnect(cb_id)
+        for cb_id in self._scheduler_cbs:
+            self.app.scheduler.disconnect(cb_id)
+        for cb_id in self._obd_cbs:
+            self.app.obd.disconnect(cb_id)
         
 
 class Gauge (gtk.DrawingArea, SensorProxyMixin,
@@ -216,7 +269,6 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
                                       metric_overlay=metric,
                                       imperial_overlay=imperial)
 
-         
         width = self.metric_overlay.get_width()
         height = self.metric_overlay.get_height()    
         self.set_size_request(width, height)    
@@ -230,14 +282,14 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         self.connect("configure_event", self._configure_event)
     
     def __post_init__(self):
-        self.connect('notify::data', self._notify_data_cb)
+        #self.connect('notify::data', self._notify_data_cb)
         self.connect('notify::needle-length', self._notify_must_redraw)
         self.connect('notify::metric-overlay', self._notify_must_redraw)
         self.connect('notify::imperial-overlay', self._notify_must_redraw)
         self.connect('notify::needle-color', self._notify_needle_cb)
         self.connect('notify::needle-width', self._notify_needle_cb)
         
-    
+    """
     def _notify_data_cb(self, o, pspec):
         if self.unit_standard == 'Imperial':
             self._value = self._imperial_value
@@ -245,6 +297,7 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
             self._value = self.metric_value
         self._draw()
         self.emit('notify::value')
+    """        
         
     def _notify_must_redraw(self, o, pspec):
         self._draw()
@@ -264,13 +317,18 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
            
                
     def _set_default_values(self):
-        print 'HEY! Use a subclass!!'
+        raise NotImplementedError, 'Use one of the subclasses please'
         
         
     def _construct_needle (self) :
         angle_range = self.max_angle - self.min_angle
         value_range = self.max_value - self.min_value
-        angle = (self._value - self.min_value) / value_range * angle_range + self.min_angle
+        value = self._value
+        if value < self.min_value:
+            value = self.min_value
+        if value > self.max_value:
+            value = self.max_value
+        angle = (value - self.min_value) / value_range * angle_range + self.min_angle
         
         point_x = int(self._needle_origin_x + self.needle_length * math.cos((angle + 180) * math.pi / 180))
         point_y = int(self._needle_origin_y + self.needle_length * math.sin((angle + 180) * math.pi / 180))
@@ -302,10 +360,13 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         
         needle = self._construct_needle()
         self._pixmap.draw_polygon(self._needle_gc, True, needle)
-        self._pixmap.draw_arc(bg_gc, True, 
-                                         self._needle_origin_x - self._circle_radius, 
-                                         self._needle_origin_y - self._circle_radius, 
-                                         self._circle_radius * 2, self._circle_radius * 2, 0, 360 * 64)
+        
+        fg_gc = self.get_style().fg_gc[gtk.STATE_NORMAL]
+        fg_gc.set_foreground(gtk.gdk.color_parse('#000000'))
+        self._pixmap.draw_arc(fg_gc, True, 
+                                     self._needle_origin_x - self._circle_radius, 
+                                     self._needle_origin_y - self._circle_radius, 
+                                     self._circle_radius * 2, self._circle_radius * 2, 0, 360 * 64)
                                          
         self.queue_draw()
 
@@ -352,10 +413,14 @@ class ExCentricGauge (Gauge) :
         self.max_angle = 120.0
         self.min_angle = 60.0
         
-'''   
-class LowGauge (ExCentricGauge):
-    pass
-'''    
+
+ 
+class LowGauge (Gauge):
+    __gtype_name__="LowGauge"
+    
+    def _set_default_values(self):
+        pass
+   
 
     
 class CentricGauge (Gauge) :

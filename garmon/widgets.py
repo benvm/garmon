@@ -18,34 +18,66 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
 
-
 import gobject
 import gtk
 
 import garmon
 from garmon.property_object import PropertyObject, gproperty
+from garmon.sensor import SensorProxyMixin, StateMixin, dtc_decode_mil
 
 
 
-class MILEntry(gtk.Entry):
+class MILWidget(gtk.Entry, SensorProxyMixin,
+                           StateMixin,
+                           PropertyObject):
     
     gproperty('on', bool, False)
     gproperty('on-color', str, '#F7D30D')
     gproperty('off-color', str, '#AAAAAA')
     
-    def __init__(self):
+    def __init__(self, app):
         gtk.Entry.__init__(self, 3)
+        SensorProxyMixin.__init__(self, '0101', 1)
         PropertyObject.__init__(self)
         
+        self._pref_cbs = []
+        
+        self.app = app
+        self.set_text('MIL')
+        self.set_property('editable', False)
+        self.set_property('width-chars', 3)
+        
     def __post_init__(self):
+        self.on_color = self.app.prefs.get_preference('mil.on-color')
+        self.off_color = self.app.prefs.get_preference('mil.off-color')
+        cb_id = self.app.prefs.preference_notify_add('mil.on-color',
+                                                     self._notify_prefs_cb)
+        self._pref_cbs.append(cb_id)
+        cb_id = self.app.prefs.preference_notify_add('mil.off-color',
+                                                     self._notify_prefs_cb)
+        self._pref_cbs.append(cb_id)
+                                                     
         self.connect('notify::on', self._notify_cb)
         self.connect('notify::on-color', self._notify_cb)
         self.connect('notify::off-color', self._notify_cb)
+        self.notify('on')
         
     def _notify_cb(self, o, pspec):
         if self.on:
             self.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.on_color))
         else:
             self.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.off_color))
+
+
+    def _notify_prefs_cb(self, pname, pvalue, ptype, args):
+        if pname == 'mil.on-color':
+            self.on_color = pvalue
+        elif pname == 'mil.off-color':
+            self.off_color = pvalue
     
-     
+    
+    def _sensor_data_changed_cb(self, sensor, data):
+        on = self.sensor.metric_value == 'On'
+        self.on = on
+                                  
+                                  

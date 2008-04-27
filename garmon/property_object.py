@@ -21,7 +21,7 @@
 # Author(s): Lorenzo Gil Sanchez <lgs@sicem.biz>
 #            Johan Dahlin <jdahlin@async.com.br>
 #
-# Small change by Ben Van Mechelen <me@benvm.be>
+# Small changes by Ben Van Mechelen <me@benvm.be>
 
 """GObject utilities and addons"""
 
@@ -43,6 +43,7 @@ if HAVE_2_6 or os.path.basename(sys.argv[0]) == 'epyrun':
     metabase = type
 else:
     metabase = gobject.GObjectMeta
+
 
 def list_properties(gtype, parent=True):
     """

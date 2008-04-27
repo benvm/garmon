@@ -31,9 +31,10 @@ from property_object import PropertyObject, gproperty, gsignal
 
 import garmon
 import garmon.sensor as sensor
-from garmon.sensor import OBDSensor, SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
+from garmon.sensor import OBDData, SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
 from garmon.sensor import dtc_decode_num, dtc_decode_mil
- 
+
+from garmon import debug
 
 MAX_TIMEOUT = 3
 
@@ -88,7 +89,13 @@ class OBDDevice(GObject, PropertyObject):
 
         self._connected = False
         self._port = None
+        self._watch_id = None
+        
         self._supported_pids = []
+        
+        self._sent_command = None
+        self._ret_cb = None
+        self._err_cb = None
     
     
     def __post_init__(self):
@@ -102,9 +109,11 @@ class OBDDevice(GObject, PropertyObject):
 
        
     def _read_pid(self, pid):
+        print 'entering OBDDevice._read_pid'
         
         self._send_obd_command(pid)
         result = self._read_result()
+        print 'result from _read_result is: %s' % result
 
             
         if result:
@@ -113,6 +122,7 @@ class OBDDevice(GObject, PropertyObject):
 
             result = string.split(result)
             result = string.join(result, "")
+            print 'result is %s' % result
 
             if result[:6] == 'NODATA':
                 raise OBDDataError('PID Data Error',
@@ -125,7 +135,7 @@ class OBDDevice(GObject, PropertyObject):
         else: 
             raise OBDDataError('Data Read Error',
                                _('No data was received from the device'))
-
+    
     
     def _read_special_command(self, command):
         self._send_obd_command(pid)
@@ -142,22 +152,30 @@ class OBDDevice(GObject, PropertyObject):
                                             
 
 
-    def _send_obd_command(self, command):
-        if self._port.isOpen():
-            try:
-                self._port.flushOutput()
-                self._port.flushInput()
-                self._port.write(command)
-                self._port.write("\r")
-            except serial.SerialException:
-                self._connected = False
-                self.close()
-                self.emit('connected', False)                            
-                raise OBDPortError('PortIOFailed', 
-                                   _('Unable to write to ') + self._portname)              
+    def _send_command(self, command, ret, err, *args):
+        print 'in _send_command; command is %s' % command
+        if not self._port.isOpen():
+            raise OBDPortError, 'PortNotOpen'
+        #FIXME: should we check if the current character is ">"
+        try:
+            self._sent_command = command
+            self._ret_cb = ret
+            self._err_cb = err
+            self._cb_args = args
+            self._port.flushOutput()
+            self._port.flushInput()
+            self._port.write(command)
+            self._port.write("\r")
+        except serial.SerialException:
+            self._sent_command = None
+            self._ret_cb = None
+            self._err_cb = None
+            self._cb_args = None
+            self.close()           
+            raise OBDPortError('PortIOFailed', 
+                               _('Unable to write to ') + self._portname)         
             
-        
-        
+
     def _read_result(self):
         timeout_count = 0
         if self._port.isOpen:
@@ -167,60 +185,216 @@ class OBDDevice(GObject, PropertyObject):
                     ch = self._port.read(1)
                     if ch == '':
                         timeout_count += 1
-                    if ch == '\r' and len(buf) > 0 and buf[-1] == '\r':
+                    if ch == '>' and len(buf) > 1 and buf[-1] == '\r' and buf[-2] == '\r':
                         break
                     else:
                         buf = buf + ch
                 if buf == '':
-                    self._connected = False
-                    self.close()
-                    self.emit('connected', False)
                     raise OBDPortError('PortIOFailed', 
                                        _('Read timeout from ') + self.portname)
+                buf = buf.replace('\r\r>', '')
                 return buf
                 
             except serial.SerialException:
-                self._connected = False
-                self.close()
-                self.emit('connected', False)
                 raise OBDPortError('PortIOFailed', 
                                    _('Unable to read from ') + self.portname)
                                               
                 
         return None
         
-    def _get_supported_pids(self):
-        self._supported_pids = []
+      
+    def _decode_result(self, result):
+        print 'entering OBDDevice._decode_result'
         
-        for r in ("00", "20"): # "40"
+        ret = []
         
-            self._send_obd_command("01"+r)
-            res = self._read_result()[-9:-1]
-            str = sensor.hex_to_bitstr(res)
-        
-            for i in range(0, len(str)):
-                if str[i] == "1":
-                    pid = eval("0x%s" % r) + i + 1
-                    if pid < 16: 
-                        pid_str = '010' + hex(pid)[2:]                    
+        if result:
+            result = string.split(result, "\r")
+
+            for data in result:
+                if data:
+                    data = string.split(data)
+                    data = string.join(data, '')
+                    
+                    if data[:2] == '7F':
+                        print 'we got back 7F which is an error'
                     else:
-                        pid_str = '01' + hex(pid)[2:]
-                    self._supported_pids.append(pid_str.upper())
+                        ret.append(data[4:])
+                
+            return ret
+
+        else: 
+            raise OBDDataError('Data Read Error',
+                               _('No data was received from the device'))
+
+      
+      
+    def _parse_result(self, data):
+        print 'entering _parse_result'
+        error = False
+        success = False
+        res = None
+        msg = None
+        
+        cmd = self._sent_command
+        err_cb = self._err_cb
+        ret_cb = self._ret_cb
+        args = self._cb_args
+        
+        if self._sent_command:
+            if data[0] == '>':
+                print 'command sent, received >'
+                error = True
+
+            elif data[:2] == 'OK' or data[:4] == 'ate0':
+                if self._sent_command == 'ate0':
+                    print 'command sent, received OK'
+                    res = 'OK'
+                    success = True
+                    
+            elif 'ELM327' in data or data[:3] == 'atz':
+                if self._sent_command == 'atz':
+                    print 'command sent, received ELM327'
+                    res = data
+                    success = True
+
+            elif 'SEARCHING' in data:
+                print 'received SEARCHING'
+                self._send_command(cmd, ret_cb, err_cb, args)
+                
+            elif 'UNABLE TO CONNECT' in data:
+                print 'received UNABLE TO CONNECT'
+                error = True
+                msg = 'UNABLE TO CONNECT'
+
+            elif 'NO DATA' in data:
+                print 'received NO DATA'
+                error = True
+                msg = 'NO DATA'
+                
+            else:
+                res = self._decode_result(data)
+                success = True
+                
+            if error:
+                self._err_cb = None
+                self._ret_cb = None
+                self._sent_command = None
+                self._cb_args = None
+                err_cb(cmd, msg, args)
+                
+            if success:
+                self._err_cb = None
+                self._ret_cb = None
+                self._sent_command = None
+                self._cb_args = None
+                ret_cb(cmd, res, args)
+                
+        else:
+            # no command sent
+            # are we interested anyway?
+            if '>' in data:
+                print 'received >'
+            else:
+                print 'no command sent, received %s' % data
+                
+
+    def _port_io_watch_cb(self, fd, condition, data=None):
+        print 'in _on_io_activity'
+        if condition & gobject.IO_HUP:
+            debug('received HUP signal')
+            self._sent_command = None
+            self._ret_cb = None
+            self._err_cb = None
+            self._cb_args = None
+            self.close()    
+            return False
+        elif condition & gobject.IO_ERR:
+            debug('received ERR signal')
+            self._sent_command = None
+            self._ret_cb = None
+            self._err_cb = None
+            self._cb_args = None
+            self.close()    
+            return False
+        elif condition & gobject.IO_IN or condition & gobject.IO_PRI:
+            try:
+                result = self._read_result()
+                self._parse_result(result)
+            except OBDPortError:
+                debug('CONDITION = IO_IN but reading times out')
+            finally:
+                return True
+        else:
+            debug('received an unknown io signal')
+            return False
+    
+    
+    def _read_supported_pids(self):
+    
+        def success_cb(cmd, data, args):
+            self._supported_pids = []
             
-            # Don't query 0120 or 0140 if they are not supported
-            if not '0120' in self._supported_pids:
-                break
-                  
-                                        
+            for item in data:
+                bitstr = sensor.hex_to_bitstr(item)
+                
+                for i in range(0, len(bitstr)):
+                    if bitstr[i] == "1":
+                        pid = i + 1
+                        if pid < 16: 
+                            pid_str = '010' + hex(pid)[2:]                    
+                        else:
+                            pid_str = '01' + hex(pid)[2:]
+                        self._supported_pids.append(pid_str.upper())      
+                          
+            self._connected = True
+            self.emit('connected', True)
+        
+        def error_cb(cmd, msg, args):
+            debug('error reading supported pids, msg is: %s' % msg)
+            raise OBDPortError('OpenPortFailed', 
+                               _('could not read supported pids\n\n' + msg))        
+        
+        self._send_command('0100', success_cb, error_cb)
+                
+        
+        
+    def _initialize_device(self):
+        def atz_success_cb(cmd, res, args):
+            print 'in atz_success_cb'
+            self._send_command('ate0', ate_success_cb, ate_error_cb) 
+            
+        def atz_error_cb(cmd, msg, args):
+            print 'in atz_error_cb'
+            raise OBDPortError('OpenPortFailed', 
+                               _('atz command failed'))
+            
+        def ate_success_cb(cmd, res, args):
+            print 'in ate_success_cb'
+            self._read_supported_pids()
+            
+        def ate_error_cb(cmd, msg, args):
+            print 'in atz_error_cb'
+            raise OBDPortError('OpenPortFailed', 
+                               _('ate0 command failed'))
+           
+        self._send_command('atz', atz_success_cb, atz_error_cb)                        
+    
+                               
+                               
+                                       
     ####################### Public Interface ###################
                 
     def open(self, portname=None):
         self._supported_pids = []
-        if not portname is None:
+        if portname:
             self.portname = portname
+        if not self.portname:
+            raise OBDPortError('OpenPortFailed', 
+                                _('No portname has been set.'))
             
         try:
-            self._port = serial.Serial(self.portname, 19200, 
+            self._port = serial.Serial(self.portname, 9600, 
                                   serial.EIGHTBITS,
                                   serial.PARITY_NONE,
                                   serial.STOPBITS_ONE,
@@ -228,47 +402,30 @@ class OBDDevice(GObject, PropertyObject):
         except serial.SerialException:
             raise OBDPortError('OpenPortFailed', 
                                _('Unable to open %s') % self.portname)
-                                          
+        self._watch_id = gobject.io_add_watch(self._port, 
+              gobject.IO_IN | gobject.IO_PRI | gobject.IO_ERR | gobject.IO_HUP,
+              self._port_io_watch_cb)                                  
         
-        self._send_obd_command("atz")    #Initialize the device
-        self._send_obd_command("ate0")   #Make sure echo is off
-
-        #Send a command to see if we are connected
-        self._send_obd_command('0100')
-        if self._read_result():
-            self._connected = True
-            self.emit('connected', True)
-            self._get_supported_pids()
-            
+        self._initialize_device()
 
         
     def close(self):
         """Resets the elm chip and closes the open serial port""" 
         self._supported_pids = []
-        if self._port and self._port.isOpen():
-            self._send_obd_command("atz")
+        if self._port:
+            gobject.source_remove(self._watch_id)
+            #FIXME: send "atz" command to the device
             self._port.close()
-            if self._connected:
-                self._connected = False
-                self.emit('connected', False)
+        self._connected = False
+        self.emit('connected', False)
         
-
-            
-                                            
-                                                
-    def update_obd_data(self, obd_data):
-        if not isinstance(obd_data, OBDData):
-            raise TypeError, "object is not of type %s" % OBDData
-        obd_data.data = self.get_obd_data(obd_data.pid)
-          
                     
-    def get_obd_data(self, pid):
-        if pid in self._supported_pids:
-            return self._read_pid(pid)
-        elif pid in self._special_commands:
-            return self._read_special_command(pid)
-        else:
-            debug('pid %s is not supported' % pid)
+    def read_obd_data(self, command, ret, err, *args):
+        if not command in self._supported_pids and \
+           not command in self._special_commands:
+           raise ValueError, 'command %s is not supported' % command
+           
+        self._send_command(command, ret, err, args)
           
           
     def get_obd_designation(self):
@@ -313,7 +470,7 @@ class OBDDevice(GObject, PropertyObject):
                     result = result[2:]
                     result = string.split(result)
                     result = string.join(result, '')
-                    if not result.__len__() == 12:
+                    if not len(result) == 12:
                         raise (OBDDataError, _('Did not get a valid length of data'))
                     for i in range(3):
                         if not result[:4] == '0000':

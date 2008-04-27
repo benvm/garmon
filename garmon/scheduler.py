@@ -23,10 +23,19 @@ import gobject
 from gobject import GObject
 import gtk
 
-from obd_device import OBDDevice
-from property_object import PropertyObject, gproperty
-from sensor import OBDData
+import garmon
+from garmon.obd_device import OBDDevice
+from garmon.property_object import PropertyObject, gproperty
+from garmon.sensor import OBDData
 
+
+class QueueItem(str):
+    def __init__(self, command):
+        str.__init__(self, command)
+        
+        self.list = []
+        
+        
 
 class Scheduler (GObject, PropertyObject):
     """ This class receives OBDData objects, puts them in a queue
@@ -36,7 +45,6 @@ class Scheduler (GObject, PropertyObject):
     
     ################# Properties and signals ###############    
     gproperty('working', bool, False)
-    gproperty('timeout', int, 500)
     gproperty('obd-device', object)
 
     def prop_set_obd_device(self, device):
@@ -53,42 +61,56 @@ class Scheduler (GObject, PropertyObject):
         return working
         
                
-    def __init__(self, obd_device, timeout):
+    def __init__(self, obd_device):
         """ @param obd_device: the OBDDevice to send commands
             @param timeout: the time between two commands
         """
         GObject.__init__(self)
-        PropertyObject.__init__(self, obd_device=obd_device, timeout=timeout)
+        PropertyObject.__init__(self, obd_device=obd_device)
         self._queue = []
-        self._timeout = None
+        self._os_queue = []
      
     def __post_init__(self):
-        self._timeout = gobject.timeout_add(self.timeout, self._timeout_cb)
-        self.connect('notify::timeout', self._notify_timeout_cb)
+        self.connect('notify::working', self._notify_working_cb)
         self.obd_device.connect('connected', self._obd_device_connected_cb)
-        
-            
-    def _notify_timeout_cb(self, o, pspsec):
-        gobject.source_remove(self._timeout)
-        self._timeout = gobject.timeout_add(self.timeout, self._timeout_cb)
     
-    def _timeout_cb(self):
-        if self.obd_device:
-            if self.working:
-                self._execute_next_item()
-        else:
-            self.working = False
-            print 'Scheduler Error: obd=None' 
-        return True
+    
+    def _notify_working_cb(self, o, pspec):
+        if self.working:
+            self._execute_next_command()    
+    
+    
+    def _command_success_cb(self, cmd, result, args):
+        #we only care aboutthe first result
+        result = result[0]
+        for obd_data in cmd.list:
+            obd_data.data = result
+        if self.working:
+            self._execute_next_command()
         
-    def _execute_next_item(self):
-        if len(self._queue):
+    def _command_error_cb(self, cmd, msg, args):
+        debug('Scheduler._command_error_cb: command was: %s' % cmd)
+        debug('Scheduler._command_error_cb: msg is %s' % msg)
+        if self.working:
+            self._execute_next_command()    
+    
+        
+    def _execute_next_command(self):
+        if len(self._os_queue):
+            queue_item = self._os_queue.pop(0)
+        elif len(self._queue):
             queue_item = self._queue.pop(0)
-            cmd, oneshot = queue_item
-            if not oneshot:
-                self._queue.append(queue_item)
-            if isinstance(cmd, OBDData):
-                cmd.data = self.obd_device.get_obd_data(cmd.pid)
+            self._queue.append(queue_item)
+        else:
+            #no commands anymore
+            self.working = False
+            return
+            
+        self.obd_device.read_obd_data(queue_item, 
+                                          self._command_success_cb,
+                                          self._command_error_cb)
+
+    
     
     def _obd_device_connected_cb(self, obd_device, connected):
         if not connected:
@@ -96,14 +118,26 @@ class Scheduler (GObject, PropertyObject):
             
     ####################### Public Interface ###################
                            
-    def add(self, item, oneshot=False):
+    def add(self, obd_data, oneshot=False):
         """Add an item to the queue
-           @param item: the item to add to the queue
+           @param obd_data: the item to add to the queue
            @param oneshot: wether the command should only be 
                            executed once.
         """
-        queue_item = (item, oneshot)
-        self._queue.append(queue_item)
+        if not isinstance(obd_data, OBDData):
+            raise ValueError, 'obd_data should be an instance of OBDData'
+        if oneshot:
+            queue = self._os_queue
+        else:
+            queue = self._queue
+            
+        if obd_data.pid in queue:
+            queue_item = queue[queue.index(obd_data.pid)]
+        else:
+            queue_item = QueueItem(obd_data.pid)
+            queue.append(queue_item)
+        queue_item.list.append(obd_data)
+
            
     def remove(self, obd_data):
         """Remove an item from the queue
@@ -111,8 +145,13 @@ class Scheduler (GObject, PropertyObject):
         """
         if not isinstance(obd_data, OBDData):
             raise ValueError, 'obd_data should be an instance of OBDData'
-        for queue_item in self._queue:
-            if queue_item[0] is obd_data:
-                self._queue.remove(queue_item)
+
+        for queue in (self._queue, self._os_queue):
+            for queue_item in queue:
+                if queue_item == obd_data.pid:
+                    if obd_data in queue_item.list:
+                        queue_item.list.remove(obd_data)
+                    if queue_item.list == []:
+                        queue.remove(queue_item)
     
                   
