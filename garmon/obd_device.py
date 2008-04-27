@@ -109,12 +109,9 @@ class OBDDevice(GObject, PropertyObject):
 
        
     def _read_pid(self, pid):
-        print 'entering OBDDevice._read_pid'
         
         self._send_obd_command(pid)
         result = self._read_result()
-        print 'result from _read_result is: %s' % result
-
             
         if result:
             result = string.split(result, "\r")
@@ -122,7 +119,6 @@ class OBDDevice(GObject, PropertyObject):
 
             result = string.split(result)
             result = string.join(result, "")
-            print 'result is %s' % result
 
             if result[:6] == 'NODATA':
                 raise OBDDataError('PID Data Error',
@@ -153,7 +149,6 @@ class OBDDevice(GObject, PropertyObject):
 
 
     def _send_command(self, command, ret, err, *args):
-        print 'in _send_command; command is %s' % command
         if not self._port.isOpen():
             raise OBDPortError, 'PortNotOpen'
         #FIXME: should we check if the current character is ">"
@@ -204,7 +199,6 @@ class OBDDevice(GObject, PropertyObject):
         
       
     def _decode_result(self, result):
-        print 'entering OBDDevice._decode_result'
         
         ret = []
         
@@ -230,7 +224,6 @@ class OBDDevice(GObject, PropertyObject):
       
       
     def _parse_result(self, data):
-        print 'entering _parse_result'
         error = False
         success = False
         res = None
@@ -243,32 +236,26 @@ class OBDDevice(GObject, PropertyObject):
         
         if self._sent_command:
             if data[0] == '>':
-                print 'command sent, received >'
                 error = True
 
             elif data[:2] == 'OK' or data[:4] == 'ate0':
                 if self._sent_command == 'ate0':
-                    print 'command sent, received OK'
                     res = 'OK'
                     success = True
                     
             elif 'ELM327' in data or data[:3] == 'atz':
                 if self._sent_command == 'atz':
-                    print 'command sent, received ELM327'
                     res = data
                     success = True
 
             elif 'SEARCHING' in data:
-                print 'received SEARCHING'
                 self._send_command(cmd, ret_cb, err_cb, args)
                 
             elif 'UNABLE TO CONNECT' in data:
-                print 'received UNABLE TO CONNECT'
                 error = True
                 msg = 'UNABLE TO CONNECT'
 
             elif 'NO DATA' in data:
-                print 'received NO DATA'
                 error = True
                 msg = 'NO DATA'
                 
@@ -300,7 +287,6 @@ class OBDDevice(GObject, PropertyObject):
                 
 
     def _port_io_watch_cb(self, fd, condition, data=None):
-        print 'in _on_io_activity'
         if condition & gobject.IO_HUP:
             debug('received HUP signal')
             self._sent_command = None
@@ -361,20 +347,16 @@ class OBDDevice(GObject, PropertyObject):
         
     def _initialize_device(self):
         def atz_success_cb(cmd, res, args):
-            print 'in atz_success_cb'
             self._send_command('ate0', ate_success_cb, ate_error_cb) 
             
         def atz_error_cb(cmd, msg, args):
-            print 'in atz_error_cb'
             raise OBDPortError('OpenPortFailed', 
                                _('atz command failed'))
             
         def ate_success_cb(cmd, res, args):
-            print 'in ate_success_cb'
             self._read_supported_pids()
             
         def ate_error_cb(cmd, msg, args):
-            print 'in atz_error_cb'
             raise OBDPortError('OpenPortFailed', 
                                _('ate0 command failed'))
            

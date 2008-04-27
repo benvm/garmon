@@ -1,5 +1,13 @@
 2008-04-27  Ben Van Mechelen  <me@benvm.be>
 
+	* data/garmon.schemas:
+	    change the default plugins
+	* garmon/obd_device.py:
+	    Remove some print statements
+
+
+2008-04-27  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/sensor_list/Makefile.am:
 	* plugins/sensor_list/sensor_list.py:
 	    remove this plugin for version 0.1.1
