@@ -81,6 +81,8 @@ class Scheduler (GObject, PropertyObject):
     
     
     def _command_success_cb(self, cmd, result, args):
+        #we only care aboutthe first result
+        result = result[0]
         for obd_data in cmd.list:
             obd_data.data = result
         if self.working:
@@ -95,17 +97,19 @@ class Scheduler (GObject, PropertyObject):
         
     def _execute_next_command(self):
         if len(self._os_queue):
-            obd_data = self._os_queue.pop(0)
-            self.obd_device.update_obd_data(obd_data)  
+            queue_item = self._os_queue.pop(0)
         elif len(self._queue):
             queue_item = self._queue.pop(0)
             self._queue.append(queue_item)
-            self.obd_device.read_obd_data(queue_item, 
-                                          self._command_success_cb,
-                                          self._command_error_cb)
         else:
             #no commands anymore
             self.working = False
+            return
+            
+        self.obd_device.read_obd_data(queue_item, 
+                                          self._command_success_cb,
+                                          self._command_error_cb)
+
     
     
     def _obd_device_connected_cb(self, obd_device, connected):
@@ -123,14 +127,17 @@ class Scheduler (GObject, PropertyObject):
         if not isinstance(obd_data, OBDData):
             raise ValueError, 'obd_data should be an instance of OBDData'
         if oneshot:
-            self._os_queue.append(obd_data)
+            queue = self._os_queue
         else:
-            if obd_data.pid in self._queue:
-                queue_item = self._queue[self._queue.index(obd_data.pid)]
-            else:
-                queue_item = QueueItem(obd_data.pid)
-                self._queue.append(queue_item)
-            queue_item.list.append(obd_data)
+            queue = self._queue
+            
+        if obd_data.pid in queue:
+            queue_item = queue[queue.index(obd_data.pid)]
+        else:
+            queue_item = QueueItem(obd_data.pid)
+            queue.append(queue_item)
+        queue_item.list.append(obd_data)
+
            
     def remove(self, obd_data):
         """Remove an item from the queue
@@ -139,11 +146,12 @@ class Scheduler (GObject, PropertyObject):
         if not isinstance(obd_data, OBDData):
             raise ValueError, 'obd_data should be an instance of OBDData'
 
-        for queue_item in self._queue:
-            if queue_item == obd_data.pid:
-                if obd_data in queue_item.list:
-                    queue_item.list.remove(obd_data)
-                if queue_item.list == []:
-                    self._queue.remove(queue_item)
+        for queue in (self._queue, self._os_queue):
+            for queue_item in queue:
+                if queue_item == obd_data.pid:
+                    if obd_data in queue_item.list:
+                        queue_item.list.remove(obd_data)
+                    if queue_item.list == []:
+                        queue.remove(queue_item)
     
                   

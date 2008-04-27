@@ -1,3 +1,18 @@
+2008-04-27  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/obd_device.py:
+	* garmon/scheduler.py:
+	* plugins/dashboard/dashboard.py:
+	* plugins/live_data/live_data.py:
+	    Lots and lots of changes to make OBDDevice actually work :)
+        
+        
+2008-04-26  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/obd_device.py:
+	    close method always emits the connected signal
+
+
 2008-04-26  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/garmon_app.py:

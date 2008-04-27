@@ -192,6 +192,7 @@ class OBDDevice(GObject, PropertyObject):
                 if buf == '':
                     raise OBDPortError('PortIOFailed', 
                                        _('Read timeout from ') + self.portname)
+                buf = buf.replace('\r\r>', '')
                 return buf
                 
             except serial.SerialException:
@@ -204,18 +205,23 @@ class OBDDevice(GObject, PropertyObject):
       
     def _decode_result(self, result):
         print 'entering OBDDevice._decode_result'
-            
+        
+        ret = []
+        
         if result:
             result = string.split(result, "\r")
-            result = result[0]
 
-            result = string.split(result)
-            result = string.join(result, "")
-            print 'result is %s' % result
-            
-            result = result[4:]
-            
-            return result
+            for data in result:
+                if data:
+                    data = string.split(data)
+                    data = string.join(data, '')
+                    
+                    if data[:2] == '7F':
+                        print 'we got back 7F which is an error'
+                    else:
+                        ret.append(data[4:])
+                
+            return ret
 
         else: 
             raise OBDDataError('Data Read Error',
@@ -265,12 +271,8 @@ class OBDDevice(GObject, PropertyObject):
                 print 'received NO DATA'
                 error = True
                 msg = 'NO DATA'
-                                
-            elif data[:2] == '7F':
-                print 'received 7F: error'
-                error = True
                 
-            elif data[0] == '4':
+            else:
                 res = self._decode_result(data)
                 success = True
                 
@@ -332,17 +334,18 @@ class OBDDevice(GObject, PropertyObject):
     
         def success_cb(cmd, data, args):
             self._supported_pids = []
-
-            bitstr = sensor.hex_to_bitstr(data)
-        
-            for i in range(0, len(bitstr)):
-                if bitstr[i] == "1":
-                    pid = i + 1
-                    if pid < 16: 
-                        pid_str = '010' + hex(pid)[2:]                    
-                    else:
-                        pid_str = '01' + hex(pid)[2:]
-                    self._supported_pids.append(pid_str.upper())      
+            
+            for item in data:
+                bitstr = sensor.hex_to_bitstr(item)
+                
+                for i in range(0, len(bitstr)):
+                    if bitstr[i] == "1":
+                        pid = i + 1
+                        if pid < 16: 
+                            pid_str = '010' + hex(pid)[2:]                    
+                        else:
+                            pid_str = '01' + hex(pid)[2:]
+                        self._supported_pids.append(pid_str.upper())      
                           
             self._connected = True
             self.emit('connected', True)
@@ -410,11 +413,11 @@ class OBDDevice(GObject, PropertyObject):
         """Resets the elm chip and closes the open serial port""" 
         self._supported_pids = []
         if self._port:
-            self._port.close()
             gobject.source_remove(self._watch_id)
-            if self._connected:
-                self._connected = False
-                self.emit('connected', False)
+            #FIXME: send "atz" command to the device
+            self._port.close()
+        self._connected = False
+        self.emit('connected', False)
         
                     
     def read_obd_data(self, command, ret, err, *args):

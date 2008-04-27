@@ -54,6 +54,7 @@ class DashBoard (Plugin, gtk.VBox):
         self._app_cbs = []
         self._notebook_cbs = []
         self._scheduler_cbs = []
+        self._obd_cbs = []
                 
         app.prefs.register_preference('dashboard.needle-color', str, '#FDC62D')
         app.prefs.register_preference('dashboard.background', str, '#000000')
@@ -86,7 +87,7 @@ class DashBoard (Plugin, gtk.VBox):
         self._setup_gauges()
         self._set_gauges_background()
         
-        self._app_cbs.append(app.obd.connect('connected', self._obd_connected_cb))
+        self._obd_cbs.append(app.obd.connect('connected', self._obd_connected_cb))
         self._notebook_cbs.append(app.notebook.connect('switch-page', 
                                                 self._notebook_page_change_cb))
 
@@ -230,6 +231,8 @@ class DashBoard (Plugin, gtk.VBox):
             self.app.notebook.disconnect(cb_id)
         for cb_id in self._scheduler_cbs:
             self.app.scheduler.disconnect(cb_id)
+        for cb_id in self._obd_cbs:
+            self.app.obd.disconnect(cb_id)
         
 
 class Gauge (gtk.DrawingArea, SensorProxyMixin,

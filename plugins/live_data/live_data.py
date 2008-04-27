@@ -52,6 +52,10 @@ class LiveData (Plugin, gtk.VBox):
         self.app = app
         
         self._pref_cbs = []
+        self._app_cbs = []
+        self._notebook_cbs = []
+        self._scheduler_cbs = []
+        self._obd_cbs = []
         
         if app.prefs.get_preference('imperial'):
             self._unit_standard = 'Imperial'
@@ -70,10 +74,13 @@ class LiveData (Plugin, gtk.VBox):
         self._setup_gui()
         self._setup_sensors()
 
-        app.obd.connect('connected', self._obd_connected_cb)
-        app.notebook.connect('switch-page', self._notebook_page_change_cb)
+        self._obd_cbs.append(app.obd.connect('connected', 
+                                             self._obd_connected_cb))
+        self._notebook_cbs.append(app.notebook.connect('switch-page', 
+                                                  self._notebook_page_change_cb))
         
-        self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
+        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
+                                             self._scheduler_notify_working_cb))
         
     
     def _setup_gui(self):
@@ -217,7 +224,14 @@ class LiveData (Plugin, gtk.VBox):
         self.app.notebook.remove(self)
         for cb_id in self._pref_cbs:
             self.app.prefs.preference_notify_remove(cb_id)
-        
+        for cb_id in self._app_cbs:
+            self.app.disconnect(cb_id)
+        for cb_id in self._notebook_cbs:
+            self.app.notebook.disconnect(cb_id)
+        for cb_id in self._scheduler_cbs:
+            self.app.scheduler.disconnect(cb_id)
+        for cb_id in self._obd_cbs:
+            self.app.obd.disconnect(cb_id)
 
 class LiveDataView(GObject, SensorProxyMixin, 
                             StateMixin, UnitMixin, 
