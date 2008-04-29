@@ -1,5 +1,12 @@
 2008-04-29  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/prefs.py:
+	    don't raise an exception when a plugin tries to resgister
+	    a preference that already exists.
+	     
+
+2008-04-29  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/dashboard/dashboard.py:
 	* plugins/live_data/live_data.py:
 	    call _obd_connected_cb in __init__

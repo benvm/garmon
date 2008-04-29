@@ -209,7 +209,11 @@ class PreferenceManager(GObject):
         
         for pref in self._preferences:
             if pref.name == pname:
-                raise ValueError, 'a preference with name %s already exists' % pname
+                #FIXME: when a plugin is deactivated and then re-activated,
+                # the pref already exists. Should we provide a unregister method
+                # that can be called when the plugin is deactivated?
+                print 'warning: a preference with name %s already exists' % pname
+                return
                  
         key = string.split(pname, ':')
         key = string.join(key, '/')
