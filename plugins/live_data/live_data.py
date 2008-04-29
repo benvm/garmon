@@ -82,6 +82,8 @@ class LiveData (Plugin, gtk.VBox):
         self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
                                              self._scheduler_notify_working_cb))
         
+        self._obd_connected_cb(app.obd)
+        
     
     def _setup_gui(self):
         dirname = os.path.dirname(__file__)
@@ -153,7 +155,6 @@ class LiveData (Plugin, gtk.VBox):
     
     
     def _update_supported_views(self):
-        print 'in _update_supported_views'
         for views in (self.views, self.os_views):
             for view in views:
                 if self.app.obd:
@@ -186,15 +187,11 @@ class LiveData (Plugin, gtk.VBox):
             self.status = STATUS_STOP
         
         
-    def _obd_connected_cb(self, obd, connected):
+    def _obd_connected_cb(self, obd, connected=False):
         page = self.app.notebook.get_current_page()
         visible = self.app.notebook.get_nth_page(page) is self
-        if visible:
-            self.stop()
+        self.stop()
         self._update_supported_views()
-        for view in self.os_views:
-            if view.active:
-                self.app.scheduler.add(view.sensor, True)
         if visible:
             self.start()
 
@@ -232,6 +229,8 @@ class LiveData (Plugin, gtk.VBox):
             self.app.scheduler.disconnect(cb_id)
         for cb_id in self._obd_cbs:
             self.app.obd.disconnect(cb_id)
+
+
 
 class LiveDataView(GObject, SensorProxyMixin, 
                             StateMixin, UnitMixin, 

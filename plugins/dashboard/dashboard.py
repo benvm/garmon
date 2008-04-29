@@ -94,6 +94,7 @@ class DashBoard (Plugin, gtk.VBox):
         self._scheduler_cbs.append(self.app.scheduler.connect('notify::working', 
                                              self._scheduler_notify_working_cb))        
 
+        self._obd_connected_cb(app.obd)
 
     def _prefs_notify_color_cb(self, pname, pvalue, ptype, args):
         if pname == 'dashboard.needle-color':
@@ -155,7 +156,7 @@ class DashBoard (Plugin, gtk.VBox):
             item.modify_bg(gtk.STATE_NORMAL, color)
        
       
-    def _obd_connected_cb(self, obd, connected):
+    def _obd_connected_cb(self, obd, connected=False):
         page = self.app.notebook.get_current_page()
         visible = self.app.notebook.get_nth_page(page) is self
         if visible:
@@ -210,6 +211,7 @@ class DashBoard (Plugin, gtk.VBox):
                     self.app.scheduler.add(gauge.sensor, False)
             self.status = STATUS_WORKING
         
+        
     def stop (self):
         if not self.status == STATUS_STOP:
             for gauge in self.gauges:
@@ -220,6 +222,7 @@ class DashBoard (Plugin, gtk.VBox):
 
     def load(self):
         self.app.notebook.append_page(self, gtk.Label(_('Dashboard')))
+           
             
     def unload(self):
         self.app.notebook.remove(self)
@@ -234,6 +237,8 @@ class DashBoard (Plugin, gtk.VBox):
         for cb_id in self._obd_cbs:
             self.app.obd.disconnect(cb_id)
         
+
+
 
 class Gauge (gtk.DrawingArea, SensorProxyMixin,
                               StateMixin, UnitMixin,
