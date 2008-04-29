@@ -1,3 +1,14 @@
+2008-04-29  Ben Van Mechelen  <me@benvm.be>
+
+	* configure.ac:
+	    define major, minor and micro version
+	    expand GARMON_VERSION
+	* garmon/__init__.py:
+	* garmon/defs.py.in:
+	* garmon/garmon_app.py:
+	    set version from expanded variable in about dialog	    
+	
+
 2008-04-27  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/dashboard/dashboard.py:

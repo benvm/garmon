@@ -10,7 +10,7 @@ if INSTALLED:
     if not PYTHON_DIR in sys.path:
         sys.path.insert(0, PYTHONDIR)
 else:
-    VERSION =                   "0.1"
+    GARMON_VERSION =            '0.1.2'
     PLUGIN_DIR =                os.path.join(DIRECTORY, "plugins")
     GLADE_DIR =                 os.path.join(DIRECTORY, "data")
 

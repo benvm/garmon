@@ -1,7 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(garmon, 0.1)
+m4_define(garmon_major_version,  0)
+m4_define(garmon_minor_version, 1)
+m4_define(garmon_micro_version,  2)
+m4_define(garmon_version, garmon_major_version.garmon_minor_version.garmon_micro_version)
+
+AC_INIT(garmon, garmon_version)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -23,11 +28,11 @@ AM_GCONF_SOURCE_2
 AC_SUBST(VERSION)
 AC_SUBST(PACKAGE)
 
+AS_AC_EXPAND(GARMON_VERSION, $VERSION)
 AS_AC_EXPAND(PYTHONDIR, $pythondir)
 AS_AC_EXPAND(PKGDATADIR, $datarootdir/$PACKAGE)
 AS_AC_EXPAND(PLUGINDIR, $datarootdir/$PACKAGE/plugins)
 AS_AC_EXPAND(GLADEDIR, $datarootdir/$PACKAGE/glade)
-
 
 AC_OUTPUT([
 Makefile

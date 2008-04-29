@@ -41,7 +41,7 @@ gettext.textdomain('garmon')
 gtk.glade.textdomain('garmon')
 
 import garmon
-from garmon import GLADE_DIR
+from garmon import GLADE_DIR, GARMON_VERSION
 
 import garmon.plugin_manager as plugin_manager
 
@@ -256,7 +256,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog.set_name("Garmon")
         dialog.set_copyright("Copyright \302\251 2007 Ben Van Mechelen")
         dialog.set_website("http://www.benvm.be")
-        dialog.set_version("0.1")
+        dialog.set_version(GARMON_VERSION)
         dialog.set_comments("Gnome OBD Car Monitor")
         dialog.set_authors(["Ben Van Mechelen"])
         dialog.set_license(gpl)
