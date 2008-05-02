@@ -125,9 +125,9 @@ class DTCReader (Plugin, gtk.VBox):
     def start(self):
         self.treemodel.clear()
         self.app.scheduler.working = False
-        if self.app.obd:
+        if self.app.device:
             try:
-                dtcs = self.app.obd.get_dtc()
+                dtcs = self.app.device.get_dtc()
                 for item in dtcs:
                     code = item
                     dtc = decode_dtc_code(item)

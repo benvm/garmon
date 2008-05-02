@@ -1,6 +1,16 @@
 2008-05-03  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/garmon_app.py:
+	* plugins/dashboard/dashboard.py:
+	* plugins/dtc_clearer/dtc_clearer.py:
+	* plugins/dtc_reader/dtc_reader.py:
+	* plugins/live_data/live_data.py:
+	    change GarmonApp.obd to GarmonApp.device
+
+
+2008-05-03  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
 	* garmon/obd_device.py:
 	    created an interface and a base class for OBD devices
 	* plugins/dashboard/dashboard.py:

@@ -61,7 +61,7 @@ class DTCClearer (Plugin):
         
 
     def _sensitize_action(self):
-        sensitive = self.app.obd.connected and not self.app.scheduler.working
+        sensitive = self.app.device.connected and not self.app.scheduler.working
         self.app.ui.get_widget('/ToolBar/DeviceToolItems/ClearDTC').set_sensitive(sensitive)
         self.app.ui.get_widget('/MenuBar/DeviceMenu/DeviceMenuItems/ClearDTC').set_sensitive(sensitive)
         
@@ -110,7 +110,7 @@ class DTCClearer (Plugin):
         dialog.destroy()
         if res == gtk.RESPONSE_OK:
             try:
-                self.app.obd.clear_dtc()
+                self.app.device.clear_dtc()
                 self.app.reset()
             except:
                 dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -124,6 +124,6 @@ class DTCClearer (Plugin):
     def load(self):
         self._sensitize_action()
         self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
-        self.app.obd.connect('connected', self._obd_connected_cb)
+        self.app.device.connect('connected', self._obd_connected_cb)
                 
                 

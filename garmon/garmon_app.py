@@ -173,9 +173,9 @@ class GarmonApp(gtk.Window, PropertyObject):
         
         self.main_vbox.pack_start(self.notebook)
         
-        self.obd = ELMDevice()
+        self.device = ELMDevice()
         
-        self.scheduler = Scheduler(self.obd)
+        self.scheduler = Scheduler(self.device)
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
         
         self._plugman = plugin_manager.PluginManager(self)
@@ -239,7 +239,7 @@ class GarmonApp(gtk.Window, PropertyObject):
 
     
     def _notify_port_cb(self, pname, pvalue, ptype, args):
-        self.obd.portname = pvalue
+        self.device.portname = pvalue
 
     def _activate_prefs_dialog(self, action):
         self.prefs.show_dialog()
@@ -316,13 +316,13 @@ class GarmonApp(gtk.Window, PropertyObject):
     def reset(self):
         """This methods stops all stoppable plugins, closes the obd device
            and tries to reopen it."""
-        if self.obd.connected:
+        if self.device.connected:
             for name, plugin in self._plugman.stoppable_plugins:
                 plugin.stop()
-            self.obd.close()
+            self.device.close()
 
         try:
-            self.obd.open(self.prefs.get_preference('port'))
+            self.device.open(self.prefs.get_preference('port'))
         except OBDPortError, e:
             err, msg = e
             dialog = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,

@@ -74,7 +74,7 @@ class LiveData (Plugin, gtk.VBox):
         self._setup_gui()
         self._setup_sensors()
 
-        self._obd_cbs.append(app.obd.connect('connected', 
+        self._obd_cbs.append(app.device.connect('connected', 
                                              self._obd_connected_cb))
         self._notebook_cbs.append(app.notebook.connect('switch-page', 
                                                   self._notebook_page_change_cb))
@@ -82,7 +82,7 @@ class LiveData (Plugin, gtk.VBox):
         self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
                                              self._scheduler_notify_working_cb))
         
-        self._obd_connected_cb(app.obd)
+        self._obd_connected_cb(app.device)
         
     
     def _setup_gui(self):
@@ -157,8 +157,8 @@ class LiveData (Plugin, gtk.VBox):
     def _update_supported_views(self):
         for views in (self.views, self.os_views):
             for view in views:
-                if self.app.obd:
-                    if view.sensor.pid in self.app.obd.supported_pids:
+                if self.app.device:
+                    if view.sensor.pid in self.app.device.supported_pids:
                         view.supported=True
                         view.active=True
                     else:
@@ -228,7 +228,7 @@ class LiveData (Plugin, gtk.VBox):
         for cb_id in self._scheduler_cbs:
             self.app.scheduler.disconnect(cb_id)
         for cb_id in self._obd_cbs:
-            self.app.obd.disconnect(cb_id)
+            self.app.device.disconnect(cb_id)
 
 
 
