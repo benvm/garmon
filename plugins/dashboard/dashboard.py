@@ -287,31 +287,21 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         self.connect("configure_event", self._configure_event)
     
     def __post_init__(self):
-        #self.connect('notify::data', self._notify_data_cb)
         self.connect('notify::needle-length', self._notify_must_redraw)
         self.connect('notify::metric-overlay', self._notify_must_redraw)
         self.connect('notify::imperial-overlay', self._notify_must_redraw)
         self.connect('notify::needle-color', self._notify_needle_cb)
         self.connect('notify::needle-width', self._notify_needle_cb)
-        
-    """
-    def _notify_data_cb(self, o, pspec):
-        if self.unit_standard == 'Imperial':
-            self._value = self._imperial_value
-        else:
-            self._value = self.metric_value
-        self._draw()
-        self.emit('notify::value')
-    """        
+
         
     def _notify_must_redraw(self, o, pspec):
         self._draw()
         
    
     def _notify_needle_cb(self, o, pspec):
-        if pspec == 'needle-color':
+        if pspec.name == 'needle-color':
             self._needle_gc.set_rgb_fg_color(gtk.gdk.color_parse(self.needle_color))
-        if pspec == 'needle-width':    
+        if pspec.name == 'needle-width':    
             self._needle_gc.line_width = width
         self._draw()    
 

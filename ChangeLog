@@ -1,5 +1,12 @@
 2008-05-02  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/dashboard/dashboard.py:
+	    Remove obsolete notify callbacks
+	    check pspec.name in notify_needle_cb, not pspec 
+	    
+
+2008-05-02  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/obd_device.py:
 	* plugins/live_data/live_data.py:
 	    remove some unused functions
