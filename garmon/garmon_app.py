@@ -46,7 +46,7 @@ from garmon import GLADE_DIR, GARMON_VERSION
 import garmon.plugin_manager as plugin_manager
 
 from garmon.prefs import PreferenceManager
-from garmon.obd_device import OBDDevice, OBDError, OBDDataError, OBDPortError
+from garmon.obd_device import ELMDevice, OBDError, OBDDataError, OBDPortError
 from garmon.scheduler import Scheduler
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.backdoor import BackDoor
@@ -173,7 +173,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         
         self.main_vbox.pack_start(self.notebook)
         
-        self.obd = OBDDevice()
+        self.obd = ELMDevice()
         
         self.scheduler = Scheduler(self.obd)
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)

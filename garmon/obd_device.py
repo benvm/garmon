@@ -26,7 +26,7 @@ import string
 import math
 
 import gobject
-from gobject import GObject
+from gobject import GObject, GInterface
 from property_object import PropertyObject, gproperty, gsignal
 
 import garmon
@@ -48,20 +48,22 @@ class OBDDataError(OBDError):
     """Exception to indicate a data error"""
 
 
-    
+
+class IOBDDevice(object):
+    def open(self, portname):
+        raise NotImplementedError
+    def close(self):
+        raise NotImplementedError
+    def read_obd_data(self, command, ret_cb, err_cb, *args):
+        raise NotImplementedError
+
+
 class OBDDevice(GObject, PropertyObject):
-    """ This class talks to the ELM device. It sends commands and receives
-        data from it.
-    """
     __gtype_name__ = "OBDDevice"
     
-    _special_commands = {
-                        'Voltage'     : 'RV'
-                        }
-
-    _special_command_functions = {}
-    
-    ################# Properties and signals ###############        
+    _special_commands = {}
+    _supported_pids = []
+    _connected = False 
     
     gsignal('connected', bool)
     
@@ -79,13 +81,29 @@ class OBDDevice(GObject, PropertyObject):
         
     def prop_get_special_commands(self):
         return self._special_commands
+
+    def __init__(self):
+        GObject.__init__(self)
+        PropertyObject.__init__(self)
+
     
+
+class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
+    """ This class talks to an ELM device. It sends commands and receives
+        data from it.
+    """
+    __gtype_name__ = "ELMDevice"
     
-    def __init__(self, portname=None):
+    _special_commands = {
+                        'Voltage'     : 'RV'
+                        }
+     
+    
+    def __init__(self):
         """ @param portname: The port to connect to e.g. /dev/ttyUSB0
         """
-        GObject.__init__(self)
-        PropertyObject.__init__(self, portname=portname)
+        OBDDevice.__init__(self)
+        PropertyObject.__init__(self)
 
         self._connected = False
         self._port = None
@@ -380,16 +398,16 @@ class OBDDevice(GObject, PropertyObject):
         self.emit('connected', False)
         
                     
-    def read_obd_data(self, command, ret, err, *args):
+    def read_obd_data(self, command, ret_cb, err_cb, *args):
         if not command in self._supported_pids and \
            not command in self._special_commands:
            raise ValueError, 'command %s is not supported' % command
         
         def success_cb(cmd, res, args):
             res = self._decode_result(res)
-            ret(cmd, res, args)
+            ret_cb(cmd, res, args)
         
-        self._send_command(command, success_cb, err, args)
+        self._send_command(command, success_cb, err_cb, args)
           
           
     def get_obd_designation(self):

@@ -1,3 +1,12 @@
+2008-05-03  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
+	* garmon/obd_device.py:
+	    created an interface and a base class for OBD devices
+	* plugins/dashboard/dashboard.py:
+	    don't update _needle_gc when it is not yet created
+	    
+
 2008-05-02  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/dashboard/dashboard.py:

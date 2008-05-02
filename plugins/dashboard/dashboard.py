@@ -277,7 +277,9 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         width = self.metric_overlay.get_width()
         height = self.metric_overlay.get_height()    
         self.set_size_request(width, height)    
-             
+        
+        self._needle_gc = None
+        
         self._set_default_values()
         
         self._value = self.idle_value
@@ -300,7 +302,8 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
    
     def _notify_needle_cb(self, o, pspec):
         if pspec.name == 'needle-color':
-            self._needle_gc.set_rgb_fg_color(gtk.gdk.color_parse(self.needle_color))
+            if self._needle_gc:
+                self._needle_gc.set_rgb_fg_color(gtk.gdk.color_parse(self.needle_color))
         if pspec.name == 'needle-width':    
             self._needle_gc.line_width = width
         self._draw()    
