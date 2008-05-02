@@ -32,7 +32,7 @@ import garmon.sensor
 
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
-from garmon.obd_device import OBDDataError, OBDPortError, get_sensor_units
+from garmon.obd_device import OBDDataError, OBDPortError
 from garmon.sensor import StateMixin, UnitMixin, SensorProxyMixin
 from garmon.widgets import MILWidget
 

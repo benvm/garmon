@@ -53,7 +53,7 @@ class OBDDevice(GObject, PropertyObject):
     """ This class talks to the ELM device. It sends commands and receives
         data from it.
     """
-    #__gtype_name__ = "OBDDevice"
+    __gtype_name__ = "OBDDevice"
     
     _special_commands = {
                         'Voltage'     : 'RV'
@@ -107,61 +107,17 @@ class OBDDevice(GObject, PropertyObject):
             self.close()
             self.open()
 
-       
-    def _read_pid(self, pid):
-        print 'entering OBDDevice._read_pid'
-        
-        self._send_obd_command(pid)
-        result = self._read_result()
-        print 'result from _read_result is: %s' % result
-
-            
-        if result:
-            result = string.split(result, "\r")
-            result = result[0]
-
-            result = string.split(result)
-            result = string.join(result, "")
-            print 'result is %s' % result
-
-            if result[:6] == 'NODATA':
-                raise OBDDataError('PID Data Error',
-                                   _('No data available for this pid'))
-            
-            result = result[4:]
-            
-            return result
-
-        else: 
-            raise OBDDataError('Data Read Error',
-                               _('No data was received from the device'))
-    
-    
-    def _read_special_command(self, command):
-        self._send_obd_command(pid)
-        result = self._read_result()
-        
-        if result:
-            if pid in self._special_command_functions:
-                return self._special_command_functions[pid](result)
-            else:
-                return result           
-        else: 
-            raise OBDDataError('Data Read Error',
-                               _('No data was received from the device'))
-                                            
-
 
     def _send_command(self, command, ret, err, *args):
         print 'in _send_command; command is %s' % command
         if not self._port.isOpen():
             raise OBDPortError, 'PortNotOpen'
-        #FIXME: should we check if the current character is ">"
+
+        self._sent_command = command
+        self._ret_cb = ret
+        self._err_cb = err
+        self._cb_args = args
         try:
-            self._sent_command = command
-            self._ret_cb = ret
-            self._err_cb = err
-            self._cb_args = args
             self._port.flushOutput()
             self._port.flushInput()
             self._port.write(command)
@@ -513,15 +469,3 @@ class OBDDevice(GObject, PropertyObject):
     def is_connected(self):
         return self._connected
 
-
-def get_sensor_units(pid, index=0):
-    if index <= len(SENSORS[pid]):
-        metric = SENSORS[pid][index][METRIC]
-        imperial = SENSORS[pid][index][IMPERIAL]
-        return (metric, imperial)
-    else:
-        raise OBDError('PID Index Error',
-                       _('Invalid index for that pid'))
-                               
-                               
-                               

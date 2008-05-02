@@ -1,6 +1,13 @@
 2008-05-02  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/obd_device.py:
+	* plugins/live_data/live_data.py:
+	    remove some unused functions
+
+
+2008-05-02  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/obd_device.py:
 	    don't try to determine the data type in port_io_watch_cb,
 	    only: SEARCHING, NO DATA, ?, etc
 	    
