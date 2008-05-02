@@ -245,21 +245,14 @@ class OBDDevice(GObject, PropertyObject):
             if data[0] == '>':
                 print 'command sent, received >'
                 error = True
-
-            elif data[:2] == 'OK' or data[:4] == 'ate0':
-                if self._sent_command == 'ate0':
-                    print 'command sent, received OK'
-                    res = 'OK'
-                    success = True
-                    
-            elif 'ELM327' in data or data[:3] == 'atz':
-                if self._sent_command == 'atz':
-                    print 'command sent, received ELM327'
-                    res = data
-                    success = True
-
+                
+            elif data[0] == '?':
+                print 'command sent, received ?'
+                error = True
+                msg = 'Unknown command'
+                
             elif 'SEARCHING' in data:
-                print 'received SEARCHING'
+                print 'received SEARCHING: resending command'
                 self._send_command(cmd, ret_cb, err_cb, args)
                 
             elif 'UNABLE TO CONNECT' in data:
@@ -273,7 +266,7 @@ class OBDDevice(GObject, PropertyObject):
                 msg = 'NO DATA'
                 
             else:
-                res = self._decode_result(data)
+                res = data
                 success = True
                 
             if error:
@@ -288,7 +281,7 @@ class OBDDevice(GObject, PropertyObject):
                 self._ret_cb = None
                 self._sent_command = None
                 self._cb_args = None
-                ret_cb(cmd, res, args)
+                ret_cb(cmd, data, args)
                 
         else:
             # no command sent
@@ -335,6 +328,8 @@ class OBDDevice(GObject, PropertyObject):
         def success_cb(cmd, data, args):
             self._supported_pids = []
             
+            data = self._decode_result(data)
+            
             for item in data:
                 bitstr = sensor.hex_to_bitstr(item)
                 
@@ -362,7 +357,12 @@ class OBDDevice(GObject, PropertyObject):
     def _initialize_device(self):
         def atz_success_cb(cmd, res, args):
             print 'in atz_success_cb'
-            self._send_command('ate0', ate_success_cb, ate_error_cb) 
+            if not 'ELM327' in res:
+                print 'invalid response'
+                atz_error_cb(cmd, res, None)
+            else:
+                print 'received answer valid'
+                self._send_command('ate0', ate_success_cb, ate_error_cb) 
             
         def atz_error_cb(cmd, msg, args):
             print 'in atz_error_cb'
@@ -371,7 +371,11 @@ class OBDDevice(GObject, PropertyObject):
             
         def ate_success_cb(cmd, res, args):
             print 'in ate_success_cb'
-            self._read_supported_pids()
+            if not 'OK' in res:
+                print 'invalid response'
+                ate_error_cb(cmd, res, args)
+            else:
+                self._read_supported_pids()
             
         def ate_error_cb(cmd, msg, args):
             print 'in atz_error_cb'
@@ -424,8 +428,12 @@ class OBDDevice(GObject, PropertyObject):
         if not command in self._supported_pids and \
            not command in self._special_commands:
            raise ValueError, 'command %s is not supported' % command
-           
-        self._send_command(command, ret, err, args)
+        
+        def success_cb(cmd, res, args):
+            res = self._decode_result(res)
+            ret(cmd, res, args)
+        
+        self._send_command(command, success_cb, err, args)
           
           
     def get_obd_designation(self):
