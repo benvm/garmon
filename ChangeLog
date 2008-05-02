@@ -1,3 +1,10 @@
+2008-05-03  Ben Van Mechelen  <ben@buick>
+
+	* garmon/obd_device.py:
+	    tried to subclass IOBDDevice from GInterface but this causes
+	    a segfault. Placed a comment above the class defintion.
+	    
+
 2008-05-03  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/garmon_app.py:
