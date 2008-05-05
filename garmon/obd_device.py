@@ -49,7 +49,7 @@ class OBDDataError(OBDError):
 
 
 
-# Inheriting from GInterface will give a segmentation fault. why?
+# Inheriting from GInterface will cause a segmentation fault. why?
 class IOBDDevice(object):
     def open(self, portname):
         raise NotImplementedError
@@ -131,7 +131,7 @@ class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
     def _send_command(self, command, ret, err, *args):
         print 'in _send_command; command is %s' % command
         if not self._port.isOpen():
-            raise OBDPortError, 'PortNotOpen'
+            raise OBDPortError('PortNotOpen', _('The port is not open'))
 
         self._sent_command = command
         self._ret_cb = ret
@@ -177,33 +177,7 @@ class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
                                               
                 
         return None
-        
-      
-    def _decode_result(self, result):
-        print 'entering OBDDevice._decode_result'
-        
-        ret = []
-        
-        if result:
-            result = string.split(result, "\r")
-
-            for data in result:
-                if data:
-                    data = string.split(data)
-                    data = string.join(data, '')
-                    
-                    if data[:2] == '7F':
-                        print 'we got back 7F which is an error'
-                    else:
-                        ret.append(data[4:])
-                
-            return ret
-
-        else: 
-            raise OBDDataError('Data Read Error',
-                               _('No data was received from the device'))
-
-      
+         
       
     def _parse_result(self, data):
         print 'entering _parse_result'
@@ -304,7 +278,7 @@ class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
         def success_cb(cmd, data, args):
             self._supported_pids = []
             
-            data = self._decode_result(data)
+            data = decode_result(data)
             
             for item in data:
                 bitstr = sensor.hex_to_bitstr(item)
@@ -406,30 +380,11 @@ class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
            raise ValueError, 'command %s is not supported' % command
         
         def success_cb(cmd, res, args):
-            res = self._decode_result(res)
+            res = decode_result(res)
             ret_cb(cmd, res, args)
         
         self._send_command(command, success_cb, err_cb, args)
           
-          
-    def get_obd_designation(self):
-        if '011C' in self.supported_pids:
-            value = self._read_pid('011C')
-            string = OBD_DESIGNATIONS[value[:2]]
-        else:
-            string = _('No designation reported')
-            
-        return string
-
-
-    def get_voltage(self):
-        if self._port and self._port.isOpen():
-            self._send_obd_command('RV')
-            result = self._read_result()
-            result = result[:-2]
-            return result
-        return None
-
 
     def get_dtc_num(self):
         res = self._read_pid('0101')
@@ -441,36 +396,25 @@ class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
         return dtc_decode_mil(res)[0]
         
         
-    def get_dtc(self):
-        dtc = []
-        if self._port and self._port.isOpen():
-            try:
-                num = self.get_dtc_num()
-                self._send_obd_command('03')
-                for i in range (int(math.ceil(num/3.0))):
-                    result = self._read_result()
-                    if not result[:2] == '43':
-                        raise OBDDataError, _('Did not get a mode 03 result from the device')
-                    result = result[2:]
-                    result = string.split(result)
-                    result = string.join(result, '')
-                    if not len(result) == 12:
-                        raise (OBDDataError, _('Did not get a valid length of data'))
-                    for i in range(3):
-                        if not result[:4] == '0000':
-                            dtc.append(result[:4])
-                        result = result[4:]
-            except (OBDPortError, OBDDataError):
-                raise#TODO: Finish
-        
-        return dtc 
-            
+    def read_dtc(self, ret_cb, err_cb, *args):
 
-    def clear_dtc(self):
-        try:
-            self._send_obd_command('04')
-            result = self._read_result()
-            
+        def success_cb(cmd, result, args):
+            try:
+                dtc = decode_dtc_result(result)
+            except OBDError, (err, msg):
+                err_cb(cmd, err, args)
+            ret_cb(cmd, dtc, args)           
+        
+        if self._port and self._port.isOpen():
+            self._send_command('03', success_cb, err_cb, args)
+        else:
+            raise OBDPortError('PortNotOpen', _('The port is not open'))
+
+
+    def clear_dtc(self, ret_cb, err_cb, *args):
+    
+        def success_cb(cmd, result, args):
+           
             if result:
                 result = string.split(result, "\r")
                 result = result[0]
@@ -479,13 +423,63 @@ class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
                 result = string.join(result, "")
                 result = result[:2]
                 
-                return eval("0x%s" % result) & 0x40
+                ret = eval("0x%s" % result) & 0x40
+                ret_cb(cmd, ret, args)
             else:
-                raise OBDDataError 
-        except OBDPortError:
-            raise
+                err_cb(cmd, OBDDataError, args)
+
+        if self._port and self._port.isOpen():
+            self._send_obd_command('04', success_cb, err_cb, args)
+        else:
+            raise OBDPortError('PortNotOpen', _('The port is not open'))                
                 
         
-    def is_connected(self):
-        return self._connected
 
+
+def decode_dtc_result(result):
+    if not result:
+        raise OBDDataError('Data Read Error',
+                           _('No data was received from the device'))
+    dtc = []
+
+    result = string.split(result, "\r")
+    for data in result:
+    
+        if data:
+            if not data[:2] == '43':
+                raise OBDDataError('Data Read Error',
+                             _('Did not get a mode 03 result from the device'))
+            data = data[2:]
+            data = string.split(data)
+            data = string.join(data, '')
+            if not len(data) == 12:
+                raise OBDDataError('Data Read Error',
+                                     _('Did not get a valid length of data'))
+            for i in range(3):
+                if not data[:4] == '0000':
+                    dtc.append(data[:4])
+                data = data[4:]
+    return dtc
+
+                           
+                           
+def decode_result(result):
+    print 'entering decode_result'
+    if not result:
+        raise OBDDataError('Data Read Error',
+                           _('No data was received from the device'))
+    ret = []
+    
+    result = string.split(result, "\r")
+
+    for data in result:
+        if data:
+            data = string.split(data)
+            data = string.join(data, '')
+            
+            if data[:2] == '7F':
+                print 'we got back 7F which is an error'
+            else:
+                ret.append(data[4:])
+        
+    return ret

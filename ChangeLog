@@ -1,4 +1,15 @@
-2008-05-03  Ben Van Mechelen  <ben@buick>
+2008-05-05  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/obd_device.py:
+	* garmon/plugin.py:
+	* garmon/scheduler.py:
+	* garmon/sensor.py:
+	* plugins/dtc_reader/dtc_reader.glade:
+	* plugins/dtc_reader/dtc_reader.py:
+	    change the way dtcs are read
+	    
+
+2008-05-03  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/obd_device.py:
 	    tried to subclass IOBDDevice from GInterface but this causes

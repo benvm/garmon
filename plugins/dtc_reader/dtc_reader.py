@@ -57,10 +57,13 @@ class DTCReader (Plugin, gtk.VBox):
         self.dir = os.path.dirname(__file__)
         self.status = STATUS_STOP
         
-        file = os.path.join(self.dir, 'dtc_reader.glade')
-        self._glade = glade.XML(file, 'hpaned')
+        fname = os.path.join(self.dir, 'dtc_reader.glade')
+        self._glade = glade.XML(fname, 'hpaned')
 
         self._dtc_info = DTCInfo(self._glade)
+        
+        button = self._glade.get_widget('re-read-button')
+        button.connect('clicked', self._reread_button_clicked)
         
         hpaned = self._glade.get_widget('hpaned')
         self.pack_start(hpaned, True, True)
@@ -122,31 +125,41 @@ class DTCReader (Plugin, gtk.VBox):
             self.start()
 
 
-    def start(self):
-        self.treemodel.clear()
-        self.app.scheduler.working = False
-        if self.app.device:
-            try:
-                dtcs = self.app.device.get_dtc()
-                for item in dtcs:
-                    code = item
-                    dtc = decode_dtc_code(item)
-                    desc = DTC_CODES[dtc]
-                    iter = self.treemodel.append(None)
-                    self.treemodel.set(iter, COLUMN_CODE, code,
-                                             COLUMN_DTC, dtc,
-                                             COLUMN_DESC, desc)
-            except OBDPortError, e:
-                self._display_port_error_dialog(e)
-                return
+    def _reread_button_clicked(self, button):
+        self.start()
 
+
+    def stop(self):
+        pass
+        
+
+    def start(self):
+        def success_cb(cmd, dtcs, args):
+            self.treemodel.clear()
+            for code in dtcs:
+                dtc = decode_dtc_code(code)
+                desc = DTC_CODES[dtc]
+                iter = self.treemodel.append(None)
+                self.treemodel.set(iter, COLUMN_CODE, code,
+                                         COLUMN_DTC, dtc,
+                                         COLUMN_DESC, desc)  
+        
+        def error_cb(cmd, error, args):
+            self._display_port_error_dialog(error)             
+
+        self.app.scheduler.working = False
+        try:
+            self.app.device.read_dtc(success_cb, error_cb)          
+        except OBDPortError, e:
+            self._display_port_error_dialog(e)
+            
 
     def load(self):
         self.app.notebook.append_page(self, gtk.Label(_('DTC Reader')))
                 
                 
     def unload(self):
-        self.app.notebook.disconnect(self._switch_cbs)    
+        self.app.notebook.disconnect(self._switch_cbid)    
         self.app.disconnect(self._reset_cbid)
         self.app.notebook.remove(self)
         

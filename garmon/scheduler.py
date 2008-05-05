@@ -81,7 +81,7 @@ class Scheduler (GObject, PropertyObject):
     
     
     def _command_success_cb(self, cmd, result, args):
-        #we only care aboutthe first result
+        #we only care about the first result
         result = result[0]
         for obd_data in cmd.list:
             obd_data.data = result

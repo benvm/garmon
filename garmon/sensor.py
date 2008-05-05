@@ -34,9 +34,9 @@ class OBDData (GObject, PropertyObject):
     #__gtype_name__ = 'OBDData'
     
     gproperty('pid', str, flags=gobject.PARAM_READABLE)
-    gproperty('data', str)
+    gproperty('data', object)
 
-    gsignal('data-changed', str)
+    gsignal('data-changed', object)
     
     def __init__(self, pid):
         GObject.__init__(self)
