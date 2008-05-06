@@ -43,10 +43,11 @@ __class = 'DashBoard'
 
 
 
-class DashBoard (Plugin, gtk.VBox):
+class DashBoard (gtk.VBox, Plugin):
     __gtype_name__='DashBoard'
     def __init__(self, app) :
         gtk.VBox.__init__(self)
+        Plugin.__init__(self)
         
         self.app = app
         self.dir = os.path.dirname(__file__)

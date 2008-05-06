@@ -48,10 +48,11 @@ __class = 'DTCReader'
 ) = range(3)
 
 
-class DTCReader (Plugin, gtk.VBox):
-
+class DTCReader (gtk.VBox, Plugin):
+    __gtype_name__='DTCReader'
     def __init__(self, app):
         gtk.VBox.__init__(self)
+        Plugin.__init__(self)
         
         self.app = app
         self.dir = os.path.dirname(__file__)
@@ -97,8 +98,9 @@ class DTCReader (Plugin, gtk.VBox):
                                               self._notebook_page_change_cb)
         
 
-    def _on_reset(self, garmon):
-        self.start()
+    def _on_reset(self, app):
+        if app.device.connected:
+            self.start()
         
 
     def _on_selection_changed(self, selection):

@@ -50,15 +50,6 @@ class OBDDataError(OBDError):
 
 
 # Inheriting from GInterface will cause a segmentation fault. why?
-class IOBDDevice(object):
-    def open(self, portname):
-        raise NotImplementedError
-    def close(self):
-        raise NotImplementedError
-    def read_obd_data(self, command, ret_cb, err_cb, *args):
-        raise NotImplementedError
-
-
 
 class OBDDevice(GObject, PropertyObject):
     __gtype_name__ = "OBDDevice"
@@ -87,10 +78,18 @@ class OBDDevice(GObject, PropertyObject):
     def __init__(self):
         GObject.__init__(self)
         PropertyObject.__init__(self)
+
+    ####################### Public Interface ###################
     
+    def open(self, portname):
+        raise NotImplementedError
+    def close(self):
+        raise NotImplementedError
+    def read_obd_data(self, command, ret_cb, err_cb, *args):
+        raise NotImplementedError
 
 
-class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
+class ELMDevice(OBDDevice, PropertyObject):
     """ This class talks to an ELM device. It sends commands and receives
         data from it.
     """
@@ -438,7 +437,7 @@ class ELMDevice(OBDDevice, PropertyObject, IOBDDevice):
 
 def decode_dtc_result(result):
     if not result:
-        raise OBDDataError('Data Read Error',
+        raise OBDDataError('DataReadError',
                            _('No data was received from the device'))
     dtc = []
 

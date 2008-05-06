@@ -44,10 +44,11 @@ __description = _('View the most imported live data like:\n *Fuel System\n *Inta
 __class = 'LiveData'
 
 
-class LiveData (Plugin, gtk.VBox):
+class LiveData (gtk.VBox, Plugin):
     __gtype_name__='LiveData'
     def __init__ (self, app):
         gtk.VBox.__init__(self)
+        Plugin.__init__(self)
 
         self.app = app
         

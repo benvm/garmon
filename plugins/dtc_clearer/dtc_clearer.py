@@ -36,8 +36,9 @@ __class = 'DTCClearer'
 
 
 class DTCClearer (Plugin):
-
+    __gtype_name__='DTCClearer'
     def __init__(self, app):
+        Plugin.__init__(self)
 
         self.app = app
                 

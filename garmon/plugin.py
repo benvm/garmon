@@ -24,6 +24,7 @@
 
 
 import gobject
+from gobject import GObject
 import gtk
 
 from gettext import gettext as _
@@ -35,7 +36,9 @@ from gettext import gettext as _
 )  = range(3)
 
 
-class Plugin(object):
+
+class Plugin(GObject):
+    __gtype_name__='Plugin'
     ui_info = ''
     action_group = None
     merge_id = None
@@ -51,10 +54,24 @@ class Plugin(object):
             dialog.connect('response', self._port_error_dialog_response)
             dialog.run()
             
-            
-            
+
     def _port_error_dialog_response(self, dialog, response):
         dialog.destroy()
         if response == gtk.RESPONSE_YES:
             self.app.reset()
    
+    def __init__(self):
+        GObject.__init__(self)
+
+    ####################### Public Interface ###################
+    
+    def start(self):
+        raise NotImplementedError
+    def stop(self):
+        raise NotImplementedError
+    def load(self):
+        raise NotImplementedError
+    def unload(self):
+        raise NotImplementedError
+        
+        
