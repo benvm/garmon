@@ -26,7 +26,7 @@ import string
 import math
 
 import gobject
-from gobject import GObject, GInterface
+from gobject import GObject
 from property_object import PropertyObject, gproperty, gsignal
 
 import garmon
@@ -39,7 +39,7 @@ from garmon import debug
 MAX_TIMEOUT = 3
 
 class OBDError(Exception):
-    """Base class for exceptions in this module"""     
+    """Base class for exceptions in this module"""
 
 class OBDPortError(OBDError):
     """Exception to indicate that there was an error with the port"""
@@ -86,6 +86,14 @@ class OBDDevice(GObject, PropertyObject):
     def close(self):
         raise NotImplementedError
     def read_obd_data(self, command, ret_cb, err_cb, *args):
+        raise NotImplementedError
+    def read_dtc(self, ret_cb, err_cb, *args):
+        raise NotImplementedError
+    def clear_dtc(self, ret_cb, err_cb, *args):
+        raise NotImplementedError
+    def get_dtc_num(self, ret_cb, err_cb, *args):
+        raise NotImplementedError
+    def get_mil(self, ret_cb, err_cb, *args): 
         raise NotImplementedError
 
 
@@ -381,19 +389,30 @@ class ELMDevice(OBDDevice, PropertyObject):
         def success_cb(cmd, res, args):
             res = decode_result(res)
             ret_cb(cmd, res, args)
-        
-        self._send_command(command, success_cb, err_cb, args)
+
+        if self._port and self._port.isOpen():
+            self._send_command(command, success_cb, err_cb, args)
+        else:
+            raise OBDPortError('PortNotOpen', _('The port is not open'))        
           
 
-    def get_dtc_num(self):
-        res = self._read_pid('0101')
-        return dtc_decode_num(res)[0]
+    def get_dtc_num(selfret_cb, err_cb, *args):
+
+        def success_cb(cmd, result, args):
+            result = dtc_decode_num(result)[0]
+            ret_cb(cmd, result, args)
+           
+        self._read_obd_data('0101', success_cb, err_cb, args)
         
         
-    def get_mil(self):
-        res = self._read_pid('0101')
-        return dtc_decode_mil(res)[0]
+    def get_mil(self, ret_cb, err_cb, *args):
         
+        def success_cb(cmd, result, args):
+            result = dtc_decode_mil(result)[0]
+            ret_cb(cmd, result, args)
+           
+        self._read_obd_data('0101', success_cb, err_cb, args)
+
         
     def read_dtc(self, ret_cb, err_cb, *args):
 

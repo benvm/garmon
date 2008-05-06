@@ -124,7 +124,7 @@ class DTCReader (gtk.VBox, Plugin):
     def _notebook_page_change_cb (self, notebook, no_use, page):
         plugin = notebook.get_nth_page(page)
         if plugin is self:
-            self.start()
+            self._on_reset(self.app)
 
 
     def _reread_button_clicked(self, button):

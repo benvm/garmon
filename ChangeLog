@@ -1,6 +1,13 @@
 2008-05-06  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/obd_device.py:
+	* plugins/dtc_reader/dtc_reader.py:
+	    implemented get_mil and get_dtc_num
+	    
+
+2008-05-06  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/obd_device.py:
 	    Add interface to base class
 	* garmon/plugin.py:
 	    Add interface to base class
