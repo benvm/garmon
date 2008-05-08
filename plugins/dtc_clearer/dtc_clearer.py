@@ -2,7 +2,7 @@
 #
 # dtc_clearer.py
 #
-# Copyright (C) Ben Van Mechelen 2007 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2008 <me@benvm.be>
 # 
 # dtc_clearer.py is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -128,3 +128,5 @@ class DTCClearer (Plugin):
         self.app.device.connect('connected', self._obd_connected_cb)
                 
                 
+    def unload(self):
+        pass            

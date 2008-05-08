@@ -1,3 +1,9 @@
+2008-05-08  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/dtc_clearer/dtc_clearer.py:
+        implement unload method
+        
+
 2008-05-06  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/obd_device.py:
