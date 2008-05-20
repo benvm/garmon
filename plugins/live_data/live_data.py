@@ -33,7 +33,8 @@ import garmon.sensor
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.obd_device import OBDDataError, OBDPortError
-from garmon.sensor import StateMixin, UnitMixin, SensorProxyMixin
+from garmon.sensor import StateMixin, UnitMixin
+from garmon.sensor import Command, Sensor
 from garmon.widgets import MILWidget
 
 
@@ -102,13 +103,13 @@ class LiveData (gtk.VBox, Plugin):
         self.os_views = []
 
         xml = self.glade_xml
-
+        
         mil = MILWidget(self.app)
-        #FIXME: change colors according to gconf
         mil.connect('active-changed', self._view_active_changed_cb)
         xml.get_widget('mil_alignment').add(mil)
+        mil.show()
         self.views.append(mil)
-
+        
         for item in SENSORS: 
             label = button = entry = unit = None
             pid = item[PID]
@@ -134,32 +135,57 @@ class LiveData (gtk.VBox, Plugin):
                 self.os_views.append(view)
             else:
                 self.views.append(view)
-    
+
+        
+        for item in COMMANDS: 
+            label = button = entry = None
+            command = item[COMMAND]
+            name = item[NAME]
+            if item[LABEL]:
+                label = xml.get_widget(item[LABEL])
+            if item[BUTTON]:
+                button = xml.get_widget(item[BUTTON])
+            if item[ENTRY]:
+                entry = xml.get_widget(item[ENTRY])
+            func = (item[HELPER])
+            
+            view = CommandView(command=command, name=name, 
+                               active_widget=button, name_widget=label,
+                               value_widget=entry, helper=func)
+                       
+            view.connect('active-changed', self._view_active_changed_cb)
+            
+            if item[ONE_SHOT]:
+                self.os_views.append(view)
+            else:
+                self.views.append(view)
+                    
     
     def _scheduler_notify_working_cb(self, scheduler, pspec):
         if not scheduler.working:
             for views in (self.views, self.os_views):
                 for view in views:
-                    view.sensor.clear()
+                    view.command.clear()
         else:
             for view in self.os_views:
                 if view.active:
-                    self.app.scheduler.add(view.sensor, True)
+                    self.app.scheduler.add(view.command, True)
                     
             
     def _view_active_changed_cb(self, view, active):
         if active:    
             if self.status == STATUS_WORKING:
-                self.app.scheduler.add(view.sensor)
+                self.app.scheduler.add(view.command)
         else:
-            self.app.scheduler.remove(view.sensor)
+            self.app.scheduler.remove(view.command)
     
     
     def _update_supported_views(self):
+        print 'in update_supported_views'
         for views in (self.views, self.os_views):
             for view in views:
                 if self.app.device:
-                    if view.sensor.pid in self.app.device.supported_pids:
+                    if view.command.command in self.app.device.supported_commands:
                         view.supported=True
                         view.active=True
                     else:
@@ -169,23 +195,20 @@ class LiveData (gtk.VBox, Plugin):
    
             
     def start(self):
-        if not self.status == STATUS_WORKING:
-            for view in self.views:
-                if view.active:
-                    self.app.scheduler.add(view.sensor, False)
-            for view in self.os_views:
-                if view.active:
-                    self.app.scheduler.add(view.sensor, True)
-            self.status = STATUS_WORKING
-            
+        print 'in start'
+        for view in self.views:
+            if view.active:
+                self.app.scheduler.add(view.command, False)
+        for view in self.os_views:
+            if view.active:
+                self.app.scheduler.add(view.command, True)
+        
             
     def stop(self):
-        if not self.status == STATUS_STOP:
-            for views in (self.views, self.os_views):
-                for view in views:
-                    self.app.scheduler.remove(view.sensor)
-                    view.sensor.clear()
-            self.status = STATUS_STOP
+        for views in (self.views, self.os_views):
+            for view in views:
+                self.app.scheduler.remove(view.command)
+                view.command.clear()
         
         
     def _obd_connected_cb(self, obd, connected=False):
@@ -233,9 +256,7 @@ class LiveData (gtk.VBox, Plugin):
 
 
 
-class LiveDataView(GObject, SensorProxyMixin, 
-                            StateMixin, UnitMixin, 
-                            PropertyObject):
+class LiveDataView(GObject, StateMixin, UnitMixin, PropertyObject):
     __gtype_name__ = 'LiveDataView'
     
     gproperty('name-widget', object)
@@ -255,8 +276,9 @@ class LiveDataView(GObject, SensorProxyMixin,
                                       units_widget=units_widget,
                                       unit_standard=units,
                                       helper=helper)
-        SensorProxyMixin.__init__(self, pid, index)
-        
+
+        self.command = Sensor(pid, index)
+        self.command.connect('data-changed', self._data_changed_cb)
         self._toggleable = False
         if active_widget:
             if isinstance(active_widget, gtk.ToggleButton):
@@ -276,15 +298,14 @@ class LiveDataView(GObject, SensorProxyMixin,
         self._update_view()
         self._sensitize_widgets()
     
-    def prop_get_sensor(self):
-        return self._sensor
-        
+
+       
     def _notify_active_cb(self, o, pspec):
         if self._toggleable:
             self.active_widget.set_active(self.active)
         self._sensitize_widgets()
         if not self.active:
-            self._sensor.clear()
+            self.command.clear()
         self.emit('active-changed', self.active)
         
     def _active_toggled_cb(self, togglebutton):
@@ -312,32 +333,128 @@ class LiveDataView(GObject, SensorProxyMixin,
                 widget.set_sensitive(self.supported and self.active)
             
             
-    def _sensor_data_changed_cb(self, sensor, data):
+    def _data_changed_cb(self, command, data):
+        print 'in _data_changed_cb'
         self._update_view()
        
        
     def _update_view(self):
         if self.unit_standard == 'Imperial':
-            value = self._sensor.imperial_value
-            units = self._sensor.imperial_units
+            value = self.command.imperial_value
+            units = self.command.imperial_units
         else:
-            value = self._sensor.metric_value
-            units = self._sensor.metric_units
+            value = self.command.metric_value
+            units = self.command.metric_units
         if not units: units=''
         if not value: value=''
         if self.helper and callable(self.helper):
             self.helper(self)
         else:    
             if self.name_widget:
-                self.name_widget.set_text(self._sensor.name)
+                self.name_widget.set_text(self.command.name)
             if self.value_widget:
                 self.value_widget.set_text(value)
             if self.units_widget:
                 self.units_widget.set_text(units)
 
+
+
+class CommandView(GObject, StateMixin, PropertyObject):
+    __gtype_name__ = 'CommandView'
+    
+    gproperty('name-widget', object)
+    gproperty('active-widget', object)
+    gproperty('value-widget', object)
+    gproperty('helper', object)
+    
+    def __init__(self, command, name, active_widget=None,
+                       name_widget=None, value_widget=None,
+                       units_widget=None, helper=None):
+                       
+        GObject.__init__(self)
+        PropertyObject.__init__(self, active_widget=active_widget,
+                                      name_widget=name_widget,
+                                      value_widget=value_widget,
+                                      helper=helper)
+        self.command = Command(command)
+        self.command.connect('data-changed', self._data_changed_cb)
+                
+        self._toggleable = False
+        if active_widget:
+            if isinstance(active_widget, gtk.ToggleButton):
+                self._toggleable = True
+                self.active = active_widget.get_active()
+                active_widget.connect('toggled', self._active_toggled_cb)
+            elif isinstance(active_widget, gtk.Button):
+                self._togglable = False
+                active_widget.connect('clicked', self._active_clicked_cb)
+            else:
+                raise ValueError, 'active_widget should be gtk.Button or gtk.ToggleButton'
+        
+    def __post_init__(self):
+        self.connect('notify::supported', self._notify_supported_cb)
+        self.connect('notify::active', self._notify_active_cb)
+        self._update_view()
+        self._sensitize_widgets()
+    
+
+    def _notify_active_cb(self, o, pspec):
+        if self._toggleable:
+            self.active_widget.set_active(self.active)
+        self._sensitize_widgets()
+        if not self.active:
+            self.command.clear()
+        self.emit('active-changed', self.active)
+        
+    def _active_toggled_cb(self, togglebutton):
+        self.active = togglebutton.get_active()
+    
+    
+    def _active_clicked_cb(self, button):
+        self.active = not self.active
+        
+                
+    def  _notify_supported_cb(self, o, pspec):
+        if not self.supported:
+            self.active = False
+        self._sensitize_widgets()
+    
+     
+    def _sensitize_widgets(self):
+        if self.active_widget:
+            self.active_widget.set_sensitive(self.supported)
+        for widget in (self.name_widget, self.value_widget):
+            if widget:
+                widget.set_sensitive(self.supported and self.active)
+            
+            
+    def _data_changed_cb(self, command, data):
+        print 'in data_changed_cb'
+        self._update_view()
+       
+       
+    def _update_view(self):
+        if self.helper and callable(self.helper):
+            self.helper(self)
+        else:
+            data = self.command.data
+            if not data:
+                data = ''
+            if self.value_widget:
+                self.value_widget.set_text(data)
+
+        
+(COMMAND, NAME) = range(2)
         
 (PID, INDEX, ONE_SHOT, HELPER, LABEL, BUTTON, ENTRY, UNIT) = range (8)     
 
+COMMANDS = [
+            ('voltage', _('Voltage'), False, None,
+                 'voltage_label', None, 'voltage_entry'),
+            ('protocol', _('Protocol'), False, None,
+                 'protocol_label', None, 'protocol_entry'),
+           ]
+              
 SENSORS= [
         ('0101', 0, False, None,
          'dtc_label', None, 'dtc_entry', None),
@@ -379,56 +496,5 @@ SENSORS= [
          'designation_label', None, 'designation_entry', None)
         ]
 
-  
-        
-        
-if __name__ == '__main__':
-
-    def switch_units(s):
-        if s.unit_standard == 'Metric':
-            s.unit_standard = 'Imperial'
-        else:
-            s.unit_standard = 'Metric'
-        return True
-        
-    def switch_data(s):
-        print 'in switch_data'
-        if s._sensor.data == '1':
-            s._sensor.data = '2'
-        else:
-            s._sensor.data = '1'
-        return True
-          
-    w = gtk.Window()
-    w.connect('destroy', lambda w: gtk.main_quit())
-    tog = gtk.ToggleButton()
-    nam = gtk.Entry()
-    un = gtk.Label()
-    val = gtk.Entry()
-    vbox = gtk.VBox()
-    vbox.pack_start(tog)
-    vbox.pack_start(nam)
-    vbox.pack_start(val)
-    vbox.pack_start(un)
-    w.add(vbox)
-    
-    s = LiveDataView('0103', active_widget=tog,
-                               name_widget=nam,
-                               value_widget=val,
-                               units_widget=un)
-    #print 'pid: %s' % s.pid
-    #print 'index: %s' % s.index
-    #print 'name: %s' % s.name
-    w.show_all()
-    s.supported = True
-    #s.active = True
-    s.units = 'Imperial'
-    s._sensor.data = '1'
-    id = gobject.timeout_add(500, switch_units, s)
-    id = gobject.timeout_add(1000, switch_data, s)
-    
-    gtk.main()
-    
-    
-    
+   
     

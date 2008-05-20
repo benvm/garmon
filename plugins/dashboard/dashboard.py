@@ -31,7 +31,7 @@ import garmon.plugin
 
 from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.obd_device import OBDDataError, OBDPortError
-from garmon.sensor import StateMixin, UnitMixin, SensorProxyMixin
+from garmon.sensor import StateMixin, UnitMixin, Sensor
 from garmon.property_object import PropertyObject, gproperty, gsignal
 
 
@@ -193,7 +193,7 @@ class DashBoard (gtk.VBox, Plugin):
     def _update_supported_gauges (self):
         
         for gauge in self.gauges:
-            if gauge.sensor.pid in self.app.device.supported_pids:
+            if gauge.sensor.command in self.app.device.supported_pids:
                 gauge.supported = True
                 gauge.active = True
             else:
@@ -241,8 +241,7 @@ class DashBoard (gtk.VBox, Plugin):
 
 
 
-class Gauge (gtk.DrawingArea, SensorProxyMixin,
-                              StateMixin, UnitMixin,
+class Gauge (gtk.DrawingArea, StateMixin, UnitMixin,
                               PropertyObject):
     __gtype_name__="Gauge"
          
@@ -250,8 +249,7 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         return self._value
     
     # FIXME: min-angle and max-angle should be float, 
-    # but for some strange reason, set_property does not accept
-    # negative values for gdouble or gint.
+    # but set_property does not accept negative values for gdouble or gint.
     # Warning: value "-50" of type `gint' is invalid or out of range for property `min-angle' of type `gint'
     gproperty('min-angle', object) 
     gproperty('max-angle', object)
@@ -270,11 +268,12 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         if not imperial:
             imperial=metric
         gtk.DrawingArea.__init__(self)
-        SensorProxyMixin.__init__(self, pid, index)
-        PropertyObject.__init__(self, pid=pid, index=index, 
+        PropertyObject.__init__(self, command=pid, index=index, 
                                       metric_overlay=metric,
                                       imperial_overlay=imperial)
 
+        self.sensor = Sensor(pid, index)
+        
         width = self.metric_overlay.get_width()
         height = self.metric_overlay.get_height()    
         self.set_size_request(width, height)    
@@ -295,6 +294,7 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
         self.connect('notify::imperial-overlay', self._notify_must_redraw)
         self.connect('notify::needle-color', self._notify_needle_cb)
         self.connect('notify::needle-width', self._notify_needle_cb)
+        self.sensor.connect('data-changed', self._sensor_data_changed_cb)
 
         
     def _notify_must_redraw(self, o, pspec):
@@ -311,7 +311,7 @@ class Gauge (gtk.DrawingArea, SensorProxyMixin,
 
 
     def _sensor_data_changed_cb(self, sensor, data):
-        self._value = eval(self._sensor.metric_value)
+        self._value = eval(self.sensor.metric_value)
         self._draw()
            
                

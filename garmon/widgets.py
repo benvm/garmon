@@ -23,23 +23,23 @@ import gtk
 
 import garmon
 from garmon.property_object import PropertyObject, gproperty
-from garmon.sensor import SensorProxyMixin, StateMixin, dtc_decode_mil
+from garmon.sensor import Sensor, StateMixin, dtc_decode_mil
 
 
 
-class MILWidget(gtk.Entry, SensorProxyMixin,
-                           StateMixin,
-                           PropertyObject):
-    
+class MILWidget(gtk.Entry,
+                StateMixin,
+                PropertyObject):
+    __gtype_name__='MILWidget'
     gproperty('on', bool, False)
     gproperty('on-color', str, '#F7D30D')
     gproperty('off-color', str, '#AAAAAA')
     
     def __init__(self, app):
         gtk.Entry.__init__(self, 3)
-        SensorProxyMixin.__init__(self, '0101', 1)
+        self.command = Sensor('0101', 1)
         PropertyObject.__init__(self)
-        
+
         self._pref_cbs = []
         
         self.app = app
@@ -61,6 +61,7 @@ class MILWidget(gtk.Entry, SensorProxyMixin,
         self.connect('notify::on-color', self._notify_cb)
         self.connect('notify::off-color', self._notify_cb)
         self.notify('on')
+        self.command.connect('data-changed', self._data_changed_cb)
         
     def _notify_cb(self, o, pspec):
         if self.on:
@@ -76,8 +77,8 @@ class MILWidget(gtk.Entry, SensorProxyMixin,
             self.off_color = pvalue
     
     
-    def _sensor_data_changed_cb(self, sensor, data):
-        on = self.sensor.metric_value == 'On'
+    def _data_changed_cb(self, command, data):
+        on = self.command.metric_value == 'On'
         self.on = on
                                   
                                   

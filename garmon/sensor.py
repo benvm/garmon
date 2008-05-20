@@ -30,33 +30,31 @@ import garmon
 from garmon.property_object import PropertyObject, gproperty, gsignal
 
 
-class OBDData (GObject, PropertyObject):
-    #__gtype_name__ = 'OBDData'
+class Command (GObject, PropertyObject):
+    __gtype_name__ = 'Command'
     
-    gproperty('pid', str, flags=gobject.PARAM_READABLE)
+    gproperty('command', str, flags=gobject.PARAM_READABLE)
     gproperty('data', object)
 
     gsignal('data-changed', object)
     
-    def __init__(self, pid):
+    def __init__(self, command):
         GObject.__init__(self)
-        PropertyObject.__init__(self, pid=pid)
+        PropertyObject.__init__(self, command=command)
     
     def __post_init__(self):
         self.connect('notify::data', self._notify_data_cb)
         
-    def _clear_data(self):
-        self.data = None
-        
     def _notify_data_cb(self, o, pspec):
+        print 'in _notify_data_cb'
         self.emit('data-changed', self.data)
         
     def clear(self):
-        self._clear_data()
-        
-       
-class OBDSensor (OBDData, PropertyObject):
-    #__gtype_name__ = 'OBDSensor'
+        self.data = None
+
+
+class Sensor (Command, PropertyObject):
+    __gtype_name__ = 'Sensor'
 
     gproperty('index', int, 0)
     gproperty('indices', int)   
@@ -65,31 +63,7 @@ class OBDSensor (OBDData, PropertyObject):
     gproperty('metric_units', str, flags=gobject.PARAM_READABLE)
     gproperty('imperial_value', str, flags=gobject.PARAM_READABLE)
     gproperty('imperial_units', str, flags=gobject.PARAM_READABLE)    
-    
 
-    def __init__(self, pid, index=0, units='Metric'):
-        self._indices = len(SENSORS[pid])
-        self._imperial_units = None
-        self._metric_units = None
-        self._decoder = None
-        OBDData.__init__(self, pid)
-        PropertyObject.__init__(self, pid=pid, index=index)
-
-    def __post_init__(self):
-        OBDData.__post_init__(self)
-        self.connect('notify::index', self._index_changed_cb)
-        self._update_info()
-      
-    def _update_info(self):
-        self._name = SENSORS[self.pid][self.index][NAME]
-        self._metric_units = SENSORS[self.pid][self.index][METRIC]
-        self._imperial_units = SENSORS[self.pid][self.index][IMPERIAL]       
-        self._decoder = SENSORS[self.pid][self.index][FUNC]
-        
-    def _index_changed_cb(self, o, pspec):
-        self._clear_data()
-        self._update_info()
-    
     def prop_set_index(self, index):
         if self._indices < index+1:
             raise ValueError, 'index too high'
@@ -118,8 +92,32 @@ class OBDSensor (OBDData, PropertyObject):
         return self._imperial_units             
             
     def prop_get_name(self):
-        return self._name
- 
+        return self._name    
+
+
+    def __init__(self, command, index=0, units='Metric'):
+        self._indices = len(SENSORS[command])
+        self._imperial_units = None
+        self._metric_units = None
+        self._decoder = None
+        Command.__init__(self, command)
+        PropertyObject.__init__(self, command=command, index=index)
+
+    def __post_init__(self):
+        Command.__post_init__(self)
+        self.connect('notify::index', self._index_changed_cb)
+        self._update_info()
+      
+    def _update_info(self):
+        self._name = SENSORS[self.command][self.index][NAME]
+        self._metric_units = SENSORS[self.command][self.index][METRIC]
+        self._imperial_units = SENSORS[self.command][self.index][IMPERIAL]       
+        self._decoder = SENSORS[self.command][self.index][FUNC]
+        
+    def _index_changed_cb(self, o, pspec):
+        self._clear_data()
+        self._update_info()
+           
           
 class StateMixin (object):
     
@@ -137,24 +135,8 @@ class UnitMixin (object):
         if not standard in ('Metric', 'Imperial'):
             raise ValueError, 'unit-standard should be either Metric or Imperial'
         return standard
-
-    
-class SensorProxyMixin(object):
-    gproperty('sensor', object, flags=gobject.PARAM_READABLE)
-    
-    def __init__(self, pid, index=0):
-        self._sensor = OBDSensor(pid, index)
-        self._sensor.connect('data-changed', self._sensor_data_changed_cb)
-    
-    def prop_get_sensor(self):
-        return self._sensor
-    
-    def _sensor_data_changed_cb(self, sensor, data):
-        pass  
+      
         
-        
-        
-
 def num_values(pid):
     return len(SENSORS[pid])
 

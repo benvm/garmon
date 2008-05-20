@@ -26,7 +26,7 @@ import gtk
 import garmon
 from garmon.obd_device import OBDDevice
 from garmon.property_object import PropertyObject, gproperty
-from garmon.sensor import OBDData
+from garmon.sensor import Command
 
 
 class QueueItem(str):
@@ -81,10 +81,10 @@ class Scheduler (GObject, PropertyObject):
     
     
     def _command_success_cb(self, cmd, result, args):
-        #we only care about the first result
+        # We only care about the first result
         result = result[0]
-        for obd_data in cmd.list:
-            obd_data.data = result
+        for item in cmd.list:
+            item.data = result
         if self.working:
             self._execute_next_command()
         
@@ -92,9 +92,9 @@ class Scheduler (GObject, PropertyObject):
         debug('Scheduler._command_error_cb: command was: %s' % cmd)
         debug('Scheduler._command_error_cb: msg is %s' % msg)
         if self.working:
-            self._execute_next_command()    
+            self._execute_next_command()
     
-        
+    
     def _execute_next_command(self):
         if len(self._os_queue):
             queue_item = self._os_queue.pop(0)
@@ -102,11 +102,11 @@ class Scheduler (GObject, PropertyObject):
             queue_item = self._queue.pop(0)
             self._queue.append(queue_item)
         else:
-            #no commands anymore
+            print 'nothing in queue'
             self.working = False
             return
             
-        self.obd_device.read_obd_data(queue_item, 
+        self.obd_device.read_command(queue_item, 
                                           self._command_success_cb,
                                           self._command_error_cb)
 
@@ -118,39 +118,40 @@ class Scheduler (GObject, PropertyObject):
             
     ####################### Public Interface ###################
                            
-    def add(self, obd_data, oneshot=False):
+    def add(self, command, oneshot=False):
         """Add an item to the queue
-           @param obd_data: the item to add to the queue
+           @param command: the item to add to the queue
            @param oneshot: wether the command should only be 
                            executed once.
         """
-        if not isinstance(obd_data, OBDData):
-            raise ValueError, 'obd_data should be an instance of OBDData'
+        print ' in add'
+        if not isinstance(command, Command):
+            raise ValueError, 'command should be an instance of Command'
         if oneshot:
             queue = self._os_queue
         else:
             queue = self._queue
             
-        if obd_data.pid in queue:
-            queue_item = queue[queue.index(obd_data.pid)]
+        if Command.command in queue:
+            queue_item = queue[queue.index(command.command)]
         else:
-            queue_item = QueueItem(obd_data.pid)
+            queue_item = QueueItem(command.command)
             queue.append(queue_item)
-        queue_item.list.append(obd_data)
+        queue_item.list.append(command)
 
            
-    def remove(self, obd_data):
+    def remove(self, command):
         """Remove an item from the queue
-           @param obd_data: OBDData instance
+           @param command: Command instance
         """
-        if not isinstance(obd_data, OBDData):
-            raise ValueError, 'obd_data should be an instance of OBDData'
+        if not isinstance(command, Command):
+            raise ValueError, 'command should be an instance of Command'
 
         for queue in (self._queue, self._os_queue):
             for queue_item in queue:
-                if queue_item == obd_data.pid:
-                    if obd_data in queue_item.list:
-                        queue_item.list.remove(obd_data)
+                if queue_item == command.command:
+                    if command in queue_item.list:
+                        queue_item.list.remove(command)
                     if queue_item.list == []:
                         queue.remove(queue_item)
     

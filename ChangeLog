@@ -1,3 +1,19 @@
+2008-05-20  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/obd_device.py:
+	    Add a method to read special commands
+	* garmon/scheduler.py:
+	* garmon/sensor.py:
+	* garmon/widgets.py:
+	* plugins/dashboard/dashboard.py:
+	* plugins/live_data/live_data.glade:
+	* plugins/live_data/live_data.py:
+		new Command and Sensor class
+	    got rid of OBDData and friends
+	* scripts/elm_sim.py:
+	    better simulate the behaviour of an ELM device
+
+
 2008-05-08  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/dtc_clearer/dtc_clearer.py:

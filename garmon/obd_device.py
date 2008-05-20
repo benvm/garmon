@@ -31,7 +31,7 @@ from property_object import PropertyObject, gproperty, gsignal
 
 import garmon
 import garmon.sensor as sensor
-from garmon.sensor import OBDData, SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
+from garmon.sensor import SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
 from garmon.sensor import dtc_decode_num, dtc_decode_mil
 
 from garmon import debug
@@ -64,6 +64,7 @@ class OBDDevice(GObject, PropertyObject):
     gproperty('connected', bool, False, flags=gobject.PARAM_READABLE)
     gproperty('supported_pids', object, flags=gobject.PARAM_READABLE)
     gproperty('special_commands', object, flags=gobject.PARAM_READABLE)
+    gproperty('supported_commands', object, flags=gobject.PARAM_READABLE)
     
 
     def prop_get_connected(self):
@@ -74,6 +75,13 @@ class OBDDevice(GObject, PropertyObject):
         
     def prop_get_special_commands(self):
         return self._special_commands
+        
+    def prop_get_supported_commands(self):
+        commands = self._special_commands.keys()
+        for pid in self.supported_pids:
+            commands.append(pid)
+        return commands
+        
 
     def __init__(self):
         GObject.__init__(self)
@@ -95,7 +103,10 @@ class OBDDevice(GObject, PropertyObject):
         raise NotImplementedError
     def get_mil(self, ret_cb, err_cb, *args): 
         raise NotImplementedError
-
+    def read_device_data(self, command, ret_cb, err_cb, *args):
+        raise NotImplementedError
+    def read_command(self, ret_cb, err_cb, *args):
+        raise NotImplementedError
 
 class ELMDevice(OBDDevice, PropertyObject):
     """ This class talks to an ELM device. It sends commands and receives
@@ -104,13 +115,12 @@ class ELMDevice(OBDDevice, PropertyObject):
     __gtype_name__ = "ELMDevice"
     
     _special_commands = {
-                        'Voltage'     : 'RV'
+                        'voltage'   : ('atrv', 'V'),
+                        'protocol'  : ('atdp', ''),
                         }
      
     
     def __init__(self):
-        """ @param portname: The port to connect to e.g. /dev/ttyUSB0
-        """
         OBDDevice.__init__(self)
         PropertyObject.__init__(self)
 
@@ -175,7 +185,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 if buf == '':
                     raise OBDPortError('PortIOFailed', 
                                        _('Read timeout from ') + self.portname)
-                buf = buf.replace('\r\r>', '')
+                buf = buf.replace('\r\r', '')
                 return buf
                 
             except serial.SerialException:
@@ -281,15 +291,11 @@ class ELMDevice(OBDDevice, PropertyObject):
     
     
     def _read_supported_pids(self):
-    
         def success_cb(cmd, data, args):
             self._supported_pids = []
-            
             data = decode_result(data)
-            
             for item in data:
                 bitstr = sensor.hex_to_bitstr(item)
-                
                 for i in range(0, len(bitstr)):
                     if bitstr[i] == "1":
                         pid = i + 1
@@ -300,6 +306,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                         self._supported_pids.append(pid_str.upper())      
                           
             self._connected = True
+            print 'supported pids: %s' % self._supported_pids
             self.emit('connected', True)
         
         def error_cb(cmd, msg, args):
@@ -381,22 +388,50 @@ class ELMDevice(OBDDevice, PropertyObject):
         self.emit('connected', False)
         
                     
-    def read_obd_data(self, command, ret_cb, err_cb, *args):
-        if not command in self._supported_pids and \
-           not command in self._special_commands:
-           raise ValueError, 'command %s is not supported' % command
+    def read_pid_data(self, pid, ret_cb, err_cb, *args):
+        if not pid in self._supported_pids:
+            raise ValueError, 'pid %s is not supported' % pid
         
         def success_cb(cmd, res, args):
             res = decode_result(res)
             ret_cb(cmd, res, args)
 
         if self._port and self._port.isOpen():
-            self._send_command(command, success_cb, err_cb, args)
+            self._send_command(pid, success_cb, err_cb, args)
         else:
             raise OBDPortError('PortNotOpen', _('The port is not open'))        
-          
+    
+    
+    def read_device_data(self, command, ret_cb, err_cb, *args):
+        if not command in self._special_commands.keys():
+            raise ValueError, 'command %s is not supported' % command
+            
+        def success_cb(cmd, res, args):
+            ret = []
+            ret.append(res)
+            ret_cb(command, ret, args)
+            
+        def error_cb(cmd, res, args):
+            err_cb(command, res, args)
 
-    def get_dtc_num(selfret_cb, err_cb, *args):
+        if self._port and self._port.isOpen():
+            cmd = self._special_commands[command][0]
+            self._send_command(cmd, success_cb, error_cb, args)
+        else:
+            raise OBDPortError('PortNotOpen', _('The port is not open'))              
+       
+
+    def read_command(self, command, ret_cb, err_cb, *args):
+          
+        if command in self._special_commands.keys():
+            self.read_device_data(command, ret_cb, err_cb, args)
+        elif command in self._supported_pids:
+            self.read_pid_data(command, ret_cb, err_cb, args)
+        else:
+            raise NotImplementedError, 'This command is currently not supported'
+    
+    
+    def get_dtc_num(self, ret_cb, err_cb, *args):
 
         def success_cb(cmd, result, args):
             result = dtc_decode_num(result)[0]
