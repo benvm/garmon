@@ -57,28 +57,10 @@ class PluginManager(gtk.Dialog, PropertyObject):
  
     ################# Properties and signals ###############   
     gproperty('plugins', object, flags=gobject.PARAM_READABLE)
-    gproperty('startable_plugins', object, flags=gobject.PARAM_READABLE)
-    gproperty('stoppable_plugins', object, flags=gobject.PARAM_READABLE)
     
     def prop_get_plugins(self):
         return self._active_plugins
-           
-        
-    def prop_get_startable_plugins(self):
-        plugins = []
-        for name, plugin in self._active_plugins:
-            if self.plugin_is_startable(plugin):
-                plugins.append((name, plugin))
-        return plugins
-        
  
-    def prop_get_stoppable_plugins(self):
-        plugins = []
-        for name, plugin in self._active_plugins:
-            if self.plugin_is_stoppable(plugin):
-                plugins.append((name, plugin))
-        return plugins
-                              
                               
     def __init__(self, app):
         """ @param app: GarmonApp
@@ -320,39 +302,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
             if isinstance(instance, GarmonNotebookPlugin):
                 return True
         return False
-        
-
-    def plugin_is_startable(self, plugin):
-        if type(plugin) is 'str':
-            instance = self._plugin_instance_from_string(plugin)
-        else:
-            instance = plugin
-            
-        if instance:
-            if hasattr(plugin, 'start'):
-                return True
-        return False
-            
-
-    def plugin_is_stoppable(self, plugin):
-        if type(plugin) is 'str':
-            instance = self._plugin_instance_from_string(plugin)
-        else:
-            instance = plugin
-            
-        if instance:
-            if hasattr(plugin, 'stop'):
-                return True
-        return False
-       
-        
-    def get_startable_plugins(self):
-        return self.startable_plugins
-        
- 
-    def get_stoppable_plugins(self):
-        return self.stoppable_plugins
-        
+               
         
     def run(self):
         self.show_all()

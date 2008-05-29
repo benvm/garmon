@@ -1,5 +1,12 @@
 2008-05-29  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/garmon_app.py:
+	* garmon/plugin_manager.py:
+	    Removed all startable and stoppable stuff as all plugins
+	    need to implement start and stop methods 
+
+2008-05-29  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/dtc_clearer/dtc_clearer.py:
 	    Implement start and stop methods
 	

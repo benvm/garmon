@@ -317,7 +317,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         """This methods stops all stoppable plugins, closes the obd device
            and tries to reopen it."""
         if self.device.connected:
-            for name, plugin in self._plugman.stoppable_plugins:
+            for name, plugin in self._plugman.plugins:
                 plugin.stop()
             self.device.close()
 
@@ -335,7 +335,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         finally:
             self.emit('reset')   
 
-                        
+
         
 def main():
     GarmonApp()
