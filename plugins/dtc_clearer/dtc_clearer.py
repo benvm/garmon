@@ -130,3 +130,12 @@ class DTCClearer (Plugin):
                 
     def unload(self):
         pass            
+        
+    def start(self):
+        pass
+        
+    def stop(self):
+        pass
+        
+        
+    
