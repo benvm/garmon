@@ -122,7 +122,7 @@ class GarmonApp(gtk.Window, PropertyObject):
 
         self._prefs.register_preference('mil.on-color', str, '#F7D30D')
         self._prefs.register_preference('mil.off-color', str, '#AAAAAA')
-        self._prefs.register_preference('port', str, '/dev/ttyUSB0')
+        self._prefs.register_preference('device.portname', str, '/dev/ttyUSB0')
         self._prefs.register_preference('metric', bool, True)
         self._prefs.register_preference('imperial', bool, False)
         self._prefs.register_preference('plugins.save', bool, True)
@@ -130,8 +130,10 @@ class GarmonApp(gtk.Window, PropertyObject):
         self._prefs.register_preference('plugins.saved', str, '')
         
         fname = os.path.join(GLADE_DIR, 'prefs.glade')
-        xml = gtk.glade.XML(fname, 'new_prefs_vbox', 'garmon')
-        self._prefs.add_dialog_page(xml, 'new_prefs_vbox', 'General')
+        xml = gtk.glade.XML(fname, 'general_prefs_vbox', 'garmon')
+        self._prefs.add_dialog_page(xml, 'general_prefs_vbox', 'General')
+        xml = gtk.glade.XML(fname, 'device_prefs_vbox', 'garmon')
+        self._prefs.add_dialog_page(xml, 'device_prefs_vbox', 'Device')
         
         
         self._backdoor = None
@@ -182,7 +184,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         if self._prefs.get_preference('plugins.start'):
             self._plugman.activate_saved_plugins()
         
-        cb_id = self._prefs.preference_notify_add('port', self._notify_port_cb)
+        cb_id = self._prefs.preference_notify_add('device.portname', self._notify_port_cb)
         self._pref_cbs.append(cb_id)
         
         self.show_all()

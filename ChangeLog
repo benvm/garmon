@@ -1,9 +1,21 @@
+2008-05-30  Ben Van Mechelen  <me@benvm.be>
+
+	* configure.ac:
+	* data/Makefile.am:
+	* data/garmon.schemas:
+	* data/prefs.glade:
+	* garmon/garmon_app.py:
+	* garmon/obd_device.py:
+	    Fix the gconf magic.
+	    
+
 2008-05-29  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/garmon_app.py:
 	* garmon/plugin_manager.py:
 	    Removed all startable and stoppable stuff as all plugins
 	    need to implement start and stop methods 
+
 
 2008-05-29  Ben Van Mechelen  <me@benvm.be>
 

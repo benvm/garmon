@@ -57,8 +57,8 @@ class DashBoard (gtk.VBox, Plugin):
         self._scheduler_cbs = []
         self._obd_cbs = []
                 
-        app.prefs.register_preference('dashboard.needle-color', str, '#FDC62D')
-        app.prefs.register_preference('dashboard.background', str, '#000000')
+        app.prefs.register_preference('dashboard.needle-color', str, '#F20D1B')
+        app.prefs.register_preference('dashboard.background', str, '#2F2323')
 
         fname = os.path.join(self.dir, 'dashboard.glade')
         xml = gtk.glade.XML(fname, 'prefs-vbox', 'garmon')

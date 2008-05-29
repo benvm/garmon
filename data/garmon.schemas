@@ -1,8 +1,8 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <key>/schemas/apps/garmon/port</key>
-      <applyto>/apps/garmon/port</applyto>
+      <key>/schemas/apps/garmon/device.portname</key>
+      <applyto>/apps/garmon/device.portname</applyto>
       <owner>garmon</owner>
       <type>string</type>
       <locale name="C">
@@ -12,19 +12,30 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/garmon/units</key>
-      <applyto>/apps/garmon/units</applyto>
+      <key>/schemas/apps/garmon/metric</key>
+      <applyto>/apps/garmon/metric</applyto>
       <owner>garmon</owner>
-      <type>string</type>
+      <type>bool</type>
       <locale name="C">
-        <default>Metric</default>
-        <short>Units</short>
-        <long>Whether to use metric or imperial units</long>
+        <default>True</default>
+        <short>Metric units</short>
+        <long>Whether to use metric units</long>
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/garmon/save_plugins</key>
-      <applyto>/apps/garmon/save_plugins</applyto>
+      <key>/schemas/apps/garmon/imperial</key>
+      <applyto>/apps/garmon/imperial</applyto>
+      <owner>garmon</owner>
+      <type>bool</type>
+      <locale name="C">
+        <default>True</default>
+        <short>Imperial units</short>
+        <long>Whether to use imperial units</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/plugins.save</key>
+      <applyto>/apps/garmon/plugins.save</applyto>
       <owner>garmon</owner>
       <type>bool</type>
       <locale name="C">
@@ -34,8 +45,8 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/garmon/start_plugins</key>
-      <applyto>/apps/garmon/start_plugins</applyto>
+      <key>/schemas/apps/garmon/plugins.start</key>
+      <applyto>/apps/garmon/plugins.start</applyto>
       <owner>garmon</owner>
       <type>bool</type>
       <locale name="C">
@@ -45,19 +56,19 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/garmon/active_plugins</key>
-      <applyto>/apps/garmon/active_plugins</applyto>
+      <key>/schemas/apps/garmon/plugins.saved</key>
+      <applyto>/apps/garmon/plugins.saved</applyto>
       <owner>garmon</owner>
       <type>string</type>
       <locale name="C">
-        <default>LiveData,DTCReader,DTCClearer</default>
+        <default>LiveData,DTCReader,DTCClearer, DashBoard</default>
         <short>Active Plugins</short>
         <long>The plugins to activate when the app is started</long>
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/garmon/mil_on_color</key>
-      <applyto>/apps/garmon/mil_on_color</applyto>
+      <key>/schemas/apps/garmon/mil.on-color</key>
+      <applyto>/apps/garmon/mil.on-color</applyto>
       <owner>garmon</owner>
       <type>string</type>
       <locale name="C">
@@ -67,14 +78,36 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/apps/garmon/mil_off_color</key>
-      <applyto>/apps/garmon/mil_off_color</applyto>
+      <key>/schemas/apps/garmon/mil.off-color</key>
+      <applyto>/apps/garmon/mil.off-color</applyto>
       <owner>garmon</owner>
       <type>string</type>
       <locale name="C">
         <default>#AAAAAA</default>
         <short>MIL OFF color</short>
         <long>The color of the MIL when it is off</long>
+      </locale>
+    </schema>
+      <schema>
+      <key>/schemas/apps/garmon/dashboard.needle-color</key>
+      <applyto>/apps/garmon/dashboard.needle-color</applyto>
+      <owner>garmon</owner>
+      <type>string</type>
+      <locale name="C">
+        <default>#F20D1B</default>
+        <short>Dashboard gauges needle color</short>
+        <long>The color of the needles in the gauges of the DashBoard</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/dashboard.background</key>
+      <applyto>/apps/garmon/dashboard.background</applyto>
+      <owner>garmon</owner>
+      <type>string</type>
+      <locale name="C">
+        <default>#2F2323</default>
+        <short>Dashboard background color</short>
+        <long>The background color of the DashBoard</long>
       </locale>
     </schema>
   </schemalist>

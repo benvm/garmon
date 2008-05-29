@@ -1,20 +1,25 @@
-
 @INTLTOOL_XML_RULE@
 @INTLTOOL_DESKTOP_RULE@
-
+@INTLTOOL_SCHEMAS_RULE@
 
 Accessoriesdir = $(datadir)/applications
 Accessories_in_files = garmon.desktop.in
 Accessories_DATA = $(Accessories_in_files:.desktop.in=.desktop)
 
+schemadir = $(GCONF_SCHEMA_FILE_DIR)
+schema_in_files = garmon.schemas.in
+schema_DATA = $(schema_in_files:.schemas.in=.schemas)
 
-schemadir = @GCONF_SCHEMA_FILE_DIR@
-schema_DATA = garmon.schemas
 
-if GCONF_SCHEMAS_INSTALL
 install-data-local: $(schema_DATA)
-        GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA);
+if GCONF_SCHEMAS_INSTALL
+	if test -z "$(DESTDIR)" ; then \
+	for p in $^ ; do \
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $$p 2>&1 > /dev/null; \
+	done \
+	fi
 endif
+
 
 
 
@@ -46,10 +51,10 @@ gladedir = $(pkgdatadir)/glade
 
 glade_DATA = prefs.glade
 	
-
 			
 EXTRA_DIST = $(schema_DATA) \
-			garmon.desktop.in.in \
+			$(schema_in_files) \
+			$(Accessories_in_files) \
 			$(garmon_pixmaps_DATA) \
 			$(icon_DATA) \
 			$(svgicon_DATA) \
@@ -57,3 +62,7 @@ EXTRA_DIST = $(schema_DATA) \
 			
              
 CLEANFILES = garmon.desktop garmon.desktop.in
+
+DISTCLEANFILES = $(schema_in_files:.schemas.in=.schemas) \
+                 $(Accessories_in_files:.desktop.in=.desktop)
+

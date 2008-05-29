@@ -49,8 +49,6 @@ class OBDDataError(OBDError):
 
 
 
-# Inheriting from GInterface will cause a segmentation fault. why?
-
 class OBDDevice(GObject, PropertyObject):
     __gtype_name__ = "OBDDevice"
     
@@ -362,7 +360,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                                 _('No portname has been set.'))
             
         try:
-            self._port = serial.Serial(self.portname, 9600, 
+            self._port = serial.Serial(self.portname, 38400, 
                                   serial.EIGHTBITS,
                                   serial.PARITY_NONE,
                                   serial.STOPBITS_ONE,

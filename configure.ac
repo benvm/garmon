@@ -22,8 +22,14 @@ IT_PROG_INTLTOOL([0.35.0])
 AM_PATH_PYTHON
 
 
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
 AM_GCONF_SOURCE_2
+
+AC_PATH_PROG([GCONFTOOL], [gconftool-2], [no])
+
+if test "$GCONFTOOL" = "no"; then
+	AC_MSG_ERROR([gconftool-2 not found])
+fi
+
 
 AC_SUBST(VERSION)
 AC_SUBST(PACKAGE)
