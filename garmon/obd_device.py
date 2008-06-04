@@ -36,6 +36,8 @@ from garmon.sensor import dtc_decode_num, dtc_decode_mil
 
 from garmon import debug
 
+import datetime
+
 MAX_TIMEOUT = 3
 
 class OBDError(Exception):
@@ -59,6 +61,8 @@ class OBDDevice(GObject, PropertyObject):
     gsignal('connected', bool)
     
     gproperty('portname', str)
+    #gproperty('initial-baudrate', int, 38400)
+    gproperty('baudrate', int)
     gproperty('connected', bool, False, flags=gobject.PARAM_READABLE)
     gproperty('supported_pids', object, flags=gobject.PARAM_READABLE)
     gproperty('special_commands', object, flags=gobject.PARAM_READABLE)
@@ -79,6 +83,11 @@ class OBDDevice(GObject, PropertyObject):
         for pid in self.supported_pids:
             commands.append(pid)
         return commands
+        
+    def prop_set_baudrate(self, baudrate):
+        if hasattr(self, '_port') and self._port:
+            self._port.baudrate = baudrate
+        return baudrate 
         
 
     def __init__(self):
@@ -122,6 +131,10 @@ class ELMDevice(OBDDevice, PropertyObject):
         OBDDevice.__init__(self)
         PropertyObject.__init__(self)
 
+        # TODO: ignore for the moment (see request_baudrate)
+        # self._current_baudrate = self.initial_baudrate
+        # self._requested_baudrate = None
+
         self._connected = False
         self._port = None
         self._watch_id = None
@@ -129,8 +142,10 @@ class ELMDevice(OBDDevice, PropertyObject):
         self._supported_pids = []
         
         self._sent_command = None
+        self._cleanup_command = True
         self._ret_cb = None
         self._err_cb = None
+        self._cb_args = None
     
     
     def __post_init__(self):
@@ -143,11 +158,12 @@ class ELMDevice(OBDDevice, PropertyObject):
             self.open()
 
 
-    def _send_command(self, command, ret, err, *args):
+    def _send_command(self, command, ret, err, cleanup=True, *args):
         print 'in _send_command; command is %s' % command
         if not self._port.isOpen():
             raise OBDPortError('PortNotOpen', _('The port is not open'))
 
+        self._cleanup_command = cleanup
         self._sent_command = command
         self._ret_cb = ret
         self._err_cb = err
@@ -168,34 +184,39 @@ class ELMDevice(OBDDevice, PropertyObject):
             
 
     def _read_result(self):
+        #print 'in _read_result: %s' % datetime.datetime.now()
         timeout_count = 0
-        if self._port.isOpen:
-            try:
-                buf = ''
-                while timeout_count <= MAX_TIMEOUT:
-                    ch = self._port.read(1)
-                    if ch == '':
-                        timeout_count += 1
-                    if ch == '>' and len(buf) > 1 and buf[-1] == '\r' and buf[-2] == '\r':
-                        break
-                    else:
-                        buf = buf + ch
-                if buf == '':
-                    raise OBDPortError('PortIOFailed', 
-                                       _('Read timeout from ') + self.portname)
-                buf = buf.replace('\r\r', '')
-                return buf
-                
-            except serial.SerialException:
+        #if self._port.isOpen:
+        try:
+            buf = ''
+            while timeout_count <= MAX_TIMEOUT:
+                #print 'in while loop' % datetime.datetime.now()
+                ch = self._port.read(1)
+                if ch == '':
+                    timeout_count += 1
+                    #print 'timeout %s' % timeout_count
+                # if ch == '>' and len(buf) > 1 and buf[-1] == '\r' and buf[-2] == '\r':
+                if ch == '>': 
+                    #print 'will break now'
+                    break
+                else:
+                    buf = buf + ch
+            if buf == '':
                 raise OBDPortError('PortIOFailed', 
-                                   _('Unable to read from ') + self.portname)
-                                              
+                                   _('Read timeout from ') + self.portname)
+            buf = buf.replace('\r\r', '')
+            return buf
+            
+        except serial.SerialException:
+            raise OBDPortError('PortIOFailed', 
+                               _('Unable to read from ') + self.portname)
+                                          
                 
         return None
          
       
     def _parse_result(self, data):
-        print 'entering _parse_result'
+        #print 'entering _parse_result: %s' % datetime.datetime.now()
         error = False
         success = False
         res = None
@@ -205,7 +226,7 @@ class ELMDevice(OBDDevice, PropertyObject):
         err_cb = self._err_cb
         ret_cb = self._ret_cb
         args = self._cb_args
-        
+     
         if self._sent_command:
             if data[0] == '>':
                 print 'command sent, received >'
@@ -214,7 +235,7 @@ class ELMDevice(OBDDevice, PropertyObject):
             elif data[0] == '?':
                 print 'command sent, received ?'
                 error = True
-                msg = 'Unknown command'
+                msg = '?'
                 
             elif 'SEARCHING' in data:
                 print 'received SEARCHING: resending command'
@@ -234,18 +255,16 @@ class ELMDevice(OBDDevice, PropertyObject):
                 res = data
                 success = True
                 
-            if error:
+            if self._cleanup_command:
                 self._err_cb = None
                 self._ret_cb = None
                 self._sent_command = None
                 self._cb_args = None
+                
+            if error:
                 err_cb(cmd, msg, args)
                 
             if success:
-                self._err_cb = None
-                self._ret_cb = None
-                self._sent_command = None
-                self._cb_args = None
                 ret_cb(cmd, data, args)
                 
         else:
@@ -258,7 +277,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 
 
     def _port_io_watch_cb(self, fd, condition, data=None):
-        print 'in _on_io_activity'
+        print 'in _port_io_watch_cb'
         if condition & gobject.IO_HUP:
             debug('received HUP signal')
             self._sent_command = None
@@ -275,12 +294,12 @@ class ELMDevice(OBDDevice, PropertyObject):
             self._cb_args = None
             self.close()    
             return False
-        elif condition & gobject.IO_IN or condition & gobject.IO_PRI:
+        elif condition & gobject.IO_IN:
             try:
                 result = self._read_result()
                 self._parse_result(result)
-            except OBDPortError:
-                debug('CONDITION = IO_IN but reading times out')
+            except OBDPortError, e:
+                debug('CONDITION = IO_IN but reading times out. Error: %s' % e[0])
             finally:
                 return True
         else:
@@ -313,8 +332,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                                _('could not read supported pids\n\n' + msg))        
         
         self._send_command('0100', success_cb, error_cb)
-                
-        
+    
         
     def _initialize_device(self):
         def atz_success_cb(cmd, res, args):
@@ -360,7 +378,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                                 _('No portname has been set.'))
             
         try:
-            self._port = serial.Serial(self.portname, 38400, 
+            self._port = serial.Serial(self.portname, self.baudrate, 
                                   serial.EIGHTBITS,
                                   serial.PARITY_NONE,
                                   serial.STOPBITS_ONE,
@@ -380,12 +398,52 @@ class ELMDevice(OBDDevice, PropertyObject):
         self._supported_pids = []
         if self._port:
             gobject.source_remove(self._watch_id)
-            #FIXME: send "atz" command to the device
             self._port.close()
         self._connected = False
         self.emit('connected', False)
         
                     
+    def request_baudrate(self, baudrate=None):
+        """FIXME: Ignore this for the moment.
+           Setting the baudrate with AT BRD xx needs more investigation"""
+        raise NotImplementedError
+        if not baudrate:
+            #FIXME: implement this
+            #self._request_highest_baudrate()
+            pass
+        else:
+        
+            divisor = hex(int(round(4000000.0 / baudrate)))
+            command = 'at brd ' + str(divisor)[2:]
+        
+            def cr_return_cb(cmd, res, args):
+                print 'cr_return_cb'
+                if 'OK' in res:
+                    self._current_baudrate = baudrate
+                
+            def brd_support_success_cb(cmd, res, args):
+                if 'OK' in res:
+                    print 'res = OK'
+                    self._port.baudrate = baudrate
+                    print self._stop - self._start
+                elif 'ELM327' in res:
+                    print 'res = ELM327'
+                    self._send_command('\r', cr_success_cb, error_cb)    
+                
+                
+            def error_cb(cmd, msg, args):
+                if msg == '?':
+                    #FIXME
+                    print 'BRD command not supported'
+                else:
+                    print 'error in request_baudrate %s' % msg
+                    self._port.baudrate = self.initial_baudrate
+                    self._current_baudrate = self.initial_baudrate
+                
+            self._send_command(command, brd_support_success_cb, error_cb)
+            
+    
+    
     def read_pid_data(self, pid, ret_cb, err_cb, *args):
         if not pid in self._supported_pids:
             raise ValueError, 'pid %s is not supported' % pid

@@ -46,7 +46,6 @@ class Command (GObject, PropertyObject):
         self.connect('notify::data', self._notify_data_cb)
         
     def _notify_data_cb(self, o, pspec):
-        print 'in _notify_data_cb'
         self.emit('data-changed', self.data)
         
     def clear(self):

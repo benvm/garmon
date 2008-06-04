@@ -47,7 +47,7 @@ import garmon.plugin_manager as plugin_manager
 
 from garmon.prefs import PreferenceManager
 from garmon.obd_device import ELMDevice, OBDError, OBDDataError, OBDPortError
-from garmon.scheduler import Scheduler
+from garmon.scheduler import Scheduler, SchedulerTimer
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.backdoor import BackDoor
 
@@ -117,24 +117,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         #Create the toplevel window
         gtk.Window.__init__(self)
         
-        self._prefs = PreferenceManager('/apps/garmon')
-        self._pref_cbs = []
-
-        self._prefs.register_preference('mil.on-color', str, '#F7D30D')
-        self._prefs.register_preference('mil.off-color', str, '#AAAAAA')
-        self._prefs.register_preference('device.portname', str, '/dev/ttyUSB0')
-        self._prefs.register_preference('metric', bool, True)
-        self._prefs.register_preference('imperial', bool, False)
-        self._prefs.register_preference('plugins.save', bool, True)
-        self._prefs.register_preference('plugins.start', bool, True)
-        self._prefs.register_preference('plugins.saved', str, '')
-        
-        fname = os.path.join(GLADE_DIR, 'prefs.glade')
-        xml = gtk.glade.XML(fname, 'general_prefs_vbox', 'garmon')
-        self._prefs.add_dialog_page(xml, 'general_prefs_vbox', 'General')
-        xml = gtk.glade.XML(fname, 'device_prefs_vbox', 'garmon')
-        self._prefs.add_dialog_page(xml, 'device_prefs_vbox', 'Device')
-        
+        self._setup_prefs()
         
         self._backdoor = None
         
@@ -180,14 +163,64 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.scheduler = Scheduler(self.device)
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
         
+        self._statusbar = gtk.Statusbar()    
+        self.main_vbox.pack_end(self._statusbar, False, False)    
+        timer = SchedulerTimer(self.scheduler)
+        self._statusbar.pack_start(timer)
+        
         self._plugman = plugin_manager.PluginManager(self)
         if self._prefs.get_preference('plugins.start'):
             self._plugman.activate_saved_plugins()
         
         cb_id = self._prefs.preference_notify_add('device.portname', self._notify_port_cb)
         self._pref_cbs.append(cb_id)
+        cb_id = self._prefs.preference_notify_add('device.baudrate', self._notify_port_cb)
+        self._pref_cbs.append(cb_id)
         
         self.show_all()
+
+
+    def _setup_prefs(self):
+    
+        baudrates = (9600, 38400, 57600, 115200)
+        higher_rates = (57600, 115200)
+    
+        self._prefs = PreferenceManager('/apps/garmon')
+        self._pref_cbs = []
+
+        self._prefs.register_preference('mil.on-color', str, '#F7D30D')
+        self._prefs.register_preference('mil.off-color', str, '#AAAAAA')
+        self._prefs.register_preference('device.portname', str, '/dev/ttyUSB0')
+        self._prefs.register_preference('device.baudrate', int, 38400)
+        self._prefs.register_preference('device.initial-baudrate', int, 38400)
+        self._prefs.register_preference('device.increase-baudrate', bool, False)
+        self._prefs.register_preference('device.higher-baudrate', int, 115200)
+        self._prefs.register_preference('metric', bool, True)
+        self._prefs.register_preference('imperial', bool, False)
+        self._prefs.register_preference('plugins.save', bool, True)
+        self._prefs.register_preference('plugins.start', bool, True)
+        self._prefs.register_preference('plugins.saved', str, '')
+        
+        fname = os.path.join(GLADE_DIR, 'prefs.glade')
+        xml = gtk.glade.XML(fname, 'general_prefs_vbox', 'garmon')
+        self._prefs.add_dialog_page(xml, 'general_prefs_vbox', 'General')
+        
+        xml = gtk.glade.XML(fname, 'device_prefs_vbox', 'garmon')
+        
+        combo = xml.get_widget('preference;combo;int;device.baudrate')
+        model = gtk.ListStore(gobject.TYPE_INT)
+        for item in baudrates:
+            model.append((item,))
+        combo.set_model(model)
+
+        combo = xml.get_widget('preference;combo;int;device.higher-baudrate')
+        model = gtk.ListStore(gobject.TYPE_INT)
+        for item in higher_rates:
+            model.append((item,))
+        combo.set_model(model)
+        
+        self._prefs.add_dialog_page(xml, 'device_prefs_vbox', 'Device')
+        
 
     def _create_action_group(self):
         # GtkActionEntry
@@ -241,7 +274,11 @@ class GarmonApp(gtk.Window, PropertyObject):
 
     
     def _notify_port_cb(self, pname, pvalue, ptype, args):
-        self.device.portname = pvalue
+        if pname == 'device.portname':
+            self.device.portname = pvalue
+        elif pname == 'device.baudrate':
+            self.device.baudrate = pvalue
+
 
     def _activate_prefs_dialog(self, action):
         self.prefs.show_dialog()
@@ -324,7 +361,7 @@ class GarmonApp(gtk.Window, PropertyObject):
             self.device.close()
 
         try:
-            self.device.open(self.prefs.get_preference('port'))
+            self.device.open(self.prefs.get_preference('device.portname'))
         except OBDPortError, e:
             err, msg = e
             dialog = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,

@@ -1,3 +1,17 @@
+2008-06-04  Ben Van Mechelen  <me@benvm.be>
+
+	* data/prefs.glade:
+	* garmon/garmon_app.py:
+	* garmon/obd_device.py:
+	* garmon/prefs.py:
+	* garmon/scheduler.py:
+    * scripts/elm_sim.py:
+	    Try to increase speed
+	       -Add a baudrate preference.
+	       -Try to increase baudrate after connection (needs investigation)
+           -Add a refresh rate label to the statusbar
+
+
 2008-05-30  Ben Van Mechelen  <me@benvm.be>
 
 	* configure.ac:

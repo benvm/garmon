@@ -63,7 +63,48 @@ commands = {'atz' : 'ELM327 v1.2',
             '04' : '44',
                         
                      }
-                                        
+                      
+alternate_commands = {'atz' : 'ELM327 v1.2',
+            'ate0' : 'OK',
+            'atrv' : '14.0V',
+            'atdp' : 'other Protocol',
+            '0100' : '41 00 FFFFFFFF',
+            '0120' : '41 00 00000000',
+            '0101' : '41 01 82 07 65 04',
+            '0102' : '41 02 00 00',
+            '0103' : '41 03 02 04',
+            '0104' : '41 04 77',
+            '0105' : '41 05 66',
+            '0106' : '41 06 45',
+            '0107' : '41 07 66',
+            '0108' : '41 08 55',
+            '0109' : '41 09 BA',
+            '010A' : '41 0A 99',
+            '010B' : '41 0B 99',
+            '010C' : '41 0C 44 55',
+            '010D' : '41 0D 65',
+            '010E' : '41 0E 60',
+            '010F' : '41 0F 77',
+            '0110' : '41 10 66 99',
+            '0111' : '41 11 45',
+            '0112' : '41 12 22',
+            '0113' : '41 13 55',
+            '0114' : '41 14 55 66',
+            '0115' : '41 15 55 66',
+            '0116' : '41 16 55 66',
+            '0117' : '41 17 55 66',
+            '0118' : '41 18 55 66',
+            '0119' : '41 19 55 66',
+            '011A' : '41 1A 55 66',
+            '011B' : '41 1B 55 66',
+            '011C' : '41 1C 06',
+            '011D' : '41 1D 23',
+            '011E' : '41 1E 80',
+            '011F' : '41 1F 34 56',
+            '03' : '43 01 00 01 01 00 00',
+            '04' : '44',
+                        
+                     }                  
 
 class ElmSimulator(object):
     def __init__(self, port, baudrate=9600, 
@@ -87,6 +128,9 @@ class ElmSimulator(object):
             
             
     def start(self):
+        
+        alternate = False
+
         if not self.port:
             print 'No serial port open'
             return
@@ -106,7 +150,12 @@ class ElmSimulator(object):
             self.port.flushInput()
             
             if commands.has_key(buf):
-                ret = commands[buf]
+                if alternate:
+                    ret = alternate_commands[buf]
+                else:
+                    ret = commands[buf]
+                alternate = not alternate
+
                 print 'sending %s' % ret
                 if not ret == 'Nothing':
                     self.port.write(ret + '\r\r>')

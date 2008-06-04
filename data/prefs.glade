@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Thu May 29 22:37:17 2008 -->
+<!--Generated with glade3 3.4.5 on Tue Jun  3 18:11:00 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -630,6 +630,7 @@
                       </widget>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">False</property>
                       </packing>
                     </child>
                   </widget>
@@ -639,7 +640,7 @@
             <child>
               <widget class="GtkLabel" id="label11">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;b&gt;Serial Port:&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;Portname:&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
               </widget>
               <packing>
@@ -663,7 +664,69 @@
                 <property name="top_padding">2</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <placeholder/>
+                  <widget class="GtkVBox" id="vbox1">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkHBox" id="hbox9">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkLabel" id="label13">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Initial Baudrate: </property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkComboBox" id="preference;combo;int;device.baudrate">
+                            <property name="visible">True</property>
+                            <property name="items"></property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkHBox" id="hbox8">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <child>
+                          <widget class="GtkCheckButton" id="preference;toggle;bool;device.increase-baudrate">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="label" translatable="yes">Increase baudrate after connection: </property>
+                            <property name="response_id">0</property>
+                            <property name="draw_indicator">True</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkComboBox" id="preference;combo;int;device.higher-baudrate">
+                            <property name="visible">True</property>
+                            <property name="items"></property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
                 </child>
               </widget>
             </child>

@@ -127,6 +127,18 @@ class PreferenceManager(GObject):
             else:
                 #FIXME: error handling
                 pass
+        elif ptype is int:
+            if isinstance(widget, gtk.ComboBox):
+                def foreach_cb(model, path, iter):
+                    value = model.get_value(iter, 0)
+                    if value == pvalue:
+                        widget.set_active_iter(iter)
+                        
+                model = widget.get_model()
+                model.foreach(foreach_cb)
+            else:
+                #FIXME: error handling
+                pass                
             
               
     def _toggle_widget_cb(self, toggle, pname):
@@ -134,7 +146,11 @@ class PreferenceManager(GObject):
         self.set_preference(pname, active)
         
         
-    def _text_widget_cb(self, widget, pname):
+    def _text_widget_activate_cb(self, widget, pname):
+        value = widget.get_text()
+        self.set_preference(pname, value)
+        
+    def _text_widget_focus_out_cb(self, widget, event, pname):
         value = widget.get_text()
         self.set_preference(pname, value)
         
@@ -142,6 +158,13 @@ class PreferenceManager(GObject):
     def _color_widget_cb(self, widget, pname):
         value = widget.get_color().to_string()
         self.set_preference(pname, value)
+        
+        
+    def _combo_widget_cb(self, widget, pname):
+        iter = widget.get_active_iter()
+        if iter:
+            value = widget.get_model().get_value(iter, 0)
+            self.set_preference(pname, value)
         
         
     def preference_notify(self, pname):
@@ -273,9 +296,12 @@ class PreferenceManager(GObject):
             if wtype == 'toggle':
                 widget.connect('toggled', self._toggle_widget_cb, pname)
             elif wtype == 'text':
-                widget.connect('activate', self._text_widget_cb, pname)
+                widget.connect('activate', self._text_widget_activate_cb, pname)
+                widget.connect('focus-out-event', self._text_widget_focus_out_cb, pname)
             elif wtype == 'color':
                 widget.connect('color-set', self._color_widget_cb, pname)
+            elif wtype == 'combo':
+                widget.connect('changed', self._combo_widget_cb, pname)
             else:
                 #FIXME: should not reach here
                 pass

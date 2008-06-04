@@ -22,10 +22,11 @@
 import gobject
 from gobject import GObject
 import gtk
+import datetime
 
 import garmon
 from garmon.obd_device import OBDDevice
-from garmon.property_object import PropertyObject, gproperty
+from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.sensor import Command
 
 
@@ -44,6 +45,8 @@ class Scheduler (GObject, PropertyObject):
     __gtype_name__ = "Scheduler"
     
     ################# Properties and signals ###############    
+    gsignal('command-executed')
+    
     gproperty('working', bool, False)
     gproperty('obd-device', object)
 
@@ -81,6 +84,7 @@ class Scheduler (GObject, PropertyObject):
     
     
     def _command_success_cb(self, cmd, result, args):
+        self.emit('command_executed')
         # We only care about the first result
         result = result[0]
         for item in cmd.list:
@@ -124,7 +128,6 @@ class Scheduler (GObject, PropertyObject):
            @param oneshot: wether the command should only be 
                            executed once.
         """
-        print ' in add'
         if not isinstance(command, Command):
             raise ValueError, 'command should be an instance of Command'
         if oneshot:
@@ -155,4 +158,48 @@ class Scheduler (GObject, PropertyObject):
                     if queue_item.list == []:
                         queue.remove(queue_item)
     
-                  
+    
+class SchedulerTimer(gtk.Label, PropertyObject):
+    
+    gproperty('active', bool, False)
+
+    def __init__(self, scheduler):
+        GObject.__init__(self)
+        PropertyObject.__init__(self)
+        
+        self._rate = 0
+        self._samples = []
+        self.set_text('refresh rate: N/A')
+        
+        scheduler.connect('command_executed', self._scheduler_command_executed_cb)
+        scheduler.connect('notify::working', self._scheduler_notify_working_cb)
+                    
+    def _scheduler_notify_working_cb(self, scheduler, working):
+        if not working:
+            self.set_text('refresh rate: N/A')
+    
+    def _scheduler_command_executed_cb(self, scheduler):
+        now = datetime.datetime.now()
+        if len(self._samples) == 0:
+            self._samples.append((now, datetime.timedelta(0,0,0)))
+        else:
+            if len(self._samples) > 20:
+                self._samples.pop(0)
+            previous = self._samples[len(self._samples) - 1]
+            delta = now - previous[0]
+            self._samples.append((now, delta))
+            
+            total = 0.0
+            count = 0
+            for item in self._samples:
+                count += 1
+                u_seconds = item[1].seconds + item[1].microseconds / 1000000.0
+                total += u_seconds
+                
+            rate = round(count / total, 1)
+            
+            self.set_text('refresh rate: %s Hz' % rate)
+        
+        
+        
+        
