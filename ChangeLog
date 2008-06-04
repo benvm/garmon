@@ -1,5 +1,12 @@
 2008-06-04  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/live_data/live_data.py:
+	    remove some print statements
+	    obd designation is now a oneshot view
+	
+
+2008-06-04  Ben Van Mechelen  <me@benvm.be>
+
 	* data/prefs.glade:
 	* garmon/garmon_app.py:
 	* garmon/obd_device.py:

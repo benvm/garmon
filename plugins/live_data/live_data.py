@@ -77,14 +77,14 @@ class LiveData (gtk.VBox, Plugin):
         self._setup_sensors()
 
         self._obd_cbs.append(app.device.connect('connected', 
-                                             self._obd_connected_cb))
+                                             self._device_connected_cb))
         self._notebook_cbs.append(app.notebook.connect('switch-page', 
                                                   self._notebook_page_change_cb))
         
         self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
                                              self._scheduler_notify_working_cb))
         
-        self._obd_connected_cb(app.device)
+        self._device_connected_cb(app.device)
         
     
     def _setup_gui(self):
@@ -173,7 +173,7 @@ class LiveData (gtk.VBox, Plugin):
                     
             
     def _view_active_changed_cb(self, view, active):
-        if active:    
+        if active:
             if self.status == STATUS_WORKING:
                 self.app.scheduler.add(view.command)
         else:
@@ -195,23 +195,28 @@ class LiveData (gtk.VBox, Plugin):
    
             
     def start(self):
-        print 'in start'
+        if self.status == STATUS_WORKING:
+            return
         for view in self.views:
             if view.active:
                 self.app.scheduler.add(view.command, False)
         for view in self.os_views:
             if view.active:
                 self.app.scheduler.add(view.command, True)
+        self.status = STATUS_WORKING
         
             
     def stop(self):
+        if self.status == STATUS_STOP:
+            return
         for views in (self.views, self.os_views):
             for view in views:
                 self.app.scheduler.remove(view.command)
                 view.command.clear()
+        self.status = STATUS_STOP
         
         
-    def _obd_connected_cb(self, obd, connected=False):
+    def _device_connected_cb(self, device, connected=False):
         page = self.app.notebook.get_current_page()
         visible = self.app.notebook.get_nth_page(page) is self
         self.stop()
@@ -334,7 +339,6 @@ class LiveDataView(GObject, StateMixin, UnitMixin, PropertyObject):
             
             
     def _data_changed_cb(self, command, data):
-        print 'in _data_changed_cb'
         self._update_view()
        
        
@@ -429,7 +433,6 @@ class CommandView(GObject, StateMixin, PropertyObject):
             
             
     def _data_changed_cb(self, command, data):
-        print 'in data_changed_cb'
         self._update_view()
        
        
@@ -451,7 +454,7 @@ class CommandView(GObject, StateMixin, PropertyObject):
 COMMANDS = [
             ('voltage', _('Voltage'), False, None,
                  'voltage_label', None, 'voltage_entry'),
-            ('protocol', _('Protocol'), False, None,
+            ('protocol', _('Protocol'), True, None,
                  'protocol_label', None, 'protocol_entry'),
            ]
               
