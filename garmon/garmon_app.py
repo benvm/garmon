@@ -159,6 +159,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.main_vbox.pack_start(self.notebook)
         
         self.device = ELMDevice()
+        self.device.baudrate = self.prefs.get_preference('device.baudrate')
         
         self.scheduler = Scheduler(self.device)
         self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
@@ -172,10 +173,6 @@ class GarmonApp(gtk.Window, PropertyObject):
         if self._prefs.get_preference('plugins.start'):
             self._plugman.activate_saved_plugins()
         
-        cb_id = self._prefs.preference_notify_add('device.portname', self._notify_port_cb)
-        self._pref_cbs.append(cb_id)
-        cb_id = self._prefs.preference_notify_add('device.baudrate', self._notify_port_cb)
-        self._pref_cbs.append(cb_id)
         
         self.show_all()
 
@@ -220,7 +217,12 @@ class GarmonApp(gtk.Window, PropertyObject):
         combo.set_model(model)
         
         self._prefs.add_dialog_page(xml, 'device_prefs_vbox', 'Device')
+        cb_id = self._prefs.preference_notify_add('device.portname', self._notify_port_cb)
+        self._pref_cbs.append(cb_id)
+        cb_id = self._prefs.preference_notify_add('device.baudrate', self._notify_port_cb)
+        self._pref_cbs.append(cb_id)
         
+                
 
     def _create_action_group(self):
         # GtkActionEntry

@@ -1,3 +1,10 @@
+2008-06-05  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
+	* garmon/obd_device.py:
+	    Set the baudrate of the device correctly
+	
+
 2008-06-04  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/live_data/live_data.py:

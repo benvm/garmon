@@ -62,7 +62,7 @@ class OBDDevice(GObject, PropertyObject):
     
     gproperty('portname', str)
     #gproperty('initial-baudrate', int, 38400)
-    gproperty('baudrate', int)
+    gproperty('baudrate', int, 9600)
     gproperty('connected', bool, False, flags=gobject.PARAM_READABLE)
     gproperty('supported_pids', object, flags=gobject.PARAM_READABLE)
     gproperty('special_commands', object, flags=gobject.PARAM_READABLE)
