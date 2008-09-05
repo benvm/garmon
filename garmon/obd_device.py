@@ -532,13 +532,15 @@ class ELMDevice(OBDDevice, PropertyObject):
                 result = string.join(result, "")
                 result = result[:2]
                 
-                ret = eval("0x%s" % result) & 0x40
-                ret_cb(cmd, ret, args)
+                if result == '44':
+                    ret_cb(cmd, ret, args)
+                else:
+                    err_cb(cmd, OBDDataError, args)
             else:
                 err_cb(cmd, OBDDataError, args)
 
         if self._port and self._port.isOpen():
-            self._send_obd_command('04', success_cb, err_cb, args)
+            self._send_command('04', success_cb, err_cb, args)
         else:
             raise OBDPortError('PortNotOpen', _('The port is not open'))                
                 

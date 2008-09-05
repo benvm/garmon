@@ -25,6 +25,8 @@ import gtk
 
 import garmon
 from garmon.plugin import Plugin
+import garmon.obd_device
+from garmon.obd_device import OBDPortError
 
 __name = _('DTC Clearer')
 __version = '0.1'
@@ -84,11 +86,26 @@ class DTCClearer (Plugin):
             
         self.action_group = gtk.ActionGroup("ClearDTCActionGroup")
         self.action_group.add_actions(entries)
-        
-        
+              
         
         
     def activate_clear_dtc(self, action):
+        
+        def success_cb(cmd, result, args):
+            if result:
+                self.app.reset()
+        
+        def err_cb(cmd, err, args):
+            dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
+                gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, 
+                _("""An error occurred while trying to reset the dtc.\n
+Please make sure your device is connected.
+The ignition must be turned on but the engine should not be running"""))
+    
+            dialog.run()
+            dialog.destroy()                    
+
+
         dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
                  gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL,
                  _("""Are You Sure You want to clear the trouble codes?
@@ -109,14 +126,16 @@ class DTCClearer (Plugin):
         dialog.show()
         res = dialog.run()
         dialog.destroy()
+                
         if res == gtk.RESPONSE_OK:
             try:
-                self.app.device.clear_dtc()
-                self.app.reset()
-            except:
+                self.app.device.clear_dtc(success_cb, err_cb)
+                #MOVE THIS 
+            except OBDPortError, e:
+                err, msg = e
                 dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
                     gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, 
-                    _("An error occurred while trying to reset the dtc.\n\nPlease make sure your device is connected"))
+                    err + '\n\n' + msg)
                 dialog.run()
                 dialog.destroy()
                 raise
