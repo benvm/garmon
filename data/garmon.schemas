@@ -12,6 +12,50 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/apps/garmon/device.baudrate</key>
+      <applyto>/apps/garmon/device.baudrate</applyto>
+      <owner>garmon</owner>
+      <type>int</type>
+      <locale name="C">
+        <default>9600</default>
+        <short>Baudrate</short>
+        <long>The baudrate to set on the port</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/device.higher-baudrate</key>
+      <applyto>/apps/garmon/device.higher-baudrate</applyto>
+      <owner>garmon</owner>
+      <type>int</type>
+      <locale name="C">
+        <default>115200</default>
+        <short>Higher Baudrate</short>
+        <long>The baudrate to try after connection</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/device.initial-baudrate</key>
+      <applyto>/apps/garmon/device.initial-baudrate</applyto>
+      <owner>garmon</owner>
+      <type>int</type>
+      <locale name="C">
+        <default>38400</default>
+        <short>Initial Baudrate</short>
+        <long>The baudrate to begin with when trying to set a higher one</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/garmon/device.increase-baudrate</key>
+      <applyto>/apps/garmon/device.increase-baudrate</applyto>
+      <owner>garmon</owner>
+      <type>bool</type>
+      <locale name="C">
+        <default>True</default>
+        <short>Increase Baudrate</short>
+        <long>Try to increase the baudrate after connection</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/apps/garmon/metric</key>
       <applyto>/apps/garmon/metric</applyto>
       <owner>garmon</owner>
@@ -28,7 +72,7 @@
       <owner>garmon</owner>
       <type>bool</type>
       <locale name="C">
-        <default>True</default>
+        <default>False</default>
         <short>Imperial units</short>
         <long>Whether to use imperial units</long>
       </locale>
