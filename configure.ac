@@ -51,6 +51,5 @@ plugins/dashboard/Makefile
 plugins/dtc_clearer/Makefile
 plugins/dtc_reader/Makefile
 plugins/live_data/Makefile
-plugins/sensor_list/Makefile
 po/Makefile.in
 ])
