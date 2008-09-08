@@ -1,4 +1,13 @@
-2008-09-05  Ben Van Mechelen  <ben@benvm.be>
+2008-09-08  Ben Van Mechelen  <me@benvm.be>
+
+	* TODO.tasks:
+	* plugins/Makefile.am:
+	* plugins/sensor_list/Makefile.am:
+	* plugins/sensor_list/sensor_list.py:
+	    Removed the sensor_list plugin
+
+
+2008-09-05  Ben Van Mechelen  <me@benvm.be>
 
 	* aclocal.m4:
 	* data/garmon.schemas:
