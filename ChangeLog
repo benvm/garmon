@@ -1,5 +1,11 @@
 2008-09-08  Ben Van Mechelen  <me@benvm.be>
 
+	* configure.ac:
+	    Bump version to 0.2.0
+
+
+2008-09-08  Ben Van Mechelen  <me@benvm.be>
+
 	* TODO.tasks:
 	* plugins/Makefile.am:
 	* plugins/sensor_list/Makefile.am:
