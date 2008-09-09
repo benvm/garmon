@@ -1,3 +1,9 @@
+2008-09-10  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/live_data/live_data.py:
+	    fix _notify_units_cb to update all views
+	    
+
 2008-09-08  Ben Van Mechelen  <me@benvm.be>
 
 	* configure.ac:

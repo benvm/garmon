@@ -232,7 +232,7 @@ class LiveData (gtk.VBox, Plugin):
             self._unit_standard = 'Metric'
         
         for views in (self.views, self.os_views):
-            for view in self.views:
+            for view in views:
                 view.unit_standard = self._unit_standard
             
             
