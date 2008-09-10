@@ -33,6 +33,7 @@ from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.property_object import PropertyObject, gproperty
 from garmon.obd_device import OBDDataError, OBDPortError
 from garmon.trouble_codes import DTC_CODES, DTC_CODE_CLASSES
+from garmon.sensor import decode_dtc_code
 
 __name = _('DTC Reader')
 __version = '0.1'
@@ -204,20 +205,3 @@ class DTCInfo(GObject, PropertyObject) :
         elif pspec.name == 'additional':
             self._additional_buffer.set_text(self.additional)
         
-
-
-def decode_dtc_code(code):
-    if not code.__len__() == 4:
-        return 'ERROR'
-        
-    FIRST_BIT = ('P', 'C', 'B', 'U')
-    SECOND_BIT =('0', '1', '2', '3')
-    
-    result = FIRST_BIT[eval('0x%s' % code[0]) & 0xC]
-    result += SECOND_BIT[eval('0x%s' % code[0]) & 0x3]
-    result += code[1:]
-    
-    return result
-
-
-    

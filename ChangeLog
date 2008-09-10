@@ -1,5 +1,13 @@
 2008-09-10  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/sensor.py:
+	* plugins/dtc_reader/dtc_reader.py:
+	* scripts/elm_sim.py:
+	    fix decode_dtc_code and move it to sensor.py
+
+
+2008-09-10  Ben Van Mechelen  <me@benvm.be>
+
 	* configure.ac:
 	* garmon/obd_device.py:
 	* garmon/sensor.py:

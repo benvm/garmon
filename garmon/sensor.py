@@ -279,6 +279,22 @@ def obd_designation(data):
     return (ret, ret)
     
 
+def decode_dtc_code(code):
+    if not code:
+        return
+    if not len(code) == 4:
+        return 'ERROR'
+        
+    CLASS_LETTER = ('P', 'C', 'B', 'U')
+    CLASS_NUMBER =('0', '1', '2', '3')
+    
+    result = CLASS_LETTER[(eval('0x%s' % code[0]) & 0xC) >> 2]
+    result += CLASS_NUMBER[eval('0x%s' % code[0]) & 0x3]
+    result += code[1:]
+
+    return result
+    
+
 FUEL_STATUS = [
     _('Open Loop'),
     _('Closed Loop'),
