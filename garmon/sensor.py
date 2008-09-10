@@ -280,9 +280,7 @@ def obd_designation(data):
     
 
 def decode_dtc_code(code):
-    print 'in decode_dtc_code, code is: %s' % code
     if not code:
-        print 'not code'
         return
     if not len(code) == 4:
         return 'ERROR'

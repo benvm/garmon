@@ -282,10 +282,8 @@ class FreezeFrameDataView(GObject, StateMixin, UnitMixin, PropertyObject):
 
 
 def _dtc_code_helper(self):
-    print 'in _dtc_code_helper'
     dtc = decode_dtc_code(self.command.metric_value)
     if not dtc:
-        print 'not dtc'
         dtc = ''
     self.value_widget.set_text(dtc)
 
