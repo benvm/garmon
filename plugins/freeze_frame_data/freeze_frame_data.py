@@ -35,6 +35,7 @@ from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.obd_device import OBDDataError, OBDPortError
 from garmon.sensor import StateMixin, UnitMixin
 from garmon.sensor import Command, Sensor
+from garmon.sensor import decode_dtc_code
 
 
 __name = _('Freeze Frame Data')
@@ -94,6 +95,9 @@ class FreezeFrameData (gtk.VBox, Plugin):
         main_hbox.show_all()
         self.show_all()
         
+        button = self.glade_xml.get_widget('re-read-button')
+        button.connect('clicked', self._reread_button_clicked)
+        
         
     def _setup_sensors(self):
 
@@ -119,6 +123,11 @@ class FreezeFrameData (gtk.VBox, Plugin):
             
             self.views.append(view)
 
+
+    def _reread_button_clicked(self, button):
+        self._update_supported_views()
+        self.start()
+
     
     def _scheduler_notify_working_cb(self, scheduler, pspec):
         pass
@@ -140,11 +149,10 @@ class FreezeFrameData (gtk.VBox, Plugin):
    
             
     def start(self):
-        if self.status == STATUS_WORKING:
-            return
         for view in self.views:
             if view.supported:
                 self.app.scheduler.add(view.command, True)
+        self.app.scheduler.working = True
         
             
     def stop(self):
@@ -156,7 +164,7 @@ class FreezeFrameData (gtk.VBox, Plugin):
         visible = self.app.notebook.get_nth_page(page) is self
         self._update_supported_views()
         if visible:
-            self.app.obd.read_supported_freeze_frame_pids()
+            self.app.device.read_supported_freeze_frame_pids()
 
 
     def _notify_units_cb(self, pname, pvalue, ptype, args):
@@ -271,13 +279,23 @@ class FreezeFrameDataView(GObject, StateMixin, UnitMixin, PropertyObject):
             if self.units_widget:
                 self.units_widget.set_text(units)
 
+
+
+def _dtc_code_helper(self):
+    print 'in _dtc_code_helper'
+    dtc = decode_dtc_code(self.command.metric_value)
+    if not dtc:
+        print 'not dtc'
+        dtc = ''
+    self.value_widget.set_text(dtc)
+
         
 (COMMAND, NAME) = range(2)
 
 (PID, INDEX, HELPER, LABEL, ENTRY, UNIT) = range (6) 
 
 SENSORS= [
-        ('0202', 0, None,
+        ('0202', 0, _dtc_code_helper,
          None, 'dtc_entry', None),
         ('0204', 0, None, 
          'load_label', 'load_entry', 'load_unit_label'),

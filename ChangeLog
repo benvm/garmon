@@ -1,5 +1,16 @@
 2008-09-10  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/obd_device.py:
+	* garmon/sensor.py:
+	* plugins/freeze_frame_data/freeze_frame_data.glade:
+	* plugins/freeze_frame_data/freeze_frame_data.py:
+	* scripts/elm_sim.py:
+	    Make the freeze Frame Data plugin actually do something
+	    Put a Read button in the plugin
+	    
+
+2008-09-10  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/sensor.py:
 	* plugins/dtc_reader/dtc_reader.py:
 	* scripts/elm_sim.py:
