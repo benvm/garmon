@@ -95,7 +95,7 @@ class Sensor (Command, PropertyObject):
 
 
     def __init__(self, command, index=0, units='Metric'):
-        self._indices = len(SENSORS[command])
+        self._indices = len(SENSORS[command[2:]])
         self._imperial_units = None
         self._metric_units = None
         self._decoder = None
@@ -108,10 +108,10 @@ class Sensor (Command, PropertyObject):
         self._update_info()
       
     def _update_info(self):
-        self._name = SENSORS[self.command][self.index][NAME]
-        self._metric_units = SENSORS[self.command][self.index][METRIC]
-        self._imperial_units = SENSORS[self.command][self.index][IMPERIAL]       
-        self._decoder = SENSORS[self.command][self.index][FUNC]
+        self._name = SENSORS[self.command[2:]][self.index][NAME]
+        self._metric_units = SENSORS[self.command[2:]][self.index][METRIC]
+        self._imperial_units = SENSORS[self.command[2:]][self.index][IMPERIAL]       
+        self._decoder = SENSORS[self.command[2:]][self.index][FUNC]
         
     def _index_changed_cb(self, o, pspec):
         self._clear_data()
@@ -312,58 +312,58 @@ OBD_DESIGNATIONS = {
  
 
 
-SENSORS = {#  PID   Name                              formula                  unit
-                            #                                                            metric     imperial          
-            "0100": (("Supported PIDs",                     bitstring,              "",         ""          ),),    
-            "0101": (("Number of trouble codes",            dtc_decode_num,         "",         ""          ),
-                     ("Malfunction Indicator Light",        dtc_decode_mil,         "",         ""          )),    
-            "0102": (("DTC Causing Freeze Frame",           no_op,                  "",         ""          ),),    
-            "0103": (("Fuel System Status 1",               fuel_status_1,          "",         ""          ),
-                     ("Fuel System Status 2",               fuel_status_2,          "",         ""          ),),
-            "0104": (("Calculated Engine Load Value",       percent,                "%",        "%"         ),),
-            "0105": (("Engine coolant temperature",         temp,                   "°C",       "F"         ),),
-            "0106": (("Short Term Fuel % Trim - Bank 1",    fuel_percent,           "%",        "%"         ),),
-            "0107": (("Long Term Fuel % Trim - Bank 1",     fuel_percent,           "%",        "%"         ),),
-            "0108": (("Short Term Fuel % Trim - Bank 2",    fuel_percent,           "%",        "%"         ),),
-            "0109": (("Long Term Fuel % Trim - Bank 2",     fuel_percent,           "%",        "%"         ),),
-            "010A": (("Fuel Pressure",                      fuel_pres,              "kPa",      "psi"       ),),
-            "010B": (("Intake Manifold Pressure",           intake_pres,            "kPa",      "psi"       ),),
-            "010C": (("Engine RPM",                         rpm,                    "rpm",      "rpm"       ),),
-            "010D": (("Vehicle Speed",                      speed,                  "km/h",     "MPH"       ),),
-            "010E": (("Timing Advance",                     timing_adv,             "°",        "°"         ),),
-            "010F": (("Intake Air Temp",                    temp,                   "°C",       "F"         ),),
-            "0110": (("MAF Air Flow Rate",                  maf,                    "g/s",      "lb/min"    ),),
-            "0111": (("Throttle Position",                  percent,                "%",        "%"         ),),
-            "0112": (("Secondary Air Status",               sec_air_status,         "",         ""          ),),
-            "0113": (("O2 Sensors present",                 bitstring,              "",         ""          ),),
-            "0114": (("O2 Sensor: 1 - 1 Voltage",           lambda_voltage,         "V",        "V"         ),
-                          ("O2 Sensor: 1 - 1 Fuel Trim",    lambda_fuel_percent,    "%",        "%"         )),
-            "0115": (("O2 Sensor: 1 - 2 Voltage",           lambda_voltage,         "V",        "V"         ),
-                          ("O2 Sensor: 1 - 2 Fuel Trim",    lambda_fuel_percent,    "%",        "%"         )),
-            "0116": (("O2 Sensor: 1 - 3",                   lambda_fuel_percent,    "%",        "%"         ),),
-            "0117": (("O2 Sensor: 1 - 4",                   lambda_fuel_percent,    "%",        "%"         ),),
-            "0118": (("O2 Sensor: 2 - 1",                   lambda_fuel_percent,    "%",        "%"         ),),
-            "0119": (("O2 Sensor: 2 - 2",                   lambda_fuel_percent,    "%",        "%"         ),),
-            "011A": (("O2 Sensor: 2 - 3",                   lambda_fuel_percent,    "%",        "%"         ),),
-            "011B": (("O2 Sensor: 2 - 4",                   lambda_fuel_percent,    "%",        "%"         ),),
-            "011C": (("OBD Designation",                    obd_designation,        "",         ""          ),),
-            "011D": (("O2 Sensors present",                 bitstring,              "",         ""          ),),
-            "011E": (("Aux input status",                   no_op,                  "",         ""          ),),
-            "011F": (("Time Since Engine Start",            secs_to_mins,           "min",      "min"       ),),
-            "0120": (("Supported PIDs",                     bitstring,              "",         ""          ),),
-            "0121": (("Distance traveled with MIL on",      todo,                   "km",       "Miles"     ),),
-            "0122": (("Fuel Rail Pressure " +
-                     "(relative to manifold vacuum)",       todo,                   "kPa",      "psi"       ),),
-            "0123": (("Fuel Rail Pressure (diesel)",        todo,                   "kPa",      "psi"       ),),
-            "0124": (("02S1_WR_Lambda",                     todo,                   "λ",        "λ"         ),),
-            "0125": (("02S2_WR_Lambda",                     todo,                   "λ",        "λ"         ),),
-            "0126": (("02S3_WR_Lambda",                     todo,                   "λ",        "λ"         ),),
-            "0127": (("02S4_WR_Lambda",                     todo,                   "λ",        "λ"         ),),
-            "0128": (("02S5_WR_Lambda",                     todo,                   "λ",        "λ"         ),),
-            "0129": (("02S6_WR_Lambda",                     todo,                   "λ",        "λ"         ),),
-            "012A": (("02S7_WR_Lambda",                     todo,                   "λ",        "λ"         ),),
-            "012B": (("02S8_WR_Lambda",                     todo,                   "λ",        "λ"         ),),
-            "012C": (("Commanded EGR",                      percent,                "%", "%"                ),)
+SENSORS = {#  PID               Name                            formula                        unit
+           #                                                                             metric     imperial          
+            "00": ((_("Supported PIDs"),                     bitstring,              "",         ""          ),),    
+            "01": ((_("Number of trouble codes"),            dtc_decode_num,         "",         ""          ),
+                   (_("Malfunction Indicator Light"),        dtc_decode_mil,         "",         ""          )),    
+            "02": ((_("DTC Causing Freeze Frame"),           no_op,                  "",         ""          ),),    
+            "03": ((_("Fuel System Status 1"),               fuel_status_1,          "",         ""          ),
+                   (_("Fuel System Status 2"),               fuel_status_2,          "",         ""          ),),
+            "04": ((_("Calculated Engine Load Value"),       percent,                "%",        "%"         ),),
+            "05": ((_("Engine coolant temperature"),         temp,                   "°C",       "F"         ),),
+            "06": ((_("Short Term Fuel Trim - Bank 1"),      fuel_percent,           "%",        "%"         ),),
+            "07": ((_("Long Term Fuel Trim - Bank 1"),       fuel_percent,           "%",        "%"         ),),
+            "08": ((_("Short Term Fuel Trim - Bank 2"),      fuel_percent,           "%",        "%"         ),),
+            "09": ((_("Long Term Fuel Trim - Bank 2"),       fuel_percent,           "%",        "%"         ),),
+            "0A": ((_("Fuel Pressure"),                      fuel_pres,              "kPa",      "psi"       ),),
+            "0B": ((_("Intake Manifold Pressure"),           intake_pres,            "kPa",      "psi"       ),),
+            "0C": ((_("Engine RPM"),                         rpm,                    "rpm",      "rpm"       ),),
+            "0D": ((_("Vehicle Speed"),                      speed,                  "km/h",     "MPH"       ),),
+            "0E": ((_("Timing Advance"),                     timing_adv,             "°",        "°"         ),),
+            "0F": ((_("Intake Air Temp"),                    temp,                   "°C",       "F"         ),),
+            "10": ((_("MAF Air Flow Rate"),                  maf,                    "g/s",      "lb/min"    ),),
+            "11": ((_("Throttle Position"),                  percent,                "%",        "%"         ),),
+            "12": ((_("Secondary Air Status"),               sec_air_status,         "",         ""          ),),
+            "13": ((_("O2 Sensors present"),                 bitstring,              "",         ""          ),),
+            "14": ((_("O2 Sensor: 1 - 1 Voltage"),           lambda_voltage,         "V",        "V"         ),
+                   (_("O2 Sensor: 1 - 1 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
+            "15": ((_("O2 Sensor: 1 - 2 Voltage"),           lambda_voltage,         "V",        "V"         ),
+                   (_("O2 Sensor: 1 - 2 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
+            "16": ((_("O2 Sensor: 1 - 3"),                   lambda_fuel_percent,    "%",        "%"         ),),
+            "17": ((_("O2 Sensor: 1 - 4"),                   lambda_fuel_percent,    "%",        "%"         ),),
+            "18": ((_("O2 Sensor: 2 - 1"),                   lambda_fuel_percent,    "%",        "%"         ),),
+            "19": ((_("O2 Sensor: 2 - 2"),                   lambda_fuel_percent,    "%",        "%"         ),),
+            "1A": ((_("O2 Sensor: 2 - 3"),                   lambda_fuel_percent,    "%",        "%"         ),),
+            "1B": ((_("O2 Sensor: 2 - 4"),                   lambda_fuel_percent,    "%",        "%"         ),),
+            "1C": ((_("OBD Designation"),                    obd_designation,        "",         ""          ),),
+            "1D": ((_("O2 Sensors present"),                 bitstring,              "",         ""          ),),
+            "1E": ((_("Aux input status"),                   no_op,                  "",         ""          ),),
+            "1F": ((_("Time Since Engine Start"),            secs_to_mins,           "min",      "min"       ),),
+            "20": ((_("Supported PIDs"),                     bitstring,              "",         ""          ),),
+            "21": ((_("Distance traveled with MIL on"),      todo,                   "km",       "Miles"     ),),
+            "22": ((_("Fuel Rail Pressure ") +
+                    _("(relative to manifold vacuum)"),      todo,                   "kPa",      "psi"       ),),
+            "23": ((_("Fuel Rail Pressure (diesel)"),        todo,                   "kPa",      "psi"       ),),
+            "24": ((_("02S1_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
+            "25": ((_("02S2_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
+            "26": ((_("02S3_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
+            "27": ((_("02S4_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
+            "28": ((_("02S5_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
+            "29": ((_("02S6_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
+            "2A": ((_("02S7_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
+            "2B": ((_("02S8_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
+            "2C": ((_("Commanded EGR"),                      percent,                "%",        "%"         ),)
     
     }
 """    

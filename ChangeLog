@@ -1,5 +1,19 @@
 2008-09-10  Ben Van Mechelen  <me@benvm.be>
 
+	* configure.ac:
+	* garmon/obd_device.py:
+	* garmon/sensor.py:
+	* plugins/Makefile.am:
+	* plugins/dtc_clearer/dtc_clearer.py:
+	* plugins/freeze_frame_data/Makefile.am:
+	* plugins/freeze_frame_data/freeze_frame_data.glade:
+	* plugins/freeze_frame_data/freeze_frame_data.py:
+	* scripts/elm_sim.py:
+	    First work on the Freeze Frame Data plugin
+	    
+
+2008-09-10  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/live_data/live_data.py:
 	    fix _notify_units_cb to update all views
 	    

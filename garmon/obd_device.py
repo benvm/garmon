@@ -56,6 +56,7 @@ class OBDDevice(GObject, PropertyObject):
     
     _special_commands = {}
     _supported_pids = []
+    _supported_freeze_frame_pids = None
     _connected = False 
     
     gsignal('connected', bool)
@@ -65,6 +66,7 @@ class OBDDevice(GObject, PropertyObject):
     gproperty('baudrate', int, 9600)
     gproperty('connected', bool, False, flags=gobject.PARAM_READABLE)
     gproperty('supported_pids', object, flags=gobject.PARAM_READABLE)
+    gproperty('supported_freeze_frame_pids', object, flags=gobject.PARAM_READABLE)
     gproperty('special_commands', object, flags=gobject.PARAM_READABLE)
     gproperty('supported_commands', object, flags=gobject.PARAM_READABLE)
     
@@ -74,6 +76,13 @@ class OBDDevice(GObject, PropertyObject):
 
     def prop_get_supported_pids(self):
         return self._supported_pids
+
+    def prop_get_supported_freeze_frame_pids(self):
+        if self._supported_freeze_frame_pids == None:
+            self.read_supported_freeze_frame_pids()
+            return None
+        else:
+            return self._supported_freeze_frame_pids
         
     def prop_get_special_commands(self):
         return self._special_commands
@@ -113,6 +122,8 @@ class OBDDevice(GObject, PropertyObject):
     def read_device_data(self, command, ret_cb, err_cb, *args):
         raise NotImplementedError
     def read_command(self, ret_cb, err_cb, *args):
+        raise NotImplementedError
+    def read_supported_freeze_frame_pids(self):
         raise NotImplementedError
 
 class ELMDevice(OBDDevice, PropertyObject):
@@ -184,20 +195,14 @@ class ELMDevice(OBDDevice, PropertyObject):
             
 
     def _read_result(self):
-        #print 'in _read_result: %s' % datetime.datetime.now()
         timeout_count = 0
-        #if self._port.isOpen:
         try:
             buf = ''
             while timeout_count <= MAX_TIMEOUT:
-                #print 'in while loop' % datetime.datetime.now()
                 ch = self._port.read(1)
                 if ch == '':
                     timeout_count += 1
-                    #print 'timeout %s' % timeout_count
-                # if ch == '>' and len(buf) > 1 and buf[-1] == '\r' and buf[-2] == '\r':
                 if ch == '>': 
-                    #print 'will break now'
                     break
                 else:
                     buf = buf + ch
@@ -216,7 +221,6 @@ class ELMDevice(OBDDevice, PropertyObject):
          
       
     def _parse_result(self, data):
-        #print 'entering _parse_result: %s' % datetime.datetime.now()
         error = False
         success = False
         res = None
@@ -307,9 +311,9 @@ class ELMDevice(OBDDevice, PropertyObject):
             return False
     
     
-    def _read_supported_pids(self):
+    def _read_supported_pids(self, freeze_frame=False):
         def success_cb(cmd, data, args):
-            self._supported_pids = []
+            pids = []
             data = decode_result(data)
             for item in data:
                 bitstr = sensor.hex_to_bitstr(item)
@@ -320,19 +324,27 @@ class ELMDevice(OBDDevice, PropertyObject):
                             pid_str = '010' + hex(pid)[2:]                    
                         else:
                             pid_str = '01' + hex(pid)[2:]
-                        self._supported_pids.append(pid_str.upper())      
+                        pids.append(pid_str.upper())  
                           
-            self._connected = True
-            print 'supported pids: %s' % self._supported_pids
-            self.emit('connected', True)
-        
+            if freeze_frame:
+                self._supported_freeze_frame_pids = pids
+            else:
+                self._supported_pids = pids
+                self._connected = True
+                print 'supported pids: %s' % self._supported_pids
+                self.emit('connected', True)
+
         def error_cb(cmd, msg, args):
             debug('error reading supported pids, msg is: %s' % msg)
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))        
         
-        self._send_command('0100', success_cb, error_cb)
-    
+        if freeze_frame:
+            self._send_command('0200', success_cb, error_cb)        
+        else:
+            self._send_command('0100', success_cb, error_cb)
+        
+      
         
     def _initialize_device(self):
         def atz_success_cb(cmd, res, args):
@@ -371,6 +383,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 
     def open(self, portname=None):
         self._supported_pids = []
+        self._supported_freeze_frame_pids = None
         if portname:
             self.portname = portname
         if not self.portname:
@@ -396,6 +409,7 @@ class ELMDevice(OBDDevice, PropertyObject):
     def close(self):
         """Resets the elm chip and closes the open serial port""" 
         self._supported_pids = []
+        self._supported_freeze_frame_pids = None
         if self._port:
             gobject.source_remove(self._watch_id)
             self._port.close()
@@ -481,8 +495,10 @@ class ELMDevice(OBDDevice, PropertyObject):
           
         if command in self._special_commands.keys():
             self.read_device_data(command, ret_cb, err_cb, args)
-        elif command in self._supported_pids:
+        elif command[:2] == '01' and command in self._supported_pids:
             self.read_pid_data(command, ret_cb, err_cb, args)
+        elif command[:2] == '02' and command in self._supported_ff_pids:
+            raise NotImplementedError, 'Freeze frame data is currently not supported'
         else:
             raise NotImplementedError, 'This command is currently not supported'
     
@@ -512,7 +528,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 dtc = decode_dtc_result(result)
             except OBDError, (err, msg):
                 err_cb(cmd, err, args)
-            ret_cb(cmd, dtc, args)           
+            ret_cb(cmd, dtc, args)
         
         if self._port and self._port.isOpen():
             self._send_command('03', success_cb, err_cb, args)
@@ -523,7 +539,6 @@ class ELMDevice(OBDDevice, PropertyObject):
     def clear_dtc(self, ret_cb, err_cb, *args):
     
         def success_cb(cmd, result, args):
-           
             if result:
                 result = string.split(result, "\r")
                 result = result[0]
@@ -533,7 +548,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 result = result[:2]
                 
                 if result == '44':
-                    ret_cb(cmd, ret, args)
+                    ret_cb(cmd, result, args)
                 else:
                     err_cb(cmd, OBDDataError, args)
             else:
@@ -544,7 +559,11 @@ class ELMDevice(OBDDevice, PropertyObject):
         else:
             raise OBDPortError('PortNotOpen', _('The port is not open'))                
                 
-        
+                
+                
+    def read_supported_freeze_frame_pids(self):
+        self._read_supported_pids(True)       
+
 
 
 def decode_dtc_result(result):

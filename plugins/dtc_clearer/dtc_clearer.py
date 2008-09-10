@@ -88,7 +88,6 @@ class DTCClearer (Plugin):
         self.action_group.add_actions(entries)
               
         
-        
     def activate_clear_dtc(self, action):
         
         def success_cb(cmd, result, args):
