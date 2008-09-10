@@ -353,7 +353,8 @@ class ELMDevice(OBDDevice, PropertyObject):
                                _('could not read supported pids\n\n' + msg))        
         
         if freeze_frame:
-            self._send_command('0200', ff_success_cb, error_cb)        
+            if self._connected:
+                self._send_command('0200', ff_success_cb, error_cb)        
         else:
             self._send_command('0100', success_cb, error_cb)
         

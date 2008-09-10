@@ -1,6 +1,12 @@
 2008-09-10  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/obd_device.py:
+	    only read supported freeze_frame_pids if we are connected
+	
+
+2008-09-10  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/obd_device.py:
 	* garmon/sensor.py:
 	* plugins/freeze_frame_data/freeze_frame_data.glade:
 	* plugins/freeze_frame_data/freeze_frame_data.py:
