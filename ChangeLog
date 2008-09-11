@@ -1,5 +1,12 @@
 2008-09-12  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/live_data/live_data.glade:
+	* plugins/live_data/live_data.py:
+	    gui update: get rid of VIN, voltage gets a button
+	
+
+2008-09-12  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/widgets.py:
 	    Add CommandView
 	* plugins/live_data/live_data.py:

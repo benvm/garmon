@@ -187,7 +187,8 @@ class LiveData (gtk.VBox, Plugin):
                 if self.app.device:
                     if view.command.command in self.app.device.supported_commands:
                         view.supported=True
-                        #view.active=True
+                        if view in self.os_views:
+                            view.active=True
                     else:
                         view.supported=False
                 else:
@@ -268,7 +269,7 @@ class LiveData (gtk.VBox, Plugin):
 
 COMMANDS = [
             ('voltage', _('Voltage'), False, None,
-                 'voltage_label', None, 'voltage_entry'),
+                 None, 'voltage_button', 'voltage_entry'),
             ('protocol', _('Protocol'), True, None,
                  'protocol_label', None, 'protocol_entry'),
            ]
