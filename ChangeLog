@@ -1,5 +1,13 @@
 2008-09-12  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/o2_sensors/Makefile.am:
+	* plugins/o2_sensors/o2_sensors.glade:
+	* plugins/o2_sensors/o2_sensors.py:
+	    Add a new plugin for O2 Sensors
+	    
+
+2008-09-12  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/widgets.py:
 	    copy LiveDataView to widgets.py so more plugins can use it,
 	    it is now called SensorView
