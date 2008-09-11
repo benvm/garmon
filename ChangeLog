@@ -1,5 +1,13 @@
 2008-09-12  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/widgets.py:
+	    Add CommandView
+	* plugins/live_data/live_data.py:
+	    Remove CommandView and LiveDataView
+	
+
+2008-09-12  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/live_data/live_data.py:
 	* plugins/o2_sensors/o2_sensors.py:
 	    Don't automatically enable supported sensors
