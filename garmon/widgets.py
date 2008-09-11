@@ -19,11 +19,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
 
 import gobject
+from gobject import GObject
 import gtk
 
 import garmon
 from garmon.property_object import PropertyObject, gproperty
-from garmon.sensor import Sensor, StateMixin, dtc_decode_mil
+from garmon.sensor import Sensor, StateMixin, UnitMixin, dtc_decode_mil
 
 
 
@@ -81,4 +82,105 @@ class MILWidget(gtk.Entry,
         on = self.command.metric_value == 'On'
         self.on = on
                                   
+
+
+class SensorView(GObject, StateMixin, UnitMixin, PropertyObject):
+    __gtype_name__ = 'SensorView'
+    
+    gproperty('name-widget', object)
+    gproperty('active-widget', object)
+    gproperty('value-widget', object)
+    gproperty('units-widget', object)
+    gproperty('helper', object)
+    
+    def __init__(self, pid, index=0, units='Metric',
+                       active_widget=None, name_widget=None,
+                       value_widget=None, units_widget=None,
+                       helper=None):
+        GObject.__init__(self)
+        PropertyObject.__init__(self, active_widget=active_widget,
+                                      name_widget=name_widget,
+                                      value_widget=value_widget,
+                                      units_widget=units_widget,
+                                      unit_standard=units,
+                                      helper=helper)
+
+        self.command = Sensor(pid, index)
+        self.command.connect('data-changed', self._data_changed_cb)
+        self._toggleable = False
+        if active_widget:
+            if isinstance(active_widget, gtk.ToggleButton):
+                self._toggleable = True
+                self.active = active_widget.get_active()
+                active_widget.connect('toggled', self._active_toggled_cb)
+            elif isinstance(active_widget, gtk.Button):
+                self._togglable = False
+                active_widget.connect('clicked', self._active_clicked_cb)
+            else:
+                raise ValueError, 'active_widget should be gtk.Button or gtk.ToggleButton'
+                
+    def __post_init__(self):
+        self.connect('notify::unit-standard', self._notify_unit_standard_cb)
+        self.connect('notify::supported', self._notify_supported_cb)
+        self.connect('notify::active', self._notify_active_cb)
+        self._update_view()
+        self._sensitize_widgets()
+    
+
+       
+    def _notify_active_cb(self, o, pspec):
+        if self._toggleable:
+            self.active_widget.set_active(self.active)
+        self._sensitize_widgets()
+        if not self.active:
+            self.command.clear()
+        self.emit('active-changed', self.active)
+        
+    def _active_toggled_cb(self, togglebutton):
+        self.active = togglebutton.get_active()
+    
+    
+    def _active_clicked_cb(self, button):
+        self.active = not self.active
+        
+        
+    def  _notify_unit_standard_cb(self, o, pspec):
+        self._update_view()
+                
+    def  _notify_supported_cb(self, o, pspec):
+        if not self.supported:
+            self.active = False
+        self._sensitize_widgets()
+    
+     
+    def _sensitize_widgets(self):
+        if self.active_widget:
+            self.active_widget.set_sensitive(self.supported)
+        for widget in (self.name_widget, self.value_widget, self.units_widget):
+            if widget:
+                widget.set_sensitive(self.supported and self.active)
+            
+            
+    def _data_changed_cb(self, command, data):
+        self._update_view()
+       
+       
+    def _update_view(self):
+        if self.unit_standard == 'Imperial':
+            value = self.command.imperial_value
+            units = self.command.imperial_units
+        else:
+            value = self.command.metric_value
+            units = self.command.metric_units
+        if not units: units=''
+        if not value: value=''
+        if self.helper and callable(self.helper):
+            self.helper(self)
+        else:    
+            if self.name_widget:
+                self.name_widget.set_text(self.command.name)
+            if self.value_widget:
+                self.value_widget.set_text(value)
+            if self.units_widget:
+                self.units_widget.set_text(units)
                                   

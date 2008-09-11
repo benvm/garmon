@@ -1,3 +1,10 @@
+2008-09-12  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/widgets.py:
+	    copy LiveDataView to widgets.py so more plugins can use it,
+	    it is now called SensorView
+	    
+
 2008-09-11  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/sensor.py:
