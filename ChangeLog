@@ -1,3 +1,9 @@
+2008-09-11  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/sensor.py:
+	    Change PID info of the O2 sensors
+	
+
 2008-09-10  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/sensor.py:
