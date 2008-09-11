@@ -1,5 +1,12 @@
 2008-09-12  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/live_data/live_data.py:
+	* plugins/o2_sensors/o2_sensors.py:
+	    Don't automatically enable supported sensors
+	    
+
+2008-09-12  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/o2_sensors/Makefile.am:
 	* plugins/o2_sensors/o2_sensors.glade:
 	* plugins/o2_sensors/o2_sensors.py:

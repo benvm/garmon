@@ -153,7 +153,7 @@ class O2SensorsData (gtk.VBox, Plugin):
             if self.app.device:
                 if view.command.command in self.app.device.supported_commands:
                     view.supported=True
-                    view.active=True
+                    #view.active=True
                 else:
                     view.supported=False
             else:
@@ -272,6 +272,3 @@ SENSORS= [
         ('011B', 1, None, 
          None, 'sensor24_button', 'sensor24_trim_entry', 'sensor24_trim_unit_label'),
         ]
-
-   
-    
