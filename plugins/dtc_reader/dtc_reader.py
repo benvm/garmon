@@ -79,9 +79,9 @@ class DTCReader (gtk.VBox, Plugin):
                                                         gobject.TYPE_STRING)
         treeview = gtk.TreeView(self.treemodel)
         treeview.set_rules_hint(True)
-        column = gtk.TreeViewColumn(_('Bits'), gtk.CellRendererText(),
-                                    text=COLUMN_CODE)
-        treeview.append_column(column)
+        #column = gtk.TreeViewColumn(_('Bits'), gtk.CellRendererText(),
+        #                            text=COLUMN_CODE)
+        #treeview.append_column(column)
         column = gtk.TreeViewColumn(_('DTC'), gtk.CellRendererText(),
                                     text=COLUMN_DTC)
         treeview.append_column(column)

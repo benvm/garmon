@@ -1,5 +1,11 @@
 2008-09-12  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/dtc_reader/dtc_reader.py:
+	    remove the BITS column from the treeview
+	
+
+2008-09-12  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/live_data/live_data.glade:
 	* plugins/live_data/live_data.py:
 	    gui update: get rid of VIN, voltage gets a button
