@@ -309,28 +309,37 @@ class ELMDevice(OBDDevice, PropertyObject):
         else:
             debug('received an unknown io signal')
             return False
-    
+
+  
     
     def _read_supported_pids(self, freeze_frame=False):
-        def success_cb(cmd, data, args):
-            self._supported_pids = []
-            data = decode_result(data)
-            for item in data:
-                bitstr = sensor.hex_to_bitstr(item)
-                for i in range(0, len(bitstr)):
-                    if bitstr[i] == "1":
-                        pid = i + 1
-                        if pid < 16: 
-                            pid_str = '010' + hex(pid)[2:]                    
-                        else:
-                            pid_str = '01' + hex(pid)[2:]
-                        self._supported_pids.append(pid_str.upper())  
-                          
+        #FIXME: merge these 3 in a single function
+        def zero_success_cb(cmd, data, args):
+            self._supported_pids += decode_pids_from_bitstring(data)
+            if '0120' in self._supported_pids:
+                self._send_command('0120', twenty_success_cb, error_cb)
+            else:
+                self._connected = True
+                print 'supported pids: %s' % self._supported_pids
+                self.emit('connected', True)
+
+
+        def twenty_success_cb(cmd, data, args):
+            self._supported_pids += decode_pids_from_bitstring(data, 32)
+            if '0140' in self._supported_pids:
+                self._send_command('0140', forty_success_cb, error_cb)
+            else:
+                self._connected = True
+                print 'supported pids: %s' % self._supported_pids
+                self.emit('connected', True)
+                
+        def forty_success_cb(cmd, data, args):
+            self._supported_pids += decode_pids_from_bitstring(data, 64)
             self._connected = True
             print 'supported pids: %s' % self._supported_pids
             self.emit('connected', True)
-
-
+                
+                
         def ff_success_cb(cmd, data, args):
             self._supported_freeze_frame_pids = []
             data = decode_result(data)
@@ -356,7 +365,8 @@ class ELMDevice(OBDDevice, PropertyObject):
             if self._connected:
                 self._send_command('0200', ff_success_cb, error_cb)        
         else:
-            self._send_command('0100', success_cb, error_cb)
+            self._supported_pids = []
+            self._send_command('0100', zero_success_cb, error_cb)
         
       
         
@@ -628,3 +638,19 @@ def decode_result(result):
                 ret.append(data[4:])
         
     return ret
+    
+    
+def decode_pids_from_bitstring(data, offset=0):
+    pids = []
+    data = decode_result(data)
+    for item in data:
+        bitstr = sensor.hex_to_bitstr(item)
+        for i in range(0, len(bitstr)):
+            if bitstr[i] == "1":
+                pid = i + 1 + offset
+                if pid < 16: 
+                    pid_str = '010' + hex(pid)[2:]                    
+                else:
+                    pid_str = '01' + hex(pid)[2:]
+                pids.append(pid_str.upper())
+    return pids

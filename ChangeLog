@@ -1,5 +1,12 @@
 2008-09-12  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/obd_device.py:
+	* scripts/elm_sim.py:
+	    support pids above 0x20
+	
+
+2008-09-12  Ben Van Mechelen  <me@benvm.be>
+
 	* configure.ac:
 	* plugins/Makefile.am:
 	    Make sure the new O2 Sensors plugin gets build
