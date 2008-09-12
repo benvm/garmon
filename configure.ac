@@ -52,5 +52,6 @@ plugins/dtc_clearer/Makefile
 plugins/dtc_reader/Makefile
 plugins/live_data/Makefile
 plugins/freeze_frame_data/Makefile
+plugins/o2_sensors/Makefile
 po/Makefile.in
 ])

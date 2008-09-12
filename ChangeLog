@@ -1,5 +1,12 @@
 2008-09-12  Ben Van Mechelen  <me@benvm.be>
 
+	* configure.ac:
+	* plugins/Makefile.am:
+	    Make sure the new O2 Sensors plugin gets build
+
+
+2008-09-12  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/dtc_reader/dtc_reader.py:
 	    remove the BITS column from the treeview
 	
