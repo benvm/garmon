@@ -2,9 +2,9 @@
 #
 # o2_sensors.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2008 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2008 <me@benvm.be>
 # 
-# livedata.py is free software; you can redistribute it and/or modify
+# o2_sensors.py is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.

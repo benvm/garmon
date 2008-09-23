@@ -1,5 +1,11 @@
 2008-09-23  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/o2_sensors/o2_sensors.py:
+	    correct copyright notice
+	    
+
+2008-09-23  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/widgets.py:
 	    Add an update-name property
 	* plugins/freeze_frame_data/freeze_frame_data.py:
