@@ -36,6 +36,7 @@ from garmon.obd_device import OBDDataError, OBDPortError
 from garmon.sensor import StateMixin, UnitMixin
 from garmon.sensor import Command, Sensor
 from garmon.sensor import decode_dtc_code
+from garmon.widgets import SensorView
 
 
 __name = _('Freeze Frame Data')
@@ -117,7 +118,7 @@ class FreezeFrameData (gtk.VBox, Plugin):
                 unit = xml.get_widget(item[UNIT])
             func = (item[HELPER])
             
-            view = FreezeFrameDataView(pid, index, units=self._unit_standard,
+            view = SensorView(pid, index, units=self._unit_standard,
                        name_widget=label, value_widget=entry, 
                        units_widget=unit, helper=func)
             
@@ -142,10 +143,13 @@ class FreezeFrameData (gtk.VBox, Plugin):
             if self.app.device:
                 if view.command.command in self.app.device.supported_freeze_frame_pids:
                     view.supported=True
+                    view.active=True
                 else:
                     view.supported=False
+                    view.active=False
             else:
                 view.supported=False
+                view.active=False
    
             
     def start(self):

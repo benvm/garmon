@@ -92,6 +92,7 @@ class SensorView(GObject, StateMixin, UnitMixin, PropertyObject):
     gproperty('value-widget', object)
     gproperty('units-widget', object)
     gproperty('helper', object)
+    gproperty('update-name', bool, False)
     
     def __init__(self, pid, index=0, units='Metric',
                        active_widget=None, name_widget=None,
@@ -177,7 +178,7 @@ class SensorView(GObject, StateMixin, UnitMixin, PropertyObject):
         if self.helper and callable(self.helper):
             self.helper(self)
         else:    
-            if self.name_widget:
+            if self.name_widget and self.update_name:
                 self.name_widget.set_text(self.command.name)
             if self.value_widget:
                 self.value_widget.set_text(value)
