@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# freeze_frame_data.py
+# freeze_frame_data.p
 #
 # Copyright (C) Ben Van Mechelen 2008 <me@benvm.be>
 # 
@@ -283,7 +283,7 @@ class FreezeFrameDataView(GObject, StateMixin, UnitMixin, PropertyObject):
             if self.units_widget:
                 self.units_widget.set_text(units)
 
-
+ 
 
 def _dtc_code_helper(self):
     dtc = decode_dtc_code(self.command.metric_value)

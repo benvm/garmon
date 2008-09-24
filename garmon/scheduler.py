@@ -84,14 +84,14 @@ class Scheduler (GObject, PropertyObject):
     
     
     def _command_success_cb(self, cmd, result, args):
-        self.emit('command_executed')
-        # We only care about the first result
-        result = result[0]
-        for item in cmd.list:
-            item.data = result
         if self.working:
+            self.emit('command_executed')
+            # We only care about the first result
+            result = result[0]
+            for item in cmd.list:
+                item.data = result
             self._execute_next_command()
-        
+            
     def _command_error_cb(self, cmd, msg, args):
         debug('Scheduler._command_error_cb: command was: %s' % cmd)
         debug('Scheduler._command_error_cb: msg is %s' % msg)

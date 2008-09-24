@@ -1,3 +1,9 @@
+2008-09-24  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/scheduler.py:
+	    only update a sensor when we are self.working
+	    
+
 2008-09-23  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/o2_sensors/o2_sensors.py:

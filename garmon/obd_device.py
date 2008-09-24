@@ -323,7 +323,6 @@ class ELMDevice(OBDDevice, PropertyObject):
                 print 'supported pids: %s' % self._supported_pids
                 self.emit('connected', True)
 
-
         def twenty_success_cb(cmd, data, args):
             self._supported_pids += decode_pids_from_bitstring(data, 32)
             if '0140' in self._supported_pids:
@@ -338,8 +337,7 @@ class ELMDevice(OBDDevice, PropertyObject):
             self._connected = True
             print 'supported pids: %s' % self._supported_pids
             self.emit('connected', True)
-                
-                
+                                
         def ff_success_cb(cmd, data, args):
             self._supported_freeze_frame_pids = []
             data = decode_result(data)
