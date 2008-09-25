@@ -187,7 +187,7 @@ class LiveData (gtk.VBox, Plugin):
                 if self.app.device:
                     if view.command.command in self.app.device.supported_commands:
                         view.supported=True
-                        if view in self.os_views:
+                        if view in self.os_views or view.command.command == '0101':
                             view.active=True
                     else:
                         view.supported=False

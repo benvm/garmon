@@ -1,5 +1,11 @@
 2008-09-25  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/live_data/live_data.py:
+	    make MIL widget and trouble codes active by default
+	
+
+2008-09-25  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/live_data/live_data.glade:
 	    gui improvements
 	    
