@@ -1,5 +1,12 @@
 2008-09-26  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/dashboard/dashboard.glade:
+	* plugins/dashboard/dashboard.py:
+	    add an alignment to center the widgets in the window
+
+
+2008-09-26  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/freeze_frame_data/freeze_frame_data.glade:
 	* plugins/freeze_frame_data/freeze_frame_data.py:
 	    gui improvements and addition of O2 sensors

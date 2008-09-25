@@ -109,8 +109,10 @@ class DashBoard (gtk.VBox, Plugin):
        
         
     def _setup_gui (self) :
+        alignment = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
         self.layout = gtk.Layout()
-        self.pack_start(self.layout, True, True)
+        alignment.add(self.layout)
+        self.pack_start(alignment, True, True)
         self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self._background))
         self.show_all()
         
