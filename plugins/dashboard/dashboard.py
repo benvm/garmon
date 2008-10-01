@@ -24,7 +24,7 @@ from gettext import gettext as _
 
 import gobject
 import gtk
-from gtk import glade
+from gtk import glade, gdk
 
 import garmon
 import garmon.plugin
@@ -142,13 +142,16 @@ class DashBoard (gtk.VBox, Plugin):
                 min_angle, max_angle = item[ANGLES]
                 gauge.set_properties(min_angle=min_angle, 
                                      max_angle=max_angle)     
-                                                
+                                                          
             x, y = item[POSITION]
             self.layout.put(gauge, x, y)
             gauge.show_all()
             
             gauge.unit_standard = self._unit_standard
             gauge.needle_color = self._needle_color
+            
+            gauge.connect('active-changed', self._gauge_active_changed_cb)
+            
             gauge.idle()
             self.gauges.append(gauge)
                          
@@ -190,6 +193,14 @@ class DashBoard (gtk.VBox, Plugin):
             self.start()
         else:
             self.stop()
+
+
+    def _gauge_active_changed_cb(self, gauge, active):
+        if active:
+            if self.status == STATUS_WORKING:
+                self.app.scheduler.add(gauge.sensor)
+        else:
+            self.app.scheduler.remove(gauge.sensor)
             
         
     def _update_supported_gauges (self):
@@ -243,7 +254,7 @@ class DashBoard (gtk.VBox, Plugin):
 
 
 
-class Gauge (gtk.DrawingArea, StateMixin, UnitMixin,
+class Gauge (gtk.EventBox, StateMixin, UnitMixin,
                               PropertyObject):
     __gtype_name__="Gauge"
          
@@ -269,11 +280,10 @@ class Gauge (gtk.DrawingArea, StateMixin, UnitMixin,
     def __init__ (self, pid, metric, imperial=None, index=0):
         if not imperial:
             imperial=metric
-        gtk.DrawingArea.__init__(self)
+        gtk.EventBox.__init__(self)
         PropertyObject.__init__(self, command=pid, index=index, 
                                       metric_overlay=metric,
                                       imperial_overlay=imperial)
-
         self.sensor = Sensor(pid, index)
         
         width = self.metric_overlay.get_width()
@@ -286,9 +296,13 @@ class Gauge (gtk.DrawingArea, StateMixin, UnitMixin,
         
         self._value = self.idle_value
         self._pixmap = None
+        self._area = gtk.DrawingArea()
+        self.add(self._area)
 
-        self.connect("expose_event", self._expose_event)
-        self.connect("configure_event", self._configure_event)
+        self.connect('button-press-event', self._button_press_cb)
+        self._area.connect("expose_event", self._expose_event)
+        self._area.connect("configure_event", self._configure_event)
+
     
     def __post_init__(self):
         self.connect('notify::needle-length', self._notify_must_redraw)
@@ -296,9 +310,11 @@ class Gauge (gtk.DrawingArea, StateMixin, UnitMixin,
         self.connect('notify::imperial-overlay', self._notify_must_redraw)
         self.connect('notify::needle-color', self._notify_needle_cb)
         self.connect('notify::needle-width', self._notify_needle_cb)
+        self.connect('notify::supported', self._notify_supported_cb)
+        self.connect('notify::active', self._notify_active_cb)
         self.sensor.connect('data-changed', self._sensor_data_changed_cb)
-
-        
+               
+                
     def _notify_must_redraw(self, o, pspec):
         self._draw()
         
@@ -309,7 +325,24 @@ class Gauge (gtk.DrawingArea, StateMixin, UnitMixin,
                 self._needle_gc.set_rgb_fg_color(gtk.gdk.color_parse(self.needle_color))
         if pspec.name == 'needle-width':    
             self._needle_gc.line_width = width
-        self._draw()    
+        self._draw()
+
+
+    def  _notify_supported_cb(self, o, pspec):
+        self.set_sensitive(self.supported)
+        if not self.supported:
+            self.active = False
+
+
+    def _notify_active_cb(self, o, pspec):
+        self._area.set_sensitive(self.active)
+        self._draw()
+        self.emit('active-changed', self.active)
+
+    
+    def _button_press_cb(self, widget, event):
+        if event.type == gdk.BUTTON_PRESS:
+            self.active = not self.active
 
 
     def _sensor_data_changed_cb(self, sensor, data):
@@ -360,7 +393,8 @@ class Gauge (gtk.DrawingArea, StateMixin, UnitMixin,
         self._pixmap.draw_pixbuf(gtk.gdk.GC(self.window), overlay, 0, 0, 0, 0)
         
         needle = self._construct_needle()
-        self._pixmap.draw_polygon(self._needle_gc, True, needle)
+        if self.active:
+            self._pixmap.draw_polygon(self._needle_gc, True, needle)
         
         fg_gc = self.get_style().fg_gc[gtk.STATE_NORMAL]
         fg_gc.set_foreground(gtk.gdk.color_parse('#000000'))
@@ -369,7 +403,7 @@ class Gauge (gtk.DrawingArea, StateMixin, UnitMixin,
                                      self._needle_origin_y - self._circle_radius, 
                                      self._circle_radius * 2, self._circle_radius * 2, 0, 360 * 64)
                                          
-        self.queue_draw()
+        self._area.queue_draw()
 
         
     def _expose_event (self, widget, event):
