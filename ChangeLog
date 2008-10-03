@@ -1,3 +1,10 @@
+2008-10-03  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/widgets.py:
+	    SensorView and CommandView inherit from new BaseView Class
+	    Created a new class SensorProgressView
+	    
+
 2008-10-01  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/dashboard/dashboard.py:
