@@ -1,3 +1,14 @@
+2008-10-11  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/widgets.py:
+	    remove old classes
+	    fix bugs in the new ones
+	* plugins/live_data/live_data.py:
+	    add a progress widget for testing
+	* scripts/elm_sim.py:
+	    changed pid responses for o2 sensors
+	    
+
 2008-10-03  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/widgets.py:

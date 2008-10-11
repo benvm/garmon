@@ -35,7 +35,7 @@ from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.obd_device import OBDDataError, OBDPortError
 from garmon.sensor import StateMixin, UnitMixin
 from garmon.sensor import Command, Sensor
-from garmon.widgets import MILWidget, SensorView, CommandView
+from garmon.widgets import MILWidget, SensorView, CommandView, SensorProgressView
 
 
 __name = _('Live Data')
@@ -128,6 +128,30 @@ class LiveData (gtk.VBox, Plugin):
                        active_widget=button, name_widget=label,
                        value_widget=entry, units_widget=unit,
                        helper=func)
+                       
+            view.connect('active-changed', self._view_active_changed_cb)
+            
+            if item[ONE_SHOT]:
+                self.os_views.append(view)
+            else:
+                self.views.append(view)
+
+        
+        for item in PROGRESS: 
+            label = button = bar = None
+            pid = item[PID]
+            index = item[INDEX]
+            if item[LABEL]:
+                label = xml.get_widget(item[LABEL])
+            if item[BUTTON]:
+                button = xml.get_widget(item[BUTTON])
+            if item[BAR]:
+                bar = xml.get_widget(item[BAR])
+            func = (item[HELPER])
+            
+            view = SensorProgressView(pid, index, units=self._unit_standard,
+                       active_widget=button, name_widget=label,
+                       progress_widget=bar, helper=func)
                        
             view.connect('active-changed', self._view_active_changed_cb)
             
@@ -265,7 +289,9 @@ class LiveData (gtk.VBox, Plugin):
         
 (COMMAND, NAME) = range(2)
         
-(PID, INDEX, ONE_SHOT, HELPER, LABEL, BUTTON, ENTRY, UNIT) = range (8)     
+(PID, INDEX, ONE_SHOT, HELPER, LABEL, BUTTON, ENTRY, UNIT) = range (8)
+
+BAR = 6
 
 COMMANDS = [
             ('voltage', _('Voltage'), False, None,
@@ -348,4 +374,7 @@ SENSORS= [
         ]
 
    
-    
+PROGRESS = [
+            #('0114', 1, False, None, 
+            #None, 'sensor11_button', 'sensor11_bar'),
+           ]

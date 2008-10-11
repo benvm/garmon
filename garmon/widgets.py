@@ -161,203 +161,10 @@ class BaseView(GObject, StateMixin, PropertyObject):
         if self.helper and callable(self.helper):
             self.helper(self)
         else:
-            self._do_update_view
+            self._do_update_view()
             
-                       
-"""
-class SensorViewOld(GObject, StateMixin, UnitMixin, PropertyObject):
-    __gtype_name__ = 'SensorViewOld'
-    
-    gproperty('name-widget', object)
-    gproperty('active-widget', object)
-    gproperty('value-widget', object)
-    gproperty('units-widget', object)
-    gproperty('helper', object)
-    gproperty('update-name', bool, False)
-    
-    def __init__(self, pid, index=0, units='Metric',
-                       active_widget=None, name_widget=None,
-                       value_widget=None, units_widget=None,
-                       helper=None):
-        GObject.__init__(self)
-        PropertyObject.__init__(self, active_widget=active_widget,
-                                      name_widget=name_widget,
-                                      value_widget=value_widget,
-                                      units_widget=units_widget,
-                                      unit_standard=units,
-                                      helper=helper)
-
-        self.command = Sensor(pid, index)
-        self.command.connect('data-changed', self._data_changed_cb)
-        self._toggleable = False
-        if active_widget:
-            if isinstance(active_widget, gtk.ToggleButton):
-                self._toggleable = True
-                self.active = active_widget.get_active()
-                active_widget.connect('toggled', self._active_toggled_cb)
-            elif isinstance(active_widget, gtk.Button):
-                self._togglable = False
-                active_widget.connect('clicked', self._active_clicked_cb)
-            else:
-                raise ValueError, 'active_widget should be gtk.Button or gtk.ToggleButton'
-                
-    def __post_init__(self):
-        self.connect('notify::unit-standard', self._notify_unit_standard_cb)
-        self.connect('notify::supported', self._notify_supported_cb)
-        self.connect('notify::active', self._notify_active_cb)
-        self._update_view()
-        self._sensitize_widgets()
-    
-
-       
-    def _notify_active_cb(self, o, pspec):
-        if self._toggleable:
-            self.active_widget.set_active(self.active)
-        self._sensitize_widgets()
-        if not self.active:
-            self.command.clear()
-        self.emit('active-changed', self.active)
-        
-    def _active_toggled_cb(self, togglebutton):
-        self.active = togglebutton.get_active()
-    
-    
-    def _active_clicked_cb(self, button):
-        self.active = not self.active
-        
-        
-    def  _notify_unit_standard_cb(self, o, pspec):
-        self._update_view()
-                
-    def  _notify_supported_cb(self, o, pspec):
-        if not self.supported:
-            self.active = False
-        self._sensitize_widgets()
-    
-     
-    def _sensitize_widgets(self):
-        if self.active_widget:
-            self.active_widget.set_sensitive(self.supported)
-        for widget in (self.name_widget, self.value_widget, self.units_widget):
-            if widget:
-                widget.set_sensitive(self.supported and self.active)
-            
-            
-    def _data_changed_cb(self, command, data):
-        self._update_view()
-       
-       
-    def _update_view(self):
-        if self.unit_standard == 'Imperial':
-            value = self.command.imperial_value
-            units = self.command.imperial_units
-        else:
-            value = self.command.metric_value
-            units = self.command.metric_units
-        if not units: units=''
-        if not value: value=''
-        if self.helper and callable(self.helper):
-            self.helper(self)
-        else:    
-            if self.name_widget and self.update_name:
-                self.name_widget.set_text(self.command.name)
-            if self.value_widget:
-                self.value_widget.set_text(value)
-            if self.units_widget:
-                self.units_widget.set_text(units)
-                                  
-
-
-
-class CommandViewOld(GObject, StateMixin, PropertyObject):
-    __gtype_name__ = 'CommandViewOld'
-    
-    gproperty('name-widget', object)
-    gproperty('active-widget', object)
-    gproperty('value-widget', object)
-    gproperty('helper', object)
-    
-    def __init__(self, command, name, active_widget=None,
-                       name_widget=None, value_widget=None,
-                       units_widget=None, helper=None):
-                       
-        GObject.__init__(self)
-        PropertyObject.__init__(self, active_widget=active_widget,
-                                      name_widget=name_widget,
-                                      value_widget=value_widget,
-                                      helper=helper)
-        self.command = Command(command)
-        self.command.connect('data-changed', self._data_changed_cb)
-                
-        self._toggleable = False
-        if active_widget:
-            if isinstance(active_widget, gtk.ToggleButton):
-                self._toggleable = True
-                self.active = active_widget.get_active()
-                active_widget.connect('toggled', self._active_toggled_cb)
-            elif isinstance(active_widget, gtk.Button):
-                self._togglable = False
-                active_widget.connect('clicked', self._active_clicked_cb)
-            else:
-                raise ValueError, 'active_widget should be gtk.Button or gtk.ToggleButton'
-        
-    def __post_init__(self):
-        self.connect('notify::supported', self._notify_supported_cb)
-        self.connect('notify::active', self._notify_active_cb)
-        self._update_view()
-        self._sensitize_widgets()
-    
-
-    def _notify_active_cb(self, o, pspec):
-        if self._toggleable:
-            self.active_widget.set_active(self.active)
-        self._sensitize_widgets()
-        if not self.active:
-            self.command.clear()
-        self.emit('active-changed', self.active)
-        
-    def _active_toggled_cb(self, togglebutton):
-        self.active = togglebutton.get_active()
-    
-    
-    def _active_clicked_cb(self, button):
-        self.active = not self.active
-        
-                
-    def  _notify_supported_cb(self, o, pspec):
-        if not self.supported:
-            self.active = False
-        self._sensitize_widgets()
-    
-     
-    def _sensitize_widgets(self):
-        if self.active_widget:
-            self.active_widget.set_sensitive(self.supported)
-        for widget in (self.name_widget, self.value_widget):
-            if widget:
-                widget.set_sensitive(self.supported and self.active)
-            
-            
-    def _data_changed_cb(self, command, data):
-        self._update_view()
-       
-       
-    def _update_view(self):
-        if self.helper and callable(self.helper):
-            self.helper(self)
-        else:
-            data = self.command.data
-            if not data:
-                data = ''
-            if self.value_widget:
-                self.value_widget.set_text(data)
-
-"""
-
-
-
-
-
+                    
+                    
 class CommandView(BaseView):
     __gtype_name__ = 'CommandView'
     
@@ -367,6 +174,8 @@ class CommandView(BaseView):
                        units_widget=None, helper=None):
                        
         self.command = Command(command)
+        self.command.connect('data-changed', self._data_changed_cb)
+        
         BaseView.__init__(self, active_widget, name_widget,
                                 value_widget, helper)
         
@@ -394,6 +203,8 @@ class SensorView(BaseView, UnitMixin, PropertyObject):
                        helper=None):
         
         self.command = Sensor(pid, index)
+        self.command.connect('data-changed', self._data_changed_cb)
+        
         BaseView.__init__(self, active_widget, name_widget,
                                 value_widget, helper)
         PropertyObject.__init__(self, active_widget=active_widget,
@@ -442,6 +253,8 @@ class SensorProgressView(BaseView, UnitMixin, PropertyObject):
     
     gproperty('units-widget', object)
     gproperty('progress-widget', object)
+    gproperty('min-value', float)
+    gproperty('max-value', float)
         
     def __init__(self, pid, index=0, units='Metric',
                        min_value=0, max_value=100,
@@ -449,8 +262,10 @@ class SensorProgressView(BaseView, UnitMixin, PropertyObject):
                        value_widget=None, units_widget=None,
                        helper=None, progress_widget=None):
         
-        BaseView.__init__(self, pid, index, units, 
-                                  active_widget, name_widget,
+        self.command = Sensor(pid, index)
+        self.command.connect('data-changed', self._data_changed_cb)
+        
+        BaseView.__init__(self, active_widget, name_widget,
                                   value_widget, helper)
         PropertyObject.__init__(self, active_widget=active_widget,
                                       name_widget=name_widget,
@@ -458,15 +273,19 @@ class SensorProgressView(BaseView, UnitMixin, PropertyObject):
                                       units_widget=units_widget,
                                       unit_standard=units,
                                       helper=helper,
-                                      progress_widget=progress_widget)
+                                      progress_widget=progress_widget,
+                                      min_value=min_value,
+                                      max_value=max_value)
                          
                      
     def _do_sensitize_widgets(self):
-        if widget in (self.units_widget, self.progress_widget):
-            widget.set_sensitive(self.supported and self.active)            
+        for widget in (self.units_widget, self.progress_widget):
+            if widget:
+                widget.set_sensitive(self.supported and self.active)            
        
        
     def _do_update_view(self):
+        print 'in SensorProgressView::_do_update_view'
         if self.unit_standard == 'Imperial':
             value = self.command.imperial_value
             units = self.command.imperial_units
@@ -478,7 +297,9 @@ class SensorProgressView(BaseView, UnitMixin, PropertyObject):
             value=''
             fraction = None
         else:
-            fraction = value / (max_value - min_value)
+            fraction = eval(value) / (self.max_value - self.min_value)
+            if fraction > 1: fraction = 1
+            if fraction < 0: fraction = 0
  
         if self.name_widget and self.update_name:
             self.name_widget.set_text(self.command.name)
