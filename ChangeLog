@@ -1,3 +1,21 @@
+2008-10-14  Ben Van Mechelen  <me@benvm.be>
+
+	* aclocal.m4:
+	    ???
+	* garmon/__init__.py:
+	    get version always from defs.py
+	* garmon/garmon_app.py:
+	    correct website in about box
+	* plugins/dashboard/dashboard.py:
+	* plugins/dtc_clearer/dtc_clearer.py:
+	* plugins/dtc_reader/dtc_reader.py:
+	* plugins/freeze_frame_data/freeze_frame_data.py:
+	* plugins/live_data/live_data.glade:
+	* plugins/live_data/live_data.py:
+	* plugins/o2_sensors/o2_sensors.py:
+	    change version to 0.2
+	    
+
 2008-10-11  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/widgets.py:

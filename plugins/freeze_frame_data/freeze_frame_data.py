@@ -40,7 +40,7 @@ from garmon.widgets import SensorView
 
 
 __name = _('Freeze Frame Data')
-__version = '0.1'
+__version = '0.2'
 __author = 'Ben Van Mechelen'
 __description = _('View Freeze Frame data associated with a certain dtc\n\nEXPERIMENTAL')
 __class = 'FreezeFrameData'

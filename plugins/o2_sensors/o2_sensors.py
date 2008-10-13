@@ -39,7 +39,7 @@ from garmon.widgets import MILWidget, SensorView
 
 
 __name = _('02 Sensors')
-__version = '0.1'
+__version = '0.2'
 __author = 'Ben Van Mechelen'
 __description = _('Displays O2 sensor data as well as engine RPM')
 __class = 'O2SensorsData'

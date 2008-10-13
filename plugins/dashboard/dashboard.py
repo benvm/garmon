@@ -36,7 +36,7 @@ from garmon.property_object import PropertyObject, gproperty, gsignal
 
 
 __name = _('Dashboard')
-__version = '0.1'
+__version = '0.2'
 __author = 'Ben Van Mechelen'
 __description = _('A dashboard-like plugin with meters showing OBD information')
 __class = 'DashBoard'

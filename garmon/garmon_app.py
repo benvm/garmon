@@ -296,7 +296,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog = gtk.AboutDialog()
         dialog.set_name("Garmon")
         dialog.set_copyright("Copyright \302\251 2007 Ben Van Mechelen")
-        dialog.set_website("http://www.benvm.be")
+        dialog.set_website("http://www.sf.net/projects/garmon")
         dialog.set_version(GARMON_VERSION)
         dialog.set_comments("Gnome OBD Car Monitor")
         dialog.set_authors(["Ben Van Mechelen"])

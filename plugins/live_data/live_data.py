@@ -39,9 +39,9 @@ from garmon.widgets import MILWidget, SensorView, CommandView, SensorProgressVie
 
 
 __name = _('Live Data')
-__version = '0.1'
+__version = '0.2'
 __author = 'Ben Van Mechelen'
-__description = _('View the most imported live data like:\n *Fuel System\n *Intake\n *VIN\n *...\n')
+__description = _('View the most important live data like:\n *Fuel System\n *Intake\n *VIN\n *...\n')
 __class = 'LiveData'
 
 
