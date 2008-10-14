@@ -127,7 +127,7 @@ class GarmonApp(gtk.Window, PropertyObject):
             self.connect('destroy', lambda *w: gtk.main_quit())
         
         self.set_title("Garmon")
-        self.set_default_size(800, 600)
+        self.set_default_size(880, 900)
         
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(self._create_action_group(), 0)

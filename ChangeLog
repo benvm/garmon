@@ -1,3 +1,13 @@
+2008-10-15  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
+	    adjust window size
+	* plugins/live_data/live_data.glade:
+	    new layout
+	* plugins/live_data/live_data.py:
+	    update for the new layout
+	
+
 2008-10-14  Ben Van Mechelen  <me@benvm.be>
 
 	* aclocal.m4:
