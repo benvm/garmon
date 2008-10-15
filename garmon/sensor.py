@@ -183,7 +183,8 @@ def percent(data):
 
 
 def egr_error(data):
-    value = eval("0x%s" % data) * 0.78125 - 100
+    value = eval("0x%s" % data)
+    value = int(round(value * 0.78125 - 100))
     return (value, value)
 
 

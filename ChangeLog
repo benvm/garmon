@@ -1,3 +1,9 @@
+2008-10-16  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/sensor.py:
+	    correct egr_error so it returns an int
+
+
 2008-10-15  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/sensor.py:
