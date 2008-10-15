@@ -95,6 +95,8 @@ class LiveData (gtk.VBox, Plugin):
         self.pack_start(main_hbox)
         main_hbox.show_all()
         self.show_all()
+        button = self.glade_xml.get_widget('deactivate_button')
+        button.connect('clicked', self._deactivate_clicked_cb)
         
         
     def _setup_sensors(self):
@@ -149,7 +151,7 @@ class LiveData (gtk.VBox, Plugin):
                 bar = xml.get_widget(item[BAR])
             func = (item[HELPER])
             
-            view = SensorProgressView(pid, index, units=self._unit_standard,
+            view = SensorProgressView(pid, index,
                        active_widget=button, name_widget=label,
                        progress_widget=bar, helper=func)
                        
@@ -202,6 +204,12 @@ class LiveData (gtk.VBox, Plugin):
                 self.app.scheduler.add(view.command)
         else:
             self.app.scheduler.remove(view.command)
+    
+    
+    def _deactivate_clicked_cb(self, button):
+        for view in self.views:
+            if not isinstance(view, MILWidget):
+                view.active = False
     
     
     def _update_supported_views(self):
@@ -371,10 +379,36 @@ SENSORS= [
          None, 'sensor24_button', 'sensor24_volt_entry', 'sensor24_volt_unit_label'),
         ('011B', 1, False, None, 
          None, 'sensor24_button', 'sensor24_trim_entry', 'sensor24_trim_unit_label'),
+        ('012C', 0, False, None, 
+         None, 'egr_button', 'egr_entry', 'egr_unit_label'),
+        ('012D', 0, False, None, 
+         None, 'egr_error_button', 'egr_error_entry', 'egr_error_unit_label'),
         ]
 
    
 PROGRESS = [
-            #('0114', 1, False, None, 
-            #None, 'sensor11_button', 'sensor11_bar'),
+            ('0114', 1, False, None, 
+            None, 'sensor11_button', 'sensor11_bar'),
+            ('0115', 1, False, None, 
+            None, 'sensor12_button', 'sensor12_bar'),
+            ('0116', 1, False, None, 
+            None, 'sensor13_button', 'sensor13_bar'),
+            ('0117', 1, False, None, 
+            None, 'sensor14_button', 'sensor14_bar'),
+            ('0118', 1, False, None, 
+            None, 'sensor21_button', 'sensor21_bar'),
+            ('0119', 1, False, None, 
+            None, 'sensor22_button', 'sensor22_bar'),
+            ('011A', 1, False, None, 
+            None, 'sensor23_button', 'sensor23_bar'),
+            ('011B', 1, False, None, 
+            None, 'sensor24_button', 'sensor24_bar'),
+            ('0106', 0, False, None, 
+            None, 'fuel_trim_short1_button', 'fuel_trim_short1_bar'),
+            ('0107', 0, False, None, 
+            None, 'fuel_trim_long1_button', 'fuel_trim_long1_bar'),
+            ('0108', 0, False, None, 
+            None, 'fuel_trim_short2_button', 'fuel_trim_short2_bar'),
+            ('0109', 0, False, None, 
+            None, 'fuel_trim_long2_button', 'fuel_trim_long2_bar'),
            ]

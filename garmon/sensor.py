@@ -174,12 +174,17 @@ def bitstring(data):
 
 
 def no_op(data):
-    return (data,data)
+    return (data, data)
 
 
 def percent(data):
     value = eval("0x%s" % data) * 100 / 255
-    return (value, data)
+    return (value, value)
+
+
+def egr_error(data):
+    value = eval("0x%s" % data) * 0.78125 - 100
+    return (value, value)
 
 
 def fuel_percent(data):
@@ -188,13 +193,13 @@ def fuel_percent(data):
     return (value, value)
 
 
-def lambda_voltage(data):
+def o2_voltage(data):
     value = eval("0x%s" % data[:2])
     value = value * 0.005
     return (value, value)
 
 
-def lambda_fuel_percent(data):
+def o2_fuel_percent(data):
     value = eval("0x%s" % data[2:])
     if value != 255:
         value = round((value - 128) * 0.78125)
@@ -352,22 +357,22 @@ SENSORS = {#  PID               Name                            formula         
             "11": ((_("Throttle Position"),                  percent,                "%",        "%"         ),),
             "12": ((_("Secondary Air Status"),               sec_air_status,         "",         ""          ),),
             "13": ((_("O2 Sensors present"),                 bitstring,              "",         ""          ),),
-            "14": ((_("O2 Sensor: 1 - 1 Voltage"),           lambda_voltage,         "V",        "V"         ),
-                   (_("O2 Sensor: 1 - 1 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
-            "15": ((_("O2 Sensor: 1 - 2 Voltage"),           lambda_voltage,         "V",        "V"         ),
-                   (_("O2 Sensor: 1 - 2 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
-            "16": ((_("O2 Sensor: 1 - 3 Voltage"),           lambda_voltage,         "V",        "V"         ),
-                   (_("O2 Sensor: 1 - 3 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
-            "17": ((_("O2 Sensor: 1 - 4 Voltage"),           lambda_voltage,         "V",        "V"         ),
-                   (_("O2 Sensor: 1 - 4 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
-            "18": ((_("O2 Sensor: 2 - 1 Voltage"),           lambda_voltage,         "V",        "V"         ),
-                   (_("O2 Sensor: 2 - 1 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
-            "19": ((_("O2 Sensor: 2 - 2 Voltage"),           lambda_voltage,         "V",        "V"         ),
-                   (_("O2 Sensor: 2 - 2 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
-            "1A": ((_("O2 Sensor: 2 - 3 Voltage"),           lambda_voltage,         "V",        "V"         ),
-                   (_("O2 Sensor: 2 - 3 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
-            "1B": ((_("O2 Sensor: 2 - 4 Voltage"),           lambda_voltage,         "V",        "V"         ),
-                   (_("O2 Sensor: 2 - 4 Fuel Trim"),         lambda_fuel_percent,    "%",        "%"         )),
+            "14": ((_("O2 Sensor: 1 - 1 Voltage"),           o2_voltage,             "V",        "V"         ),
+                   (_("O2 Sensor: 1 - 1 Fuel Trim"),         o2_fuel_percent,        "%",        "%"         )),
+            "15": ((_("O2 Sensor: 1 - 2 Voltage"),           o2_voltage,             "V",        "V"         ),
+                   (_("O2 Sensor: 1 - 2 Fuel Trim"),         o2_fuel_percent,        "%",        "%"         )),
+            "16": ((_("O2 Sensor: 1 - 3 Voltage"),           o2_voltage,             "V",        "V"         ),
+                   (_("O2 Sensor: 1 - 3 Fuel Trim"),         o2_fuel_percent,        "%",        "%"         )),
+            "17": ((_("O2 Sensor: 1 - 4 Voltage"),           o2_voltage,             "V",        "V"         ),
+                   (_("O2 Sensor: 1 - 4 Fuel Trim"),         o2_fuel_percent,        "%",        "%"         )),
+            "18": ((_("O2 Sensor: 2 - 1 Voltage"),           o2_voltage,             "V",        "V"         ),
+                   (_("O2 Sensor: 2 - 1 Fuel Trim"),         o2_fuel_percent,        "%",        "%"         )),
+            "19": ((_("O2 Sensor: 2 - 2 Voltage"),           o2_voltage,             "V",        "V"         ),
+                   (_("O2 Sensor: 2 - 2 Fuel Trim"),         o2_fuel_percent,        "%",        "%"         )),
+            "1A": ((_("O2 Sensor: 2 - 3 Voltage"),           o2_voltage,             "V",        "V"         ),
+                   (_("O2 Sensor: 2 - 3 Fuel Trim"),         o2_fuel_percent,        "%",        "%"         )),
+            "1B": ((_("O2 Sensor: 2 - 4 Voltage"),           o2_voltage,             "V",        "V"         ),
+                   (_("O2 Sensor: 2 - 4 Fuel Trim"),         o2_fuel_percent,        "%",        "%"         )),
             "1C": ((_("OBD Designation"),                    obd_designation,        "",         ""          ),),
             "1D": ((_("O2 Sensors present"),                 bitstring,              "",         ""          ),),
             "1E": ((_("Aux input status"),                   no_op,                  "",         ""          ),),
@@ -385,14 +390,14 @@ SENSORS = {#  PID               Name                            formula         
             "29": ((_("02S6_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
             "2A": ((_("02S7_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
             "2B": ((_("02S8_WR_Lambda"),                     todo,                   "λ",        "λ"         ),),
-            "2C": ((_("Commanded EGR"),                      percent,                "%",        "%"         ),)
-    
+            "2C": ((_("Commanded EGR"),                      percent,                "%",        "%"         ),),
+            "2D": ((_("EGR Error"),                          egr_error,              "%",        "%"         ),),
     }
 """    
 
 
-01  2C  1   Commanded EGR   0   100      %  100*A/255
-01  2D  1   EGR Error   -100    99.22    %  A*0.78125 - 100
+
+
 01  2E  1   Commanded evaporative purge     0   100      %  100*A/255
 01  2F  1   Fuel Level Input    0   100      %  100*A/255
 01  30  1   # of warm-ups since codes cleared   0   255     N/A     A

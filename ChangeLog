@@ -1,5 +1,18 @@
 2008-10-15  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/sensor.py:
+	    rename lambda to o2
+	    add egr functions
+	* garmon/widgets.py:
+	    remove UnitMixin from ProgressView
+	* plugins/live_data/live_data.glade:
+	* plugins/live_data/live_data.py:
+	    Add a deactivate_all button
+	    Add egr widgets
+	
+
+2008-10-15  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/garmon_app.py:
 	    adjust window size
 	* plugins/live_data/live_data.glade:

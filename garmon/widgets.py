@@ -248,18 +248,17 @@ class SensorView(BaseView, UnitMixin, PropertyObject):
             
             
             
-class SensorProgressView(BaseView, UnitMixin, PropertyObject):
+class SensorProgressView(BaseView, PropertyObject):
     __gtype_name__ = 'SensorProgressView'
     
-    gproperty('units-widget', object)
     gproperty('progress-widget', object)
     gproperty('min-value', float)
     gproperty('max-value', float)
         
-    def __init__(self, pid, index=0, units='Metric',
+    def __init__(self, pid, index=0,
                        min_value=0, max_value=100,
                        active_widget=None, name_widget=None,
-                       value_widget=None, units_widget=None,
+                       value_widget=None,
                        helper=None, progress_widget=None):
         
         self.command = Sensor(pid, index)
@@ -270,8 +269,6 @@ class SensorProgressView(BaseView, UnitMixin, PropertyObject):
         PropertyObject.__init__(self, active_widget=active_widget,
                                       name_widget=name_widget,
                                       value_widget=value_widget,
-                                      units_widget=units_widget,
-                                      unit_standard=units,
                                       helper=helper,
                                       progress_widget=progress_widget,
                                       min_value=min_value,
@@ -279,23 +276,15 @@ class SensorProgressView(BaseView, UnitMixin, PropertyObject):
                          
                      
     def _do_sensitize_widgets(self):
-        for widget in (self.units_widget, self.progress_widget):
-            if widget:
-                widget.set_sensitive(self.supported and self.active)            
+        if self.progress_widget:
+            self.progress_widget.set_sensitive(self.supported and self.active)            
        
        
     def _do_update_view(self):
-        print 'in SensorProgressView::_do_update_view'
-        if self.unit_standard == 'Imperial':
-            value = self.command.imperial_value
-            units = self.command.imperial_units
-        else:
-            value = self.command.metric_value
-            units = self.command.metric_units
-        if not units: units=''
+        value = self.command.metric_value
         if not value: 
             value=''
-            fraction = None
+            fraction = 0
         else:
             fraction = eval(value) / (self.max_value - self.min_value)
             if fraction > 1: fraction = 1
@@ -305,9 +294,7 @@ class SensorProgressView(BaseView, UnitMixin, PropertyObject):
             self.name_widget.set_text(self.command.name)
         if self.value_widget:
             self.value_widget.set_text(value)
-        if self.units_widget:
-            self.units_widget.set_text(units)
-        if self.progress_widget and fraction:
+        if self.progress_widget:
             self.progress_widget.set_fraction(fraction)
             
 
