@@ -1,5 +1,15 @@
 2008-10-16  Ben Van Mechelen  <me@benvm.be>
 
+	* configure.ac:
+	* plugins/Makefile.am:
+	* plugins/o2_sensors/Makefile.am:
+	* plugins/o2_sensors/o2_sensors.glade:
+	* plugins/o2_sensors/o2_sensors.py:
+	    remove o2 sensors plugin
+	    
+
+2008-10-16  Ben Van Mechelen  <me@benvm.be>
+
 	* scripts/elm_sim.py:
 	    add pid responses for egr valve
 	    
