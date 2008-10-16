@@ -254,6 +254,7 @@ class SensorProgressView(BaseView, PropertyObject):
     gproperty('progress-widget', object)
     gproperty('min-value', float)
     gproperty('max-value', float)
+    gproperty('update-name', bool, False)
         
     def __init__(self, pid, index=0,
                        min_value=0, max_value=100,

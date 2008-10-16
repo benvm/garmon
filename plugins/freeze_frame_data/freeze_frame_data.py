@@ -36,7 +36,7 @@ from garmon.obd_device import OBDDataError, OBDPortError
 from garmon.sensor import StateMixin, UnitMixin
 from garmon.sensor import Command, Sensor
 from garmon.sensor import decode_dtc_code
-from garmon.widgets import SensorView
+from garmon.widgets import SensorView, SensorProgressView
 
 
 __name = _('Freeze Frame Data')
@@ -107,7 +107,7 @@ class FreezeFrameData (gtk.VBox, Plugin):
         xml = self.glade_xml
                
         for item in SENSORS: 
-            label = button = entry = unit = None
+            label = entry = unit = None
             pid = item[PID]
             index = item[INDEX]
             if item[LABEL]:
@@ -121,6 +121,22 @@ class FreezeFrameData (gtk.VBox, Plugin):
             view = SensorView(pid, index, units=self._unit_standard,
                        name_widget=label, value_widget=entry, 
                        units_widget=unit, helper=func)
+            
+            self.views.append(view)
+
+        for item in PROGRESS: 
+            label = bar = None
+            pid = item[PID]
+            index = item[INDEX]
+            if item[LABEL]:
+                label = xml.get_widget(item[LABEL])
+            if item[BAR]:
+                bar = xml.get_widget(item[BAR])
+            func = (item[HELPER])
+            
+            view = SensorProgressView(pid, index,
+                       name_widget=label,
+                       progress_widget=bar, helper=func)
             
             self.views.append(view)
 
@@ -285,16 +301,17 @@ class FreezeFrameDataView(GObject, StateMixin, UnitMixin, PropertyObject):
 
  
 
-def _dtc_code_helper(self):
-    dtc = decode_dtc_code(self.command.metric_value)
+def _dtc_code_helper(view):
+    dtc = decode_dtc_code(view.command.metric_value)
     if not dtc:
         dtc = ''
-    self.value_widget.set_text(dtc)
+    view.value_widget.set_text(dtc)
 
         
 (COMMAND, NAME) = range(2)
 
-(PID, INDEX, HELPER, LABEL, ENTRY, UNIT) = range (6) 
+(PID, INDEX, HELPER, LABEL, ENTRY, UNIT) = range (6)
+BAR = 4
 
 SENSORS= [
         ('0202', 0, _dtc_code_helper,
@@ -365,5 +382,36 @@ SENSORS= [
          'sensor24_label', 'sensor24_volt_entry', 'sensor24_volt_unit_label'),
         ('021B', 1, None, 
          'sensor24_label', 'sensor24_trim_entry', 'sensor24_trim_unit_label'),
+        ('022C', 0, None, 
+         'egr_label', 'egr_entry', 'egr_unit_label'),
+        ('022D', 0, None, 
+         'egr_error_label', 'egr_error_entry', 'egr_error_unit_label'),
         ]  
     
+    
+PROGRESS = [
+            ('0214', 1, None, 
+             'sensor11_label', 'sensor11_bar'),
+            ('0215', 1, None, 
+             'sensor12_label', 'sensor12_bar'),
+            ('0216', 1, None, 
+             'sensor13_label', 'sensor13_bar'),
+            ('0217', 1, None, 
+             'sensor14_label', 'sensor14_bar'),
+            ('0218', 1, None, 
+             'sensor21_label', 'sensor21_bar'),
+            ('0219', 1, None, 
+             'sensor22_label', 'sensor22_bar'),
+            ('021A', 1, None, 
+             'sensor23_label', 'sensor23_bar'),
+            ('021B', 1, None, 
+             'sensor24_label', 'sensor24_bar'),
+            ('0206', 0, None, 
+             'fuel_trim_short1_label', 'fuel_trim_short1_bar'),
+            ('0207', 0, None, 
+             'fuel_trim_long1_label', 'fuel_trim_long1_bar'),
+            ('0208', 0, None, 
+             'fuel_trim_short2_label', 'fuel_trim_short2_bar'),
+            ('0209', 0, None, 
+             'fuel_trim_long2_label', 'fuel_trim_long2_bar'),
+           ]

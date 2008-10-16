@@ -1,5 +1,14 @@
 2008-10-16  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/widgets.py:
+	    Add update_name property to SensorProgressView
+	* plugins/freeze_frame_data/freeze_frame_data.glade:
+	* plugins/freeze_frame_data/freeze_frame_data.py:
+	    make the gui look like LiveData
+	
+
+2008-10-16  Ben Van Mechelen  <me@benvm.be>
+
 	* configure.ac:
 	* plugins/Makefile.am:
 	* plugins/o2_sensors/Makefile.am:
