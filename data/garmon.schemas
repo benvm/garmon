@@ -105,7 +105,7 @@
       <owner>garmon</owner>
       <type>string</type>
       <locale name="C">
-        <default>LiveData,DTCReader,DTCClearer, DashBoard</default>
+        <default>Live Data,DTC Reader,DTC Clearer,Freeze Frame Data,Dashboard</default>
         <short>Active Plugins</short>
         <long>The plugins to activate when the app is started</long>
       </locale>
