@@ -1,3 +1,10 @@
+2008-10-17  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/freeze_frame_data/freeze_frame_data.glade:
+	* plugins/live_data/live_data.glade:
+	    small changes in the layout
+	
+
 2008-10-16  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/widgets.py:
