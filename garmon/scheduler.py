@@ -122,39 +122,39 @@ class Scheduler (GObject, PropertyObject):
             
     ####################### Public Interface ###################
                            
-    def add(self, command, oneshot=False):
+    def add(self, cmd, oneshot=False):
         """Add an item to the queue
-           @param command: the item to add to the queue
+           @param cmd: the item to add to the queue
            @param oneshot: wether the command should only be 
                            executed once.
         """
-        if not isinstance(command, Command):
+        if not isinstance(cmd, Command):
             raise ValueError, 'command should be an instance of Command'
         if oneshot:
             queue = self._os_queue
         else:
             queue = self._queue
             
-        if Command.command in queue:
-            queue_item = queue[queue.index(command.command)]
+        if cmd.command in queue:
+            queue_item = queue[queue.index(cmd.command)]
         else:
-            queue_item = QueueItem(command.command)
+            queue_item = QueueItem(cmd.command)
             queue.append(queue_item)
-        queue_item.list.append(command)
+        queue_item.list.append(cmd)
 
            
-    def remove(self, command):
+    def remove(self, cmd):
         """Remove an item from the queue
-           @param command: Command instance
+           @param cmd: Command instance
         """
-        if not isinstance(command, Command):
-            raise ValueError, 'command should be an instance of Command'
+        if not isinstance(cmd, Command):
+            raise ValueError, 'cmd should be an instance of Command'
 
         for queue in (self._queue, self._os_queue):
             for queue_item in queue:
-                if queue_item == command.command:
-                    if command in queue_item.list:
-                        queue_item.list.remove(command)
+                if queue_item == cmd.command:
+                    if cmd in queue_item.list:
+                        queue_item.list.remove(cmd)
                     if queue_item.list == []:
                         queue.remove(queue_item)
     
