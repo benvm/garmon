@@ -1,3 +1,9 @@
+2008-10-21  Ben Van Mechelen  <me@benvm.be>
+
+	* configure.ac:
+	    bump version to 0.2.1
+	    
+
 2008-10-20  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/scheduler.py:
