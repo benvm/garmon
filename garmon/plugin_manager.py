@@ -31,6 +31,7 @@ import gtk
 
 import garmon
 
+from garmon import logger
 from garmon.plugin import Plugin
 from garmon.property_object import PropertyObject, gproperty, gsignal
 
@@ -291,19 +292,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
         if plugins:
             self._treemodel.foreach(self._activate_saved_plugins_cb, plugins)        
         
-        
-    def is_notebook_plugin(self, plugin):
-        if type(plugin) is 'str':
-            instance = self._plugin_instance_from_string(plugin)
-        else:
-            instance = plugin
-        
-        if instance:
-            if isinstance(instance, GarmonNotebookPlugin):
-                return True
-        return False
                
-        
     def run(self):
         self.show_all()
         gtk.Dialog.run(self)

@@ -1,3 +1,13 @@
+2008-12-05  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
+	* garmon/obd_device.py:
+	* garmon/plugin_manager.py:
+	* garmon/prefs.py:
+	* garmon/sensor.py:
+	* plugins/dashboard/dashboard.py:
+	    Make some code a bit more pythonic + cleanups
+
 2008-10-21  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/freeze_frame_data/freeze_frame_data.py:

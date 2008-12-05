@@ -41,7 +41,7 @@ gettext.textdomain('garmon')
 gtk.glade.textdomain('garmon')
 
 import garmon
-from garmon import GLADE_DIR, GARMON_VERSION
+from garmon import GLADE_DIR, GARMON_VERSION, logger
 
 import garmon.plugin_manager as plugin_manager
 

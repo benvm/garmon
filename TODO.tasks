@@ -12,9 +12,9 @@
       <comment/>
     </item>
     <item>
-      <attribute id="1208581720" priority="1" done="0" start_date="733151" enddate="99999999" notify="0" endtime="-60" last_edited="1208581744"/>
+      <attribute id="1208581720" priority="1" done="1" start_date="733151" completed_date="733359" notify="0" last_edited="1226605885"/>
       <summary>Create prefs for background and needle color</summary>
-      <comment/>
+      <comment></comment>
     </item>
   </category>
   <category title="plugin: DTCClearer" place="1"/>
@@ -45,7 +45,7 @@ Maybe we can give possible causes or solutions.</comment>
     <item>
       <attribute id="1208353502" priority="1" done="1" start_date="733148" completed_date="733290" notify="0" last_edited="1220627552"/>
       <summary>add a oneshot queue to Scheduler</summary>
-      <comment></comment>
+      <comment/>
     </item>
   </category>
 </gtodo>

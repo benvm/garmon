@@ -267,17 +267,17 @@ def fuel_status_2(data):
     
 def fuel_status(data):
     ret = 'Not In Use'
-    for bit in range(len(FUEL_STATUS)):
+    for bit, item in enumerate(FUEL_STATUS):
         if data & 1 << bit:
-            ret = (FUEL_STATUS[bit]) 
+            ret = item
     return (ret, ret)
 
 def sec_air_status(data):
     data = eval('0x%s' % data)
     ret = 'Not In Use'
-    for bit in range(len(AIR_STATUS)):
+    for bit, item in enumerate(AIR_STATUS):
         if data & 1 << bit:
-            ret = (AIR_STATUS[bit])
+            ret = item
     return (ret, ret)
 
 def obd_designation(data):

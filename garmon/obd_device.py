@@ -34,7 +34,7 @@ import garmon.sensor as sensor
 from garmon.sensor import SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
 from garmon.sensor import dtc_decode_num, dtc_decode_mil
 
-from garmon import debug
+from garmon import logger
 
 import datetime
 
@@ -343,8 +343,8 @@ class ELMDevice(OBDDevice, PropertyObject):
             data = decode_result(data)
             for item in data:
                 bitstr = sensor.hex_to_bitstr(item)
-                for i in range(0, len(bitstr)):
-                    if bitstr[i] == "1":
+                for i, bit in enumerate(bitstr):
+                    if bit == "1":
                         pid = i + 1
                         if pid < 16: 
                             pid_str = '020' + hex(pid)[2:]                    
@@ -608,7 +608,7 @@ def decode_dtc_result(result):
             if not len(data) == 12:
                 raise OBDDataError('Data Read Error',
                                      _('Did not get a valid length of data'))
-            for i in range(3):
+            for i in xrange(3):
                 if not data[:4] == '0000':
                     dtc.append(data[:4])
                 data = data[4:]
@@ -643,8 +643,8 @@ def decode_pids_from_bitstring(data, offset=0):
     data = decode_result(data)
     for item in data:
         bitstr = sensor.hex_to_bitstr(item)
-        for i in range(0, len(bitstr)):
-            if bitstr[i] == "1":
+        for i, bit in enumerate(bitstr):
+            if bit == "1":
                 pid = i + 1 + offset
                 if pid < 16: 
                     pid_str = '010' + hex(pid)[2:]                    

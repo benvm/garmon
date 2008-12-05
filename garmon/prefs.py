@@ -32,7 +32,7 @@ from gobject import GObject
 import gconf
 
 import garmon
-from garmon import GLADE_DIR, debug
+from garmon import GLADE_DIR, logger
 
 
 class PrefsDialog (gtk.Dialog):

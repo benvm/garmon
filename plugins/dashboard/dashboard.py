@@ -212,12 +212,7 @@ class DashBoard (gtk.VBox, Plugin):
             else:
                 gauge.supported = False
               
-              
-    def _set_meters_idle (self):
-        for gauge in self.gauges:
-            gauge.idle()
-        
-                
+                             
     def start(self):
         if not self.status == STATUS_WORKING:
             for gauge in self.gauges:
