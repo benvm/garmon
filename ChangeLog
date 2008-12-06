@@ -1,3 +1,16 @@
+2008-12-06  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/__init__.py:
+	* garmon/garmon:
+	* garmon/garmon_app.py:
+	* garmon/obd_device.py:
+	* garmon/plugin_manager.py:
+	* plugins/freeze_frame_data/freeze_frame_data.py:
+	* plugins/live_data/live_data.py:
+	    Make use of the logging facilities in python
+	    to display messages
+	    
+
 2008-12-05  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/garmon_app.py:

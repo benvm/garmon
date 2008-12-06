@@ -188,8 +188,8 @@ class PluginManager(gtk.Dialog, PropertyObject):
                                 COLUMN_CLASS, getattr(module,'__class'))
                                             
         except ImportError, e:
-            print _('failed to load plugin: ') + plugin
-            print e
+            logger.error(_('failed to load plugin: ') + plugin)
+            logger.error(e)
         finally:
             if module_info[0]:
                 module_info[0].close()
@@ -204,7 +204,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
             attr = getattr(module, cls)
             instance = attr(self.app)
         except:
-            print _('Failed to activate plugin %s') % plugin
+            logger.error(_('Failed to activate plugin %s') % plugin)
             if instance:
                 instance = None
             raise
@@ -213,7 +213,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
         if isinstance(instance, Plugin):
             self._active_plugins.append((plugin, instance))
         else:
-            print _('%s does not seem to be a valid Plugin') % instance
+            logger.error(_('%s does not seem to be a valid Plugin') % instance)
             instance = None
             return None
 
@@ -222,19 +222,20 @@ class PluginManager(gtk.Dialog, PropertyObject):
                 instance.merge_id = self.app.ui.add_ui_from_string(instance.ui_info)
                 self.app.ui.insert_action_group(instance.action_group, 0)
         except gobject.GError, msg:
-                print _("building menus failed: %s") % msg
+                logger.error(_("building menus failed: %s") % msg)
         
         if hasattr(instance, 'load'):                    
             instance.load()
 
-        print _('Plugin activated: %s') % instance 
+        logger.info(_('Plugin activated: %s') % plugin)
+        logger.debug(instance)
         return instance
             
             
     def _deactivate_plugin(self, plugin):
         
         instance = self._plugin_instance_from_string(plugin)
-        str = instance.__str__()
+        istr = str(instance)
         
         if instance.action_group:
             self.app.ui.remove_action_group(instance.action_group)
@@ -249,7 +250,8 @@ class PluginManager(gtk.Dialog, PropertyObject):
             if string ==  plugin:
                 self._active_plugins.remove(item)
                     
-        print _('Plugin deactivated: %s') % str
+        logger.info(_('Plugin deactivated: %s') % plugin)
+        logger.debug(_('Plugin deactivated: %s') % istr)
         
         
     def _activate_saved_plugins_cb(self, model, path, iter, plugins):
@@ -261,15 +263,15 @@ class PluginManager(gtk.Dialog, PropertyObject):
         
     def _load_available_plugins(self):
         
-        for dir in os.listdir(garmon.PLUGIN_DIR):
-            path = os.path.join(garmon.PLUGIN_DIR, dir)
+        for dname in os.listdir(garmon.PLUGIN_DIR):
+            path = os.path.join(garmon.PLUGIN_DIR, dname)
+            fname = dname + '.py'
             if os.path.isdir(path):
-                if os.path.exists(os.path.join(path, dir + '.py')):
-                    self._load_plugin(dir, path)
+                if os.path.exists(os.path.join(path, fname)):
+                    self._load_plugin(dname, path)
                 else:
-                    print _('No %s.py file was found in %s, ') % (dir, path)
-                    print _('so no plugin could be loaded')
-                
+                    logger.warning(_('No file %s was found in %s') % (fname, path))
+             
 
     def _plugin_instance_from_string(self, string):
         for ret_str, instance in self._active_plugins:

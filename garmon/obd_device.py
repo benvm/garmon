@@ -170,7 +170,7 @@ class ELMDevice(OBDDevice, PropertyObject):
 
 
     def _send_command(self, command, ret, err, cleanup=True, *args):
-        print 'in _send_command; command is %s' % command
+        logger.debug('in _send_command; command is %s' % command)
         if not self._port.isOpen():
             raise OBDPortError('PortNotOpen', _('The port is not open'))
 
@@ -233,25 +233,25 @@ class ELMDevice(OBDDevice, PropertyObject):
      
         if self._sent_command:
             if data[0] == '>':
-                print 'command sent, received >'
+                logger.debug('command sent, received >')
                 error = True
                 
             elif data[0] == '?':
-                print 'command sent, received ?'
+                logger.debug('command sent, received ?')
                 error = True
                 msg = '?'
                 
             elif 'SEARCHING' in data:
-                print 'received SEARCHING: resending command'
+                logger.info('received SEARCHING: resending command')
                 self._send_command(cmd, ret_cb, err_cb, args)
                 
             elif 'UNABLE TO CONNECT' in data:
-                print 'received UNABLE TO CONNECT'
+                logger.debug('received UNABLE TO CONNECT')
                 error = True
                 msg = 'UNABLE TO CONNECT'
 
             elif 'NO DATA' in data:
-                print 'received NO DATA'
+                logger.debug('received NO DATA')
                 error = True
                 msg = 'NO DATA'
                 
@@ -275,15 +275,15 @@ class ELMDevice(OBDDevice, PropertyObject):
             # no command sent
             # are we interested anyway?
             if '>' in data:
-                print 'received >'
+                logger.debug('received >')
             else:
-                print 'no command sent, received %s' % data
+                logger.debug('no command sent, received %s' % data)
                 
 
     def _port_io_watch_cb(self, fd, condition, data=None):
-        print 'in _port_io_watch_cb'
+        logger.debug('in _port_io_watch_cb')
         if condition & gobject.IO_HUP:
-            debug('received HUP signal')
+            logger.debug('received HUP signal')
             self._sent_command = None
             self._ret_cb = None
             self._err_cb = None
@@ -291,7 +291,7 @@ class ELMDevice(OBDDevice, PropertyObject):
             self.close()    
             return False
         elif condition & gobject.IO_ERR:
-            debug('received ERR signal')
+            logger.debug('received ERR signal')
             self._sent_command = None
             self._ret_cb = None
             self._err_cb = None
@@ -303,11 +303,11 @@ class ELMDevice(OBDDevice, PropertyObject):
                 result = self._read_result()
                 self._parse_result(result)
             except OBDPortError, e:
-                debug('CONDITION = IO_IN but reading times out. Error: %s' % e[0])
+                logger.debug('CONDITION = IO_IN but reading times out. Error: %s' % e[0])
             finally:
                 return True
         else:
-            debug('received an unknown io signal')
+            logger.debug('received an unknown io signal')
             return False
 
   
@@ -320,7 +320,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 self._send_command('0120', twenty_success_cb, error_cb)
             else:
                 self._connected = True
-                print 'supported pids: %s' % self._supported_pids
+                logger.info('supported pids: %s' % self._supported_pids)
                 self.emit('connected', True)
 
         def twenty_success_cb(cmd, data, args):
@@ -329,13 +329,13 @@ class ELMDevice(OBDDevice, PropertyObject):
                 self._send_command('0140', forty_success_cb, error_cb)
             else:
                 self._connected = True
-                print 'supported pids: %s' % self._supported_pids
+                logger.info('supported pids: %s' % self._supported_pids)
                 self.emit('connected', True)
                 
         def forty_success_cb(cmd, data, args):
             self._supported_pids += decode_pids_from_bitstring(data, 64)
             self._connected = True
-            print 'supported pids: %s' % self._supported_pids
+            logger.info('supported pids: %s' % self._supported_pids)
             self.emit('connected', True)
                                 
         def ff_success_cb(cmd, data, args):
@@ -352,10 +352,11 @@ class ELMDevice(OBDDevice, PropertyObject):
                             pid_str = '02' + hex(pid)[2:]
                         self._supported_freeze_frame_pids.append(pid_str.upper())  
                         
-            print 'supported freeze frame pids: %s' % self._supported_freeze_frame_pids
+            logger.info('supported freeze frame pids: %s' % 
+                                            self._supported_freeze_frame_pids)
 
         def error_cb(cmd, msg, args):
-            debug('error reading supported pids, msg is: %s' % msg)
+            logger.error('error reading supported pids, msg is: %s' % msg)
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))        
         
@@ -370,29 +371,29 @@ class ELMDevice(OBDDevice, PropertyObject):
         
     def _initialize_device(self):
         def atz_success_cb(cmd, res, args):
-            print 'in atz_success_cb'
+            logger.debug('in atz_success_cb')
             if not 'ELM327' in res:
-                print 'invalid response'
+                logger.debug('invalid response')
                 atz_error_cb(cmd, res, None)
             else:
-                print 'received answer valid'
+                logger.debug('received answer valid')
                 self._send_command('ate0', ate_success_cb, ate_error_cb) 
             
         def atz_error_cb(cmd, msg, args):
-            print 'in atz_error_cb'
+            logger.debug('in atz_error_cb')
             raise OBDPortError('OpenPortFailed', 
                                _('atz command failed'))
             
         def ate_success_cb(cmd, res, args):
-            print 'in ate_success_cb'
+            logger.debug('in ate_success_cb')
             if not 'OK' in res:
-                print 'invalid response'
+                logger.debug('invalid response')
                 ate_error_cb(cmd, res, args)
             else:
                 self._read_supported_pids()
             
         def ate_error_cb(cmd, msg, args):
-            print 'in atz_error_cb'
+            logger.debug('in atz_error_cb')
             raise OBDPortError('OpenPortFailed', 
                                _('ate0 command failed'))
            
@@ -453,26 +454,26 @@ class ELMDevice(OBDDevice, PropertyObject):
             command = 'at brd ' + str(divisor)[2:]
         
             def cr_return_cb(cmd, res, args):
-                print 'cr_return_cb'
+                logger.debug('in cr_return_cb')
                 if 'OK' in res:
                     self._current_baudrate = baudrate
                 
             def brd_support_success_cb(cmd, res, args):
                 if 'OK' in res:
-                    print 'res = OK'
+                    logger.debug('res = OK')
                     self._port.baudrate = baudrate
-                    print self._stop - self._start
+                    logger.debug(self._stop - self._start)
                 elif 'ELM327' in res:
-                    print 'res = ELM327'
+                    logger.debug('res = ELM327')
                     self._send_command('\r', cr_success_cb, error_cb)    
                 
                 
             def error_cb(cmd, msg, args):
                 if msg == '?':
                     #FIXME
-                    print 'BRD command not supported'
+                    logger.debug('BRD command not supported')
                 else:
-                    print 'error in request_baudrate %s' % msg
+                    logger.debug('error in request_baudrate %s' % msg)
                     self._port.baudrate = self.initial_baudrate
                     self._current_baudrate = self.initial_baudrate
                 
@@ -617,7 +618,7 @@ def decode_dtc_result(result):
                            
                            
 def decode_result(result):
-    print 'entering decode_result'
+    logger.debug('entering decode_result')
     if not result:
         raise OBDDataError('Data Read Error',
                            _('No data was received from the device'))
@@ -631,7 +632,7 @@ def decode_result(result):
             data = string.join(data, '')
             
             if data[:2] == '7F':
-                print 'we got back 7F which is an error'
+                logger.debug('we got back 7F which is an error')
             else:
                 ret.append(data[4:])
         

@@ -25,6 +25,8 @@
 import os
 import sys
 import gtk
+import logging
+from optparse import OptionParser
 
 _dirname = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if os.path.exists(os.path.join(_dirname,"ChangeLog")):
@@ -33,6 +35,27 @@ if os.path.exists(os.path.join(_dirname,"ChangeLog")):
 
 import garmon
 import garmon.garmon_app
+from garmon import DEBUG_LEVEL, DEBUG_LEVELS
+
+
+usage = "usage: %prog [options]"
+parser = OptionParser(usage)
+parser.set_defaults(debug_level='INFO')
+parser.add_option('-d', '--debug-level', dest='debug_level',
+					help='The treshold for messages that are printed to the\
+					      screen: should be one of: %s  default is INFO' %  
+					      ', '.join(DEBUG_LEVELS))
+					
+(options, args) = parser.parse_args()
+if len(args) != 0:
+	parser.error('incorrect number of arguments')
+	
+level = options.debug_level.upper()
+if not level in DEBUG_LEVELS:
+    parser.error('debug-level should be one of %s' % ','.join(DEBUG_LEVELS))
+DEBUG_LEVEL = getattr(logging, level)
+garmon.logger.setLevel(DEBUG_LEVEL)
+
 
 garmon.garmon_app.main()
 

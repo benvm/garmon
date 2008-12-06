@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 from defs import *
 
 DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -12,6 +13,11 @@ if INSTALLED:
 else:
     PLUGIN_DIR =                os.path.join(DIRECTORY, "plugins")
     GLADE_DIR =                 os.path.join(DIRECTORY, "data")
+    
+DEBUG_LEVEL = logging.INFO
+DEBUG_LEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
+    
+logging.basicConfig(level=DEBUG_LEVEL,
+                    format='%(name)-10s: %(levelname)-10s %(message)s')
 
-def debug(msg):
-    print 'Garmon DebugInfo:  * ' + msg
+logger = logging.getLogger('Garmon')

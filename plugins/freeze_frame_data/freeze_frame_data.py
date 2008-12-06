@@ -30,6 +30,7 @@ import garmon
 import garmon.plugin
 import garmon.sensor
 
+from garmon import logger
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.obd_device import OBDDataError, OBDPortError
@@ -151,9 +152,9 @@ class FreezeFrameData (gtk.VBox, Plugin):
                        
     
     def _update_supported_views(self):
-        print 'in update_supported_views'
+        logger.debug('in update_supported_views')
         if self.app.device.supported_freeze_frame_pids == None:
-            print 'supported_freeze_frame_pids not yet read'
+            logger.debug('supported_freeze_frame_pids not yet read')
             return
         for view in self.views:
             if self.app.device:

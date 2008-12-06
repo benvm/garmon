@@ -136,7 +136,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         try:
             mergeid = self.ui.add_ui_from_string(ui_info)
         except gobject.GError, msg:
-            print "building menus failed: %s" % msg
+            logger.error("building menus failed: %s" % msg)
         menubar = self.ui.get_widget("/MenuBar")
         menubar.show()
         
