@@ -1,5 +1,12 @@
 2008-12-06  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/obd_device.py:
+	    Improve readability of console messages when
+	    there are a lot of pids
+	    
+
+2008-12-06  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/__init__.py:
 	* garmon/garmon:
 	* garmon/garmon_app.py:

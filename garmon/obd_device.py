@@ -320,7 +320,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 self._send_command('0120', twenty_success_cb, error_cb)
             else:
                 self._connected = True
-                logger.info('supported pids: %s' % self._supported_pids)
+                logger.info('supported pids: %s\n' % self._supported_pids)
                 self.emit('connected', True)
 
         def twenty_success_cb(cmd, data, args):
@@ -329,13 +329,13 @@ class ELMDevice(OBDDevice, PropertyObject):
                 self._send_command('0140', forty_success_cb, error_cb)
             else:
                 self._connected = True
-                logger.info('supported pids: %s' % self._supported_pids)
+                logger.info('supported pids: %s\n' % self._supported_pids)
                 self.emit('connected', True)
                 
         def forty_success_cb(cmd, data, args):
             self._supported_pids += decode_pids_from_bitstring(data, 64)
             self._connected = True
-            logger.info('supported pids: %s' % self._supported_pids)
+            logger.info('supported pids: %s\n' % self._supported_pids)
             self.emit('connected', True)
                                 
         def ff_success_cb(cmd, data, args):
@@ -352,7 +352,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                             pid_str = '02' + hex(pid)[2:]
                         self._supported_freeze_frame_pids.append(pid_str.upper())  
                         
-            logger.info('supported freeze frame pids: %s' % 
+            logger.info('supported freeze frame pids: %s\n' % 
                                             self._supported_freeze_frame_pids)
 
         def error_cb(cmd, msg, args):
