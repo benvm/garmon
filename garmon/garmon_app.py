@@ -299,7 +299,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog.set_website("http://www.sf.net/projects/garmon")
         dialog.set_version(GARMON_VERSION)
         dialog.set_comments("Gnome OBD Car Monitor")
-        dialog.set_authors(["Ben Van Mechelen"])
+        dialog.set_authors(["Ben Van Mechelen <me@benvm.be>"])
         dialog.set_license(gpl)
         
         ## Close dialog on user response
