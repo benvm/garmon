@@ -2,22 +2,22 @@
 #
 # backdoor.py
 #
-# Copyright (C) Ben Van Mechelen 2008 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2008-2009 <me@benvm.be>
 # 
-# backdoor.py is free software.
+# This file is part of Garmon 
 # 
-# You may redistribute it and/or modify it under the terms of the
-# GNU General Public License, as published by the Free Software
-# Foundation; either version 2 of the License, or (at your option)
-# any later version.
+# Garmon is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 # 
-# backdoor.py is distributed in the hope that it will be useful,
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with backdoor.py.  If not, write to:
+# along with this program.  If not, write to:
 #   The Free Software Foundation, Inc.,
 #   51 Franklin Street, Fifth Floor
 #   Boston, MA  02110-1301, USA.
