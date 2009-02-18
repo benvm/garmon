@@ -22,14 +22,21 @@ IT_PROG_INTLTOOL([0.35.0])
 AM_PATH_PYTHON
 
 
+USE_GCONF=0
+AC_ARG_ENABLE(gconf,
+  AC_HELP_STRING([--enable-gconf],[Enable gconf support]),
+  USE_GCONF=1)
+
 AM_GCONF_SOURCE_2
 
-AC_PATH_PROG([GCONFTOOL], [gconftool-2], [no])
-
-if test "$GCONFTOOL" = "no"; then
-	AC_MSG_ERROR([gconftool-2 not found])
+if test "$USE_GCONF" = 1; then
+  AC_PATH_PROG([GCONFTOOL], [gconftool-2], [no])
+  if test "$GCONFTOOL" = "no"; then
+	USE_GCONF=0
+  fi
 fi
 
+AC_SUBST(USE_GCONF)
 
 AC_SUBST(VERSION)
 AC_SUBST(PACKAGE)

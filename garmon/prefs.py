@@ -3,7 +3,7 @@
 #
 # prefs.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2008 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
 # 
 # prefs.py is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,10 +29,15 @@ import gtk
 from gtk import glade
 import gobject
 from gobject import GObject
-import gconf
 
 import garmon
-from garmon import GLADE_DIR, logger
+from garmon import GLADE_DIR, logger, USE_GCONF
+
+if USE_GCONF:
+    import gconf
+else:
+    from xdg.BaseDirectory import save_config_path
+    from ConfigParser import RawConfigParser as ConfigParser
 
 
 class PrefsDialog (gtk.Dialog):
@@ -67,22 +72,15 @@ class _Preference(object):
         
                 
 
-class PreferenceManager(GObject):
-    __gtype_name__ = 'PreferenceManager'
+class BasePreferenceManager(GObject):
 
-    def __init__(self, base):
+    def __init__(self):
         GObject.__init__(self)
-        
-        self._gclient = gconf.client_get_default()
-        self._gclient.add_dir (base, gconf.CLIENT_PRELOAD_NONE)
-        
-        self._gconf_ids = []
         
         self._preferences = []
         self._listener_ids = []
                                         
         self._dialog = PrefsDialog()
-
 
 
     def _port_change_notify(self, gclient, cnxn_id, entry, args):
@@ -206,70 +204,6 @@ class PreferenceManager(GObject):
         raise ValueError, 'No pref with name "%s" found' % pname 
         
     
-    def set_preference(self, pname, pvalue):
-        for pref in self._preferences:
-            if pref.name == pname:
-                if not pref.ptype is type(pvalue):
-                    raise AttributeError,  \
-                          'pvalue should be of %s but is %s instead' \
-                          % pref.ptype % type(pvalue)
-                pref.value = pvalue
-                if pref.ptype is str:
-                    self._gclient.set_string(pref.key, pvalue)
-                elif pref.ptype is bool:
-                    self._gclient.set_bool(pref.key, pvalue)
-                elif pref.ptype is int:
-                    self._gclient.set_int(pref.key, pvalue)
-                elif pref.ptype is float:
-                    self._gclient.set_float(pref.key, pvalue)
-                return
-        raise ValueError, 'No pref with name "%s" found' % name
-        
-   
-    def register_preference(self, pname, ptype, default):
-        if not (ptype is str or ptype is bool or ptype is int or ptype is float):
-            raise ValueError, 'ptype should be of type str, bool, int or float'
-        
-        for pref in self._preferences:
-            if pref.name == pname:
-                #FIXME: when a plugin is deactivated and then re-activated,
-                # the pref already exists. Should we provide a unregister method
-                # that can be called when the plugin is deactivated?
-                print 'warning: a preference with name %s already exists' % pname
-                return
-                 
-        key = string.split(pname, ':')
-        key = string.join(key, '/')
-        # FIXME!!!!
-        key = '/apps/garmon/' + key
-        
-        if not self._gclient.get(key):
-            #No key in gconf yet
-            if type(default) is str:
-                self._gclient.set_string(key, default)
-            elif type(default) is bool:
-                self._gclient.set_bool(key, default)
-            elif type(default) is int:
-                self._gclient.set_int(key, default)
-            elif type(default) is float:
-                self._gclient.set_float(key, default)
-                
-        if ptype is str:
-            value = self._gclient.get_string(key)
-        elif ptype is bool:
-            value = self._gclient.get_bool(key)
-        elif ptype is int:
-            value = self._gclient.get_int(key)
-        elif ptype is float:
-            value = self._gclient.get_float(key)
-        
-        pref = _Preference(pname, ptype, default, value)    
-        pref.key = key    
-        self._preferences.append(pref)
-        gconf_id = self._gclient.notify_add(key, self._gconf_key_change_notify, pref)
-        self._gconf_ids.append(gconf_id)   
-        
-
     def register_preferences(self, prefs):
         for item in prefs:
             name, ptype, default = item
@@ -311,12 +245,175 @@ class PreferenceManager(GObject):
                                                widget)
             top.cb_ids.append(cb_id)
             self.preference_notify(pname)
+
+
+
+class CPPreferenceManager(BasePreferenceManager):
+    __gtype_name__ = 'CPPreferenceManager'
+    def __init__(self):
+        BasePreferenceManager.__init__(self)
+        
+        self._config = ConfigParser()
+        self._filename = os.path.join(save_config_path("garmon"), "config")
+       
+        self._config.read(self._filename)
+                
+
+    def set_preference(self, pname, pvalue):
+        section, option = pname.split('.')
+        for pref in self._preferences:
+            if pref.name == pname:
+                old_value = pref.value
+                pref.value = pvalue
+                self._config.set(section, option, pvalue)
+                if not old_value == pvalue:
+                    self.save()
+                    self.preference_notify(pname)
+                return
+        raise ValueError, 'No pref with name "%s" in section %s found' % (name, section)
+        
+   
+    def register_preference(self, pname, ptype, default):
+        #ptype = type(pname)
+        if not ptype in (str, bool, float, int):
+            raise ValueError, 'ptype should be of type str, bool, int or float'
+        
+        for pref in self._preferences:
+            if pref.name == pname:
+                print 'warning: a preference named %s already exists' % pname
+        
+        if not '.' in pname:
+            section = 'General'
+            option = pname
+        else:
+            section, option = pname.split('.')
+        
+        if not self._config.has_section(section):
+            self._config.add_section(section)
+        if not self._config.has_option(section, option):
+            self._config.set(section, option, default)
             
+        if ptype is int:
+            pvalue = self._config.getint(section, option)
+        elif ptype is float:
+            pvalue = self._config.getfloat(section, option)
+        elif ptype is bool:
+            pvalue = self._config.getboolean(section, option)
+        else:
+            pvalue = self._config.get(section, option)
+
+        pref = _Preference(pname, ptype, default, pvalue)
+        self._preferences.append(pref)
+        
+        
+    def save(self):
+        f = file(self._filename, 'w')
+        self._config.write(f)
+        f.close()
+
+
+
+class GConfPreferenceManager(BasePreferenceManager):
+    __gtype_name__ = 'GConfPreferenceManager'
+    def __init__(self):
+        BasePreferenceManager.__init__(self)
+        
+        self._gclient = gconf.client_get_default()
+        self._gclient.add_dir ('/apps/garmon', gconf.CLIENT_PRELOAD_NONE)
+        
+        self._gconf_ids = []
         
 
+    def _gconf_key_change_notify(self, gclient, cnxn_id, entry, pref):
+        if entry.value.type == gconf.VALUE_STRING:
+            pref.value = entry.value.get_string()
+        elif entry.value.type == gconf.VALUE_BOOL:
+            pref.value = entry.value.get_bool()
+        elif entry.value.type == gconf.VALUE_INT:
+            pref.value = entry.value.get_int()
+        elif entry.value.type == gconf.VALUE_FLOAT:
+            pref.value = entry.value.get_float()
+
+        
+        for listener in pref.listeners:
+            cb_id, cb, args  = listener
+            cb(pref.name, pref.value, pref.ptype, args)
+  
+
+    def set_preference(self, pname, pvalue):
+        for pref in self._preferences:
+            if pref.name == pname:
+                if not pref.ptype is type(pvalue):
+                    raise AttributeError,  \
+                          'pvalue should be of %s but is %s instead' \
+                          % pref.ptype % type(pvalue)
+                pref.value = pvalue
+                key = _extract_key(pname)
+                if pref.ptype is str:
+                    self._gclient.set_string(key, pvalue)
+                elif pref.ptype is bool:
+                    self._gclient.set_bool(key, pvalue)
+                elif pref.ptype is int:
+                    self._gclient.set_int(key, pvalue)
+                elif pref.ptype is float:
+                    self._gclient.set_float(key, pvalue)
+                return
+        raise ValueError, 'No pref with name "%s" found' % name
+        
+   
+    def register_preference(self, pname, ptype, default):
+        if not ptype in (str, bool, float, int):
+            raise ValueError, 'ptype should be of type str, bool, int or float'
+        
+        for pref in self._preferences:
+            if pref.name == pname:
+                print 'warning: a preference named %s already exists' % pname
+                 
+        key = _extract_key(pname)
+        
+        if not self._gclient.get(key):
+            #No key in gconf yet
+            if type(default) is str:
+                self._gclient.set_string(key, default)
+            elif type(default) is bool:
+                self._gclient.set_bool(key, default)
+            elif type(default) is int:
+                self._gclient.set_int(key, default)
+            elif type(default) is float:
+                self._gclient.set_float(key, default)
+                
+        if ptype is str:
+            value = self._gclient.get_string(key)
+        elif ptype is bool:
+            value = self._gclient.get_bool(key)
+        elif ptype is int:
+            value = self._gclient.get_int(key)
+        elif ptype is float:
+            value = self._gclient.get_float(key)
+        
+        pref = _Preference(pname, ptype, default, value)  
+        self._preferences.append(pref)
+        gconf_id = self._gclient.notify_add(key, self._gconf_key_change_notify, pref)
+        self._gconf_ids.append(gconf_id)   
         
         
+def _extract_key(pname):
+    key = string.split(pname, ':')
+    key = string.join(key, '/')
+    # FIXME!!!!
+    key = '/apps/garmon/' + key
+    return key
+            
+        
+def PreferenceManager ():
+    if False:
+        return GConfPreferenceManager()
+    else:
+        return CPPreferenceManager()
     
     
-    
+
+
+
+
         

@@ -182,7 +182,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         baudrates = (9600, 38400, 57600, 115200)
         higher_rates = (57600, 115200)
     
-        self._prefs = PreferenceManager('/apps/garmon')
+        self._prefs = PreferenceManager()
         self._pref_cbs = []
 
         self._prefs.register_preference('mil.on-color', str, '#F7D30D')
