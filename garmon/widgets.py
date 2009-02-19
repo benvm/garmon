@@ -55,14 +55,14 @@ class MILWidget(gtk.Entry,
         self.set_property('width-chars', 3)
         
     def __post_init__(self):
-        self.on_color = self.app.prefs.get_preference('mil.on-color')
-        self.off_color = self.app.prefs.get_preference('mil.off-color')
-        cb_id = self.app.prefs.preference_notify_add('mil.on-color',
-                                                     self._notify_prefs_cb)
-        self._pref_cbs.append(cb_id)
-        cb_id = self.app.prefs.preference_notify_add('mil.off-color',
-                                                     self._notify_prefs_cb)
-        self._pref_cbs.append(cb_id)
+        self.on_color = self.app.prefs.get('mil.on-color')
+        self.off_color = self.app.prefs.get('mil.off-color')
+        cb_id = self.app.prefs.add_watch('mil.on-color',
+                                         self._notify_prefs_cb)
+        self._pref_cbs.append(('mil.on-color', cb_id))
+        cb_id = self.app.prefs.add_watch('mil.off-color',
+                                         self._notify_prefs_cb)
+        self._pref_cbs.append(('mil.off-color', cb_id))
                                                      
         self.connect('notify::on', self._notify_cb)
         self.connect('notify::on-color', self._notify_cb)
@@ -77,7 +77,7 @@ class MILWidget(gtk.Entry,
             self.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.off_color))
 
 
-    def _notify_prefs_cb(self, pname, pvalue, ptype, args):
+    def _notify_prefs_cb(self, pname, pvalue, args):
         if pname == 'mil.on-color':
             self.on_color = pvalue
         elif pname == 'mil.off-color':

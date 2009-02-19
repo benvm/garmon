@@ -285,11 +285,11 @@ class PluginManager(gtk.Dialog, PropertyObject):
         string = ''
         for name, plugin in self._active_plugins:
             string += name + ','
-        self.app.prefs.set_preference('plugins.saved', string)
+        self.app.prefs.set('plugins.saved', string)
                     
 
     def activate_saved_plugins(self):
-        string = self.app.prefs.get_preference('plugins.saved')
+        string = self.app.prefs.get('plugins.saved')
         plugins = string.split(',')
         if plugins:
             self._treemodel.foreach(self._activate_saved_plugins_cb, plugins)        

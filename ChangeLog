@@ -1,3 +1,20 @@
+2009-02-19  Ben Van Mechelen  <me@benvm.be>
+
+	* aclocal.m4:
+	* configure.ac:
+	* data/Makefile.am:
+	* data/garmon.schemas:
+	* garmon/defs.py.in:
+	* garmon/garmon_app.py:
+	* garmon/plugin_manager.py:
+	* garmon/prefs.py:
+	* garmon/widgets.py:
+	* plugins/dashboard/dashboard.py:
+	* plugins/freeze_frame_data/freeze_frame_data.py:
+	* plugins/live_data/live_data.py:
+	    Get rid of gconf completely, using only ConfigParser now
+	    
+
 2009-02-18  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/backdoor.py:

@@ -66,14 +66,14 @@ class FreezeFrameData (gtk.VBox, Plugin):
         self._scheduler_cbs = []
         self._obd_cbs = []
         
-        if app.prefs.get_preference('imperial'):
+        if app.prefs.get('imperial', False):
             self._unit_standard = 'Imperial'
         else:
             self._unit_standard = 'Metric'
             
-        cb_id = app.prefs.preference_notify_add('imperial', 
-                                                self._notify_units_cb)
-        self._pref_cbs.append(cb_id)
+        cb_id = app.prefs.add_watch('imperial', 
+                                    self._notify_units_cb)
+        self._pref_cbs.append(('imperial', cb_id))
 
         self.status = STATUS_STOP
 
@@ -193,7 +193,7 @@ class FreezeFrameData (gtk.VBox, Plugin):
             self.app.device.read_supported_freeze_frame_pids()
 
 
-    def _notify_units_cb(self, pname, pvalue, ptype, args):
+    def _notify_units_cb(self, pname, pvalue, args):
         if pname == 'imperial' and pvalue:
             self._unit_standard = 'Imperial'
         else:
@@ -214,8 +214,8 @@ class FreezeFrameData (gtk.VBox, Plugin):
             
     def unload(self):
         self.app.notebook.remove(self)
-        for cb_id in self._pref_cbs:
-            self.app.prefs.preference_notify_remove(cb_id)
+        for name, cb_id in self._pref_cbs:
+            self.app.prefs.remove_watch(name, cb_id)
         for cb_id in self._app_cbs:
             self.app.disconnect(cb_id)
         for cb_id in self._notebook_cbs:

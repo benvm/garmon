@@ -34,17 +34,13 @@ from gtk import glade
 import gobject
 from gobject import GObject
 
+from xdg.BaseDirectory import save_config_path
+from ConfigParser import RawConfigParser as ConfigParser
+
 import garmon
-from garmon import GLADE_DIR, logger, USE_GCONF
+from garmon import GLADE_DIR, logger
 
-if USE_GCONF:
-    import gconf
-else:
-    from xdg.BaseDirectory import save_config_path
-    from ConfigParser import RawConfigParser as ConfigParser
-
-
-class PrefsDialog (gtk.Dialog):
+class _PrefsDialog (gtk.Dialog):
 
     def __init__(self):
         gtk.Dialog.__init__(self, _("Garmon Preferences"), None, 
@@ -65,155 +61,145 @@ class PrefsDialog (gtk.Dialog):
 
 
 
-class _Preference(object):
-    def __init__(self, pname, ptype, default, value=None):
-        self.name = pname
-        self.ptype = ptype
-        self.value = value
-        self.default = default
-        self.key = None
-        self.listeners = []
+class _Watch(object):
+    def __init__(self, name):
+        self.name = name
+        self.cb_ids = []
+
         
                 
-
-class BasePreferenceManager(GObject):
-
+class PreferenceManager(GObject):
+    __gtype_name__ ='PreferenceManager'
+    
     def __init__(self):
         GObject.__init__(self)
         
-        self._preferences = []
-        self._listener_ids = []
-                                        
-        self._dialog = PrefsDialog()
-
-
-    def _port_change_notify(self, gclient, cnxn_id, entry, args):
-        old = self._portname
-        if (not entry.value) or (entry.value.type != gconf.VALUE_STRING):
-            self._portname = _("Error!")
-        else:
-            self._portname = entry.value.get_string()
-        if old != self._portname:
-            self.notify('portname')
-            
-
-    def _gconf_key_change_notify(self, gclient, cnxn_id, entry, pref):
-        if entry.value.type == gconf.VALUE_STRING:
-            pref.value = entry.value.get_string()
-        elif entry.value.type == gconf.VALUE_BOOL:
-            pref.value = entry.value.get_bool()
-        elif entry.value.type == gconf.VALUE_INT:
-            pref.value = entry.value.get_int()
-        elif entry.value.type == gconf.VALUE_FLOAT:
-            pref.value = entry.value.get_float()
-
+        self._config = ConfigParser()
+        self._filename = os.path.join(save_config_path("garmon"), "config")
+        self._config.read(self._filename)
         
-        for listener in pref.listeners:
-            cb_id, cb, args  = listener
-            cb(pref.name, pref.value, pref.ptype, args)
-  
+        self._dialog = _PrefsDialog()
+        
+        self._watches = []
+        
 
-    def _pref_notify_cb(self, pname, pvalue, ptype, args):
+    def _pref_notify_cb(self, pname, pvalue, args):
         widget = args[0]
-        if ptype is str:
-            if hasattr(widget, 'set_text'):
-                widget.set_text(pvalue)
-            elif hasattr(widget, 'set_color'):
-                widget.set_color(gtk.gdk.color_parse(pvalue))
-            else:
-                #FIXME: error handling
-                pass
-        elif ptype is bool:
-            if isinstance(widget, gtk.ToggleButton):
-                widget.set_active(pvalue)
-            else:
-                #FIXME: error handling
-                pass
-        elif ptype is int:
-            if isinstance(widget, gtk.ComboBox):
-                def foreach_cb(model, path, iter):
-                    value = model.get_value(iter, 0)
-                    if value == pvalue:
-                        widget.set_active_iter(iter)
-                        
-                model = widget.get_model()
-                model.foreach(foreach_cb)
-            else:
-                #FIXME: error handling
-                pass                
+        if hasattr(widget, 'set_text'):
+            widget.set_text(pvalue)
+        elif isinstance(widget, gtk.ColorButton):
+            widget.set_color(gtk.gdk.color_parse(pvalue))
+        elif isinstance(widget, gtk.ToggleButton):
+            widget.set_active(bool(pvalue))
+        if isinstance(widget, gtk.ComboBox):
+            def foreach_cb(model, path, iter):
+                value = model.get_value(iter, 0)
+                if value == int(pvalue):
+                    widget.set_active_iter(iter)
+            model = widget.get_model()
+            model.foreach(foreach_cb)
             
               
     def _toggle_widget_cb(self, toggle, pname):
         active = toggle.get_active()
-        self.set_preference(pname, active)
+        self.set(pname, active)
         
         
     def _text_widget_activate_cb(self, widget, pname):
         value = widget.get_text()
-        self.set_preference(pname, value)
+        self.set(pname, value)
+        
         
     def _text_widget_focus_out_cb(self, widget, event, pname):
         value = widget.get_text()
-        self.set_preference(pname, value)
+        self.set(pname, value)
         
         
     def _color_widget_cb(self, widget, pname):
         value = widget.get_color().to_string()
-        self.set_preference(pname, value)
+        self.set(pname, value)
         
         
     def _combo_widget_cb(self, widget, pname):
         iter = widget.get_active_iter()
         if iter:
             value = widget.get_model().get_value(iter, 0)
-            self.set_preference(pname, value)
+            self.set(pname, value)
         
         
-    def preference_notify(self, pname):
-        for pref in self._preferences:
-            if pref.name == pname:
-                for listener in pref.listeners:
-                    cb_id, cb, args  = listener
-                    cb(pref.name, pref.value, pref.ptype, args)
+    def notify(self, name):
+        for watch in self._watches:
+            if watch.name == name:
+                value = self.get(name)
+                for cb_id, cb, args in watch.cb_ids:
+                    cb(name, value, args)
 
 
-    def preference_notify_add(self, name, cb, *args):
+    def add_watch(self, name, cb, *args):
         if not callable(cb):
-            raise AttributeError, 'cb should is not callable'
-        for pref in self._preferences:
-            if pref.name == name:
-                unique = False
-                while not unique:
-                    cb_id = random.randint(1, 1000000)
-                    unique = not cb_id in self._listener_ids
-                self._listener_ids.append(cb_id)
-                pref.listeners.append((cb_id, cb, args))
-                return cb_id
-        raise ValueError, 'No pref with name "%s" found' % name
-
-
-    def preference_notify_remove(self, cb_id):
-        for pref in self._preferences:
-            for listener in pref.listeners:
-                if listener[0] == cb_id:
-                    pref.listeners.remove(listener)
-        if cb_id in self._listener_ids:
-            self._listener_ids.remove(cb_id)
-   
-    
-    def get_preference(self, pname):
-        for pref in self._preferences:
-            if pref.name == pname:
-                return pref.value
-        raise ValueError, 'No pref with name "%s" found' % pname 
+            raise AttributeError, 'cb is not callable'
+        watch = None
+        for item in self._watches:
+            if item.name == name:
+                watch = item
+        if watch is None:
+            watch = _Watch(name)
+            self._watches.append(watch)
+        cb_id = random.randint(1, 1000000)
+        watch.cb_ids.append((cb_id, cb, args))
+        return cb_id
         
+
+    def remove_watch(self, name, cb_id):
+        for watch in self._watches:
+            if watch == name:
+                for item in cb_ids:
+                    if item[0] == cb_id:
+                        cb_ids.remove(item)
+  
+      
+    def get(self, name, default=None):
+        if not '.' in name:
+            section = 'General'
+            option = name
+        else:
+            section, option = name.split('.')
+            
+        try:
+            value = self._config.get(section, option)
+        except:
+            if default:
+                self.set(name, default)
+                value = default
+            else:
+                raise ValueError, 'No pref with name "%s" found and no default value given' % name 
+        return value
+
+       
+    def set(self, name, value):
+        if not '.' in name:
+            section = 'General'
+            option = name
+        else:
+            section, option = name.split('.')
+        if not self._config.has_section(section):
+            self._config.add_section(section)
+        self._config.set(section, option, value)
+                
     
-    def register_preferences(self, prefs):
-        for item in prefs:
-            name, ptype, default = item
-            self.register_preference(name, ptype, default)
-
-
+    def register(self, name, default):
+        if not '.' in name:
+            section = 'General'
+            option = name
+        else:
+            section, option = name.split('.')
+        
+        if not self._config.has_section(section):
+            self._config.add_section(section)
+        if not self._config.has_option(section, option):
+            self._config.set(section, option, default)
+        
+        
     def show_dialog(self):
         res = self._dialog.run()
         self._dialog.hide()
@@ -244,180 +230,25 @@ class BasePreferenceManager(GObject):
                 #FIXME: should not reach here
                 pass
                 
-            cb_id = self.preference_notify_add(pname, 
-                                               self._pref_notify_cb, 
-                                               widget)
+            cb_id = self.add_watch(pname, 
+                                   self._pref_notify_cb, 
+                                   widget)
             top.cb_ids.append(cb_id)
-            self.preference_notify(pname)
+            self.notify(pname)
 
 
-
-class CPPreferenceManager(BasePreferenceManager):
-    __gtype_name__ = 'CPPreferenceManager'
-    def __init__(self):
-        BasePreferenceManager.__init__(self)
-        
-        self._config = ConfigParser()
-        self._filename = os.path.join(save_config_path("garmon"), "config")
-       
-        self._config.read(self._filename)
-                
-
-    def set_preference(self, pname, pvalue):
-        section, option = pname.split('.')
-        for pref in self._preferences:
-            if pref.name == pname:
-                old_value = pref.value
-                pref.value = pvalue
-                self._config.set(section, option, pvalue)
-                if not old_value == pvalue:
-                    self.save()
-                    self.preference_notify(pname)
-                return
-        raise ValueError, 'No pref with name "%s" in section %s found' % (name, section)
-        
-   
-    def register_preference(self, pname, ptype, default):
-        #ptype = type(pname)
-        if not ptype in (str, bool, float, int):
-            raise ValueError, 'ptype should be of type str, bool, int or float'
-        
-        for pref in self._preferences:
-            if pref.name == pname:
-                print 'warning: a preference named %s already exists' % pname
-        
-        if not '.' in pname:
-            section = 'General'
-            option = pname
-        else:
-            section, option = pname.split('.')
-        
-        if not self._config.has_section(section):
-            self._config.add_section(section)
-        if not self._config.has_option(section, option):
-            self._config.set(section, option, default)
-            
-        if ptype is int:
-            pvalue = self._config.getint(section, option)
-        elif ptype is float:
-            pvalue = self._config.getfloat(section, option)
-        elif ptype is bool:
-            pvalue = self._config.getboolean(section, option)
-        else:
-            pvalue = self._config.get(section, option)
-
-        pref = _Preference(pname, ptype, default, pvalue)
-        self._preferences.append(pref)
-        
-        
     def save(self):
         f = file(self._filename, 'w')
         self._config.write(f)
         f.close()
-
-
-
-class GConfPreferenceManager(BasePreferenceManager):
-    __gtype_name__ = 'GConfPreferenceManager'
-    def __init__(self):
-        BasePreferenceManager.__init__(self)
-        
-        self._gclient = gconf.client_get_default()
-        self._gclient.add_dir ('/apps/garmon', gconf.CLIENT_PRELOAD_NONE)
-        
-        self._gconf_ids = []
-        
-
-    def _gconf_key_change_notify(self, gclient, cnxn_id, entry, pref):
-        if entry.value.type == gconf.VALUE_STRING:
-            pref.value = entry.value.get_string()
-        elif entry.value.type == gconf.VALUE_BOOL:
-            pref.value = entry.value.get_bool()
-        elif entry.value.type == gconf.VALUE_INT:
-            pref.value = entry.value.get_int()
-        elif entry.value.type == gconf.VALUE_FLOAT:
-            pref.value = entry.value.get_float()
-
-        
-        for listener in pref.listeners:
-            cb_id, cb, args  = listener
-            cb(pref.name, pref.value, pref.ptype, args)
   
 
-    def set_preference(self, pname, pvalue):
-        for pref in self._preferences:
-            if pref.name == pname:
-                if not pref.ptype is type(pvalue):
-                    raise AttributeError,  \
-                          'pvalue should be of %s but is %s instead' \
-                          % pref.ptype % type(pvalue)
-                pref.value = pvalue
-                key = _extract_key(pname)
-                if pref.ptype is str:
-                    self._gclient.set_string(key, pvalue)
-                elif pref.ptype is bool:
-                    self._gclient.set_bool(key, pvalue)
-                elif pref.ptype is int:
-                    self._gclient.set_int(key, pvalue)
-                elif pref.ptype is float:
-                    self._gclient.set_float(key, pvalue)
-                return
-        raise ValueError, 'No pref with name "%s" found' % name
-        
-   
-    def register_preference(self, pname, ptype, default):
-        if not ptype in (str, bool, float, int):
-            raise ValueError, 'ptype should be of type str, bool, int or float'
-        
-        for pref in self._preferences:
-            if pref.name == pname:
-                print 'warning: a preference named %s already exists' % pname
-                 
-        key = _extract_key(pname)
-        
-        if not self._gclient.get(key):
-            #No key in gconf yet
-            if type(default) is str:
-                self._gclient.set_string(key, default)
-            elif type(default) is bool:
-                self._gclient.set_bool(key, default)
-            elif type(default) is int:
-                self._gclient.set_int(key, default)
-            elif type(default) is float:
-                self._gclient.set_float(key, default)
-                
-        if ptype is str:
-            value = self._gclient.get_string(key)
-        elif ptype is bool:
-            value = self._gclient.get_bool(key)
-        elif ptype is int:
-            value = self._gclient.get_int(key)
-        elif ptype is float:
-            value = self._gclient.get_float(key)
-        
-        pref = _Preference(pname, ptype, default, value)  
-        self._preferences.append(pref)
-        gconf_id = self._gclient.notify_add(key, self._gconf_key_change_notify, pref)
-        self._gconf_ids.append(gconf_id)   
-        
-        
-def _extract_key(pname):
-    key = string.split(pname, ':')
-    key = string.join(key, '/')
-    # FIXME!!!!
-    key = '/apps/garmon/' + key
-    return key
-            
-        
-def PreferenceManager ():
-    if False:
-        return GConfPreferenceManager()
-    else:
-        return CPPreferenceManager()
+
+
+
     
+if __name__ == '__main__':
+    prefs = PreferenceManager()
+    prefs.get('General.test', 'foo')
+    prefs.save()
     
-
-
-
-
-        

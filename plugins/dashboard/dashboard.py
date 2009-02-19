@@ -62,30 +62,30 @@ class DashBoard (gtk.VBox, Plugin):
         self._scheduler_cbs = []
         self._obd_cbs = []
                 
-        app.prefs.register_preference('dashboard.needle-color', str, '#F20D1B')
-        app.prefs.register_preference('dashboard.background', str, '#2F2323')
+        app.prefs.register('dashboard.needle-color', '#F20D1B')
+        app.prefs.register('dashboard.background', '#2F2323')
 
         fname = os.path.join(self.dir, 'dashboard.glade')
         xml = gtk.glade.XML(fname, 'prefs-vbox', 'garmon')
         app.prefs.add_dialog_page(xml, 'prefs-vbox', 'Dashboard')
         
-        self._needle_color = app.prefs.get_preference('dashboard.needle-color')
-        self._background = app.prefs.get_preference('dashboard.background')
-        cb_id = app.prefs.preference_notify_add('dashboard.needle-color', 
+        self._needle_color = app.prefs.get('dashboard.needle-color')
+        self._background = app.prefs.get('dashboard.background')
+        cb_id = app.prefs.add_watch('dashboard.needle-color', 
                                                 self._prefs_notify_color_cb)
-        self._pref_cbs.append(cb_id)
-        cb_id = app.prefs.preference_notify_add('dashboard.background', 
+        self._pref_cbs.append(('dashboard.needle-color', cb_id))
+        cb_id = app.prefs.add_watch('dashboard.background', 
                                                 self._prefs_notify_color_cb)
-        self._pref_cbs.append(cb_id)
+        self._pref_cbs.append(('dashboard.background', cb_id))
 
-        if app.prefs.get_preference('imperial'):
+        if app.prefs.get('imperial'):
             self._unit_standard = 'Imperial'
         else:
             self._unit_standard = 'Metric'
             
-        cb_id = app.prefs.preference_notify_add('imperial', 
-                                                self._notify_units_cb)
-        self._pref_cbs.append(cb_id)
+        cb_id = app.prefs.add_watch('imperial', 
+                                    self._notify_units_cb)
+        self._pref_cbs.append(('imperial', cb_id))
 
         self.status = STATUS_STOP
         
@@ -102,7 +102,7 @@ class DashBoard (gtk.VBox, Plugin):
 
         self._obd_connected_cb(app.device)
 
-    def _prefs_notify_color_cb(self, pname, pvalue, ptype, args):
+    def _prefs_notify_color_cb(self, pname, pvalue, args):
         if pname == 'dashboard.needle-color':
             self._needle_color = pvalue
             for gauge in self.gauges:
@@ -240,8 +240,8 @@ class DashBoard (gtk.VBox, Plugin):
             
     def unload(self):
         self.app.notebook.remove(self)
-        for cb_id in self._pref_cbs:
-            self.app.prefs.preference_notify_remove(cb_id)
+        for name, cb_id in self._pref_cbs:
+            self.app.prefs.remove_watch(name, cb_id)
         for cb_id in self._app_cbs:
             self.app.disconnect(cb_id)
         for cb_id in self._notebook_cbs:
