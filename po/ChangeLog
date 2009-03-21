@@ -1,5 +1,12 @@
 2009-03-21  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon.pot:
+	* nl.po:
+		Some initial work on the dutch translation.
+	
+
+2009-03-21  Ben Van Mechelen  <me@benvm.be>
+
 	* POTFILES.in:
 	* garmon.pot:
 	* nl.po:
