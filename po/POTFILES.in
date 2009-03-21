@@ -2,14 +2,25 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetical order.
 data/garmon.desktop.in.in
-plugins/dashboard/dashboard.py
+data/prefs.glade
+garmon/backdoor.py
+garmon/garmon
+garmon/garmon_app.py
+garmon/obd_device.py
+garmon/plugin.py
+garmon/plugin_manager.py
+garmon/prefs.py
+garmon/property_object.py
+garmon/scheduler.py
+garmon/sensor.py
+garmon/trouble_codes.py
+garmon/widgets.py
 plugins/dashboard/dashboard.glade
+plugins/dashboard/dashboard.py
 plugins/dtc_clearer/dtc_clearer.py
+plugins/dtc_reader/dtc_reader.glade
 plugins/dtc_reader/dtc_reader.py
-plugins/live_data/live_data.py
+plugins/freeze_frame_data/freeze_frame_data.glade
+plugins/freeze_frame_data/freeze_frame_data.py
 plugins/live_data/live_data.glade
-plugins/sensor_list/sensor_list.py
-src/garmon.py
-src/obd_port.py
-src/plugin_manager.py
-src/prefs.py
+plugins/live_data/live_data.py
