@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: garmon 0.2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-21 21:46+0100\n"
-"PO-Revision-Date: 2009-03-21 22:35+0100\n"
+"PO-Revision-Date: 2009-03-22 12:44+0100\n"
 "Last-Translator: Ben Van Mechelen <me@benvm.be>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -348,13 +348,13 @@ msgstr "Inlaatspruitstuk Druk"
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:15
 #: ../plugins/live_data/live_data.glade.h:18
 msgid "Engine RPM"
-msgstr "Motor Toerental"
+msgstr "Toerental"
 
 #: ../garmon/sensor.py:358
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:31
 #: ../plugins/live_data/live_data.glade.h:35
 msgid "Vehicle Speed"
-msgstr "Voertuig Snelheid"
+msgstr "Snelheid"
 
 #: ../garmon/sensor.py:359 ../plugins/live_data/live_data.glade.h:33
 msgid "Timing Advance"
@@ -370,7 +370,7 @@ msgstr "Inlaatlucht Debiet"
 
 #: ../garmon/sensor.py:362 ../plugins/live_data/live_data.glade.h:32
 msgid "Throttle Position"
-msgstr "Gasklep Positie"
+msgstr "Positie Gasklep"
 
 #: ../garmon/sensor.py:363
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:22
@@ -400,55 +400,55 @@ msgstr "Lambdasonde: 1 - 2 Mengsel"
 
 #: ../garmon/sensor.py:369
 msgid "O2 Sensor: 1 - 3 Voltage"
-msgstr ""
+msgstr "Lambdasonde: 1 - 3 Spanning"
 
 #: ../garmon/sensor.py:370
 msgid "O2 Sensor: 1 - 3 Fuel Trim"
-msgstr ""
+msgstr "Lambdasonde: 1 - 3 Mengsel"
 
 #: ../garmon/sensor.py:371
 msgid "O2 Sensor: 1 - 4 Voltage"
-msgstr ""
+msgstr "Lambdasonde: 1 - 4 Spanning"
 
 #: ../garmon/sensor.py:372
 msgid "O2 Sensor: 1 - 4 Fuel Trim"
-msgstr ""
+msgstr "Lambdasonde: 1 - 4 Mengsel"
 
 #: ../garmon/sensor.py:373
 msgid "O2 Sensor: 2 - 1 Voltage"
-msgstr ""
+msgstr "Lambdasonde: 2 - 1 Spanning"
 
 #: ../garmon/sensor.py:374
 msgid "O2 Sensor: 2 - 1 Fuel Trim"
-msgstr ""
+msgstr "Lambdasonde: 2 - 1 Mengsel"
 
 #: ../garmon/sensor.py:375
 msgid "O2 Sensor: 2 - 2 Voltage"
-msgstr ""
+msgstr "Lambdasonde: 2 - 2 Spanning"
 
 #: ../garmon/sensor.py:376
 msgid "O2 Sensor: 2 - 2 Fuel Trim"
-msgstr ""
+msgstr "Lambdasonde: 2 - 2 Mengsel"
 
 #: ../garmon/sensor.py:377
 msgid "O2 Sensor: 2 - 3 Voltage"
-msgstr ""
+msgstr "Lambdasonde: 2 - 3 Spanning"
 
 #: ../garmon/sensor.py:378
 msgid "O2 Sensor: 2 - 3 Fuel Trim"
-msgstr ""
+msgstr "Lambdasonde: 2 - 3 Mengsel"
 
 #: ../garmon/sensor.py:379
 msgid "O2 Sensor: 2 - 4 Voltage"
-msgstr ""
+msgstr "Lambdasonde: 2 - 4 Spanning"
 
 #: ../garmon/sensor.py:380
 msgid "O2 Sensor: 2 - 4 Fuel Trim"
-msgstr ""
+msgstr "Lambdasonde: 2 - 4 Mengsel"
 
 #: ../garmon/sensor.py:381
 msgid "OBD Designation"
-msgstr ""
+msgstr "OBD aanduiding"
 
 #: ../garmon/sensor.py:383
 msgid "Aux input status"
@@ -456,55 +456,55 @@ msgstr ""
 
 #: ../garmon/sensor.py:384
 msgid "Time Since Engine Start"
-msgstr ""
+msgstr "Tijd sinds motor gestart is"
 
 #: ../garmon/sensor.py:386
 msgid "Distance traveled with MIL on"
-msgstr ""
+msgstr "Afstand afgelegd met MIL aan"
 
 #: ../garmon/sensor.py:387
 msgid "Fuel Rail Pressure "
-msgstr ""
+msgstr "Druk Brandstofrail"
 
 #: ../garmon/sensor.py:388
 msgid "(relative to manifold vacuum)"
-msgstr ""
+msgstr "(relatief tot-vacuum spruitstuk)"
 
 #: ../garmon/sensor.py:389
 msgid "Fuel Rail Pressure (diesel)"
-msgstr ""
+msgstr "Druk Brandstofrail (diesel)"
 
 #: ../garmon/sensor.py:390
 msgid "02S1_WR_Lambda"
-msgstr ""
+msgstr "Lambdasonde 1 Lambda"
 
 #: ../garmon/sensor.py:391
 msgid "02S2_WR_Lambda"
-msgstr ""
+msgstr "Lambdasonde 2 Lambda"
 
 #: ../garmon/sensor.py:392
 msgid "02S3_WR_Lambda"
-msgstr ""
+msgstr "Lambdasonde 3 Lambda"
 
 #: ../garmon/sensor.py:393
 msgid "02S4_WR_Lambda"
-msgstr ""
+msgstr "Lambdasonde 4 Lambda"
 
 #: ../garmon/sensor.py:394
 msgid "02S5_WR_Lambda"
-msgstr ""
+msgstr "Lambdasonde 5 Lambda"
 
 #: ../garmon/sensor.py:395
 msgid "02S6_WR_Lambda"
-msgstr ""
+msgstr "Lambdasonde 6 Lambda"
 
 #: ../garmon/sensor.py:396
 msgid "02S7_WR_Lambda"
-msgstr ""
+msgstr "Lambdasonde 7 Lambda"
 
 #: ../garmon/sensor.py:397
 msgid "02S8_WR_Lambda"
-msgstr ""
+msgstr "Lambdasonde 8 Lambda"
 
 #: ../garmon/sensor.py:398
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:11
