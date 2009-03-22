@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: garmon 0.2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-21 21:46+0100\n"
-"PO-Revision-Date: 2009-03-22 12:44+0100\n"
+"PO-Revision-Date: 2009-03-22 23:58+0100\n"
 "Last-Translator: Ben Van Mechelen <me@benvm.be>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -47,19 +47,19 @@ msgstr "<b>Storingsindicatielampje</b>"
 
 #: ../data/prefs.glade.h:5
 msgid "<b>Plugin Manager:</b>"
-msgstr ""
+msgstr "<b>Plugin Beheer:</b>"
 
 #: ../data/prefs.glade.h:6
 msgid "<b>Portname:</b>"
-msgstr ""
+msgstr "<b>Poortnaam:</b>"
 
 #: ../data/prefs.glade.h:7
 msgid "<b>Serial Port:</b>"
-msgstr ""
+msgstr "<b>Seriële Poort:</b>"
 
 #: ../data/prefs.glade.h:8
 msgid "<b>Units:</b>"
-msgstr ""
+msgstr "<b>Eenheden:</b>"
 
 #: ../data/prefs.glade.h:9
 msgid "General"
@@ -67,7 +67,7 @@ msgstr "Algemeen"
 
 #: ../data/prefs.glade.h:10
 msgid "Imperial"
-msgstr ""
+msgstr "Imperiaal"
 
 #: ../data/prefs.glade.h:11
 msgid "Increase baudrate after connection: "
@@ -79,7 +79,7 @@ msgstr "Initiële baudrate"
 
 #: ../data/prefs.glade.h:13
 msgid "Load saved plugins  when program starts"
-msgstr "Laad opgeslagen plugins wanneer het programma start"
+msgstr "Laad opgeslagen plugins bij opstarten"
 
 #: ../data/prefs.glade.h:14
 msgid "Metric"
@@ -136,93 +136,95 @@ msgid ""
 "could not read supported pids\n"
 "\n"
 msgstr ""
+"Kon ondersteunde PIDs niet lezen\n"
+"\n"
 
 #: ../garmon/obd_device.py:389
 msgid "atz command failed"
-msgstr ""
+msgstr "atz commando gefaald"
 
 #: ../garmon/obd_device.py:402
 msgid "ate0 command failed"
-msgstr ""
+msgstr "ate0 commando gefaald"
 
 #: ../garmon/obd_device.py:418
 msgid "No portname has been set."
-msgstr ""
+msgstr "Er is geen portnaam ingesteld."
 
 #: ../garmon/obd_device.py:428
 #, python-format
 msgid "Unable to open %s"
-msgstr ""
+msgstr "Onmogelijk %s te openen"
 
 #: ../garmon/obd_device.py:600 ../garmon/obd_device.py:628
 msgid "No data was received from the device"
-msgstr ""
+msgstr "Geen data van het apparaat ontvangen"
 
 #: ../garmon/obd_device.py:609
 msgid "Did not get a mode 03 result from the device"
-msgstr ""
+msgstr "Geen mode 03 resultaat van het apparaat ontvangen"
 
 #: ../garmon/obd_device.py:615
 msgid "Did not get a valid length of data"
-msgstr ""
+msgstr "Geen toegestane datalengte ontvangen"
 
 #: ../garmon/plugin.py:52
 msgid "Please make sure the device is connected."
-msgstr ""
+msgstr "Zorg er alstublieft voor dat het apparaat is aangesloten."
 
 #: ../garmon/plugin.py:53
 msgid "Should we attempt a reset?"
-msgstr ""
+msgstr "Moet een reset geprobeerd worden?"
 
 #: ../garmon/plugin_manager.py:69
 msgid "Garmon Plugin Manager"
-msgstr ""
+msgstr "Garmon Plugin Beheer"
 
 #: ../garmon/plugin_manager.py:191
 msgid "failed to load plugin: "
-msgstr ""
+msgstr "plugin laden mislukt: "
 
 #: ../garmon/plugin_manager.py:207
 #, python-format
 msgid "Failed to activate plugin %s"
-msgstr ""
+msgstr "Plugin %s activeren mislukt"
 
 #: ../garmon/plugin_manager.py:216
 #, python-format
 msgid "%s does not seem to be a valid Plugin"
-msgstr ""
+msgstr "%s lijkt geen geldige plugin"
 
 #: ../garmon/plugin_manager.py:225
 #, python-format
 msgid "building menus failed: %s"
-msgstr ""
+msgstr "Menus bouwen mislukt: %s"
 
 #: ../garmon/plugin_manager.py:230
 #, python-format
 msgid "Plugin activated: %s"
-msgstr ""
+msgstr "Plugin geactiveerd: %s"
 
 #: ../garmon/plugin_manager.py:253 ../garmon/plugin_manager.py:254
 #, python-format
 msgid "Plugin deactivated: %s"
-msgstr ""
+msgstr "Plugin gedeactiveerd: %s"
 
 #: ../garmon/plugin_manager.py:273
 #, python-format
 msgid "No file %s was found in %s"
-msgstr ""
+msgstr "Bestand %s niet gevonden in %s"
 
 #: ../garmon/plugin_manager.py:330
 msgid "<b>Version: </b>"
-msgstr ""
+msgstr "<b>Versie: </b>"
 
 #: ../garmon/plugin_manager.py:343
 msgid "<b>Author: </b>"
-msgstr ""
+msgstr "<b>Auteur: </b>"
 
 #: ../garmon/plugin_manager.py:356
 msgid "<b>Description: </b>"
-msgstr ""
+msgstr "<b>Omschrijving: </b>"
 
 #: ../garmon/prefs.py:46
 msgid "Garmon Preferences"
@@ -238,7 +240,7 @@ msgstr "Closed Loop"
 
 #: ../garmon/sensor.py:311
 msgid "Open Loop - Caused by driving conditions"
-msgstr "Open Loop"
+msgstr "Open Loop - veroorzaakt door rijcondities"
 
 #: ../garmon/sensor.py:312
 msgid "Open Loop - Caused by system fault"
@@ -316,33 +318,33 @@ msgstr "Berekende Motorbelasting"
 
 #: ../garmon/sensor.py:350
 msgid "Engine coolant temperature"
-msgstr "Motor koelvloeistof temperatuur"
+msgstr "temperatuur koelvloeistof"
 
 #: ../garmon/sensor.py:351
 msgid "Short Term Fuel Trim - Bank 1"
-msgstr ""
+msgstr "Korte termijn brandstofmengsel - 1"
 
 #: ../garmon/sensor.py:352
 msgid "Long Term Fuel Trim - Bank 1"
-msgstr ""
+msgstr "Lange termijn brandstofmengsel - 1"
 
 #: ../garmon/sensor.py:353
 msgid "Short Term Fuel Trim - Bank 2"
-msgstr ""
+msgstr "Korte termijn brandstofmengsel - 2"
 
 #: ../garmon/sensor.py:354
 msgid "Long Term Fuel Trim - Bank 2"
-msgstr ""
+msgstr "Lange termijn brandstofmengsel - 1"
 
 #: ../garmon/sensor.py:355
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:18
 #: ../plugins/live_data/live_data.glade.h:22
 msgid "Fuel Pressure"
-msgstr "Brandstof Druk"
+msgstr "Brandstofdruk"
 
 #: ../garmon/sensor.py:356
 msgid "Intake Manifold Pressure"
-msgstr "Inlaatspruitstuk Druk"
+msgstr "Druk Inlaatspruitstuk"
 
 #: ../garmon/sensor.py:357
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:15
@@ -358,7 +360,7 @@ msgstr "Snelheid"
 
 #: ../garmon/sensor.py:359 ../plugins/live_data/live_data.glade.h:33
 msgid "Timing Advance"
-msgstr "Onsteking Vervroeging"
+msgstr "Ontstekingsvervroeging"
 
 #: ../garmon/sensor.py:360
 msgid "Intake Air Temp"
@@ -375,8 +377,9 @@ msgstr "Positie Gasklep"
 #: ../garmon/sensor.py:363
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:22
 #: ../plugins/live_data/live_data.glade.h:25
+#, fuzzy
 msgid "Secondary Air Status"
-msgstr ""
+msgstr "Tweede Lucht Status"
 
 #: ../garmon/sensor.py:364 ../garmon/sensor.py:382
 msgid "O2 Sensors present"
@@ -451,8 +454,9 @@ msgid "OBD Designation"
 msgstr "OBD aanduiding"
 
 #: ../garmon/sensor.py:383
+#, fuzzy
 msgid "Aux input status"
-msgstr ""
+msgstr "Aux Ingang Status"
 
 #: ../garmon/sensor.py:384
 msgid "Time Since Engine Start"
@@ -510,49 +514,49 @@ msgstr "Lambdasonde 8 Lambda"
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:11
 #: ../plugins/live_data/live_data.glade.h:14
 msgid "Commanded EGR"
-msgstr ""
+msgstr "gevraagde EGR"
 
 #: ../garmon/sensor.py:399
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:13
 #: ../plugins/live_data/live_data.glade.h:17
 msgid "EGR Error"
-msgstr ""
+msgstr "EGR fout"
 
 #: ../plugins/dashboard/dashboard.glade.h:1
 msgid "<b>Colors</b>"
-msgstr ""
+msgstr "<b>kleuren</b>"
 
 #: ../plugins/dashboard/dashboard.glade.h:2
 msgid "background"
-msgstr ""
+msgstr "achtergrond"
 
 #: ../plugins/dashboard/dashboard.glade.h:3
 msgid "needle"
-msgstr ""
+msgstr "naald"
 
 #: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:238
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: ../plugins/dashboard/dashboard.py:46
 msgid "A dashboard-like plugin with meters showing OBD information"
-msgstr ""
+msgstr "Een dashboardachtige plugin met meters die OBD informatie tonen"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:36
 msgid "DTC Clearer"
-msgstr ""
+msgstr "DTC Wisser"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:39
 msgid "Clears the stored trouble codes in the vehicle"
-msgstr ""
+msgstr "Wist de opgeslagen foutcodes in het voertuig"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:89
 msgid "_Clear DTC"
-msgstr ""
+msgstr "_Wis DTC"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:90
 msgid "Clear stored trouble codes"
-msgstr ""
+msgstr "Wis opgeslagen foutcodes"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:105
 msgid ""
@@ -561,6 +565,10 @@ msgid ""
 "Please make sure your device is connected.\n"
 "The ignition must be turned on but the engine should not be running"
 msgstr ""
+"Er is een fout opgetreden tijdens de poging om de DTC te resetten.\n"
+"\n"
+"Zorg er alstublieft voor dat het apparaat is aangesloten.\n"
+"Het contact moet zijn aangeschakeld maar de motor mag niet lopen."
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:115
 msgid ""
@@ -579,199 +587,212 @@ msgid ""
 "    Your vehicle may run poorly for a short period of time,\n"
 "    while it performs a recalibration."
 msgstr ""
+"Bent U zeker dat U de opgeslagen foutcodes wil wissen?\n"
+"\n"
+"    Dit zal het storingslampje doven.\n"
+"    Daarnaast gebeurt ook het volgende:\n"
+"\n"
+"     - Het aantal foutcodes wordt gewist\n"
+"     - De foutcodes zelf worden gewist\n"
+"     - Freeze frame data wordt gewist\n"
+"     - Alle ambdasonde-data wordt gewist\n"
+"     - mode 06 en 07 data wordt gewist\n"
+"\n"
+"    Uw voertuig kan gedurende een korte periode slecht rijden\n"
+"    terwijl een herkalibratie wordt uitgevoerd."
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:1
 msgid "<b>Additional Info</b>"
-msgstr ""
+msgstr "<d>Extra Informatie</b>"
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:2
 msgid "<b>DTC Code Class</b>"
-msgstr ""
+msgstr "<b>DTC klasse</b>"
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:3
 msgid "<b>DTC Code</b>"
-msgstr ""
+msgstr "<b>DTC Code</b>"
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:4
 msgid "<b>Description</b>"
-msgstr ""
+msgstr "<b>Omschrijving</b>"
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:5
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:21
 msgid "Re-read"
-msgstr ""
+msgstr "Herlees"
 
 #: ../plugins/dtc_reader/dtc_reader.py:42
 #: ../plugins/dtc_reader/dtc_reader.py:165
 msgid "DTC Reader"
-msgstr ""
+msgstr "DTC Lezer"
 
 #: ../plugins/dtc_reader/dtc_reader.py:45
 msgid "Reads the stored trouble codes from the vehicle"
-msgstr ""
+msgstr "Leest de opgeslagen foutcodes van het voertuig"
 
 #. column = gtk.TreeViewColumn(_('Bits'), gtk.CellRendererText(),
 #. text=COLUMN_CODE)
 #. treeview.append_column(column)
 #: ../plugins/dtc_reader/dtc_reader.py:89
 msgid "DTC"
-msgstr ""
+msgstr "DTC"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:2
 #: ../plugins/live_data/live_data.glade.h:2
 #, no-c-format
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:3
 #: ../plugins/live_data/live_data.glade.h:3
 msgid "<b>Fuel System</b>"
-msgstr ""
+msgstr "<b>Brandstofsysteem</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:4
 #: ../plugins/live_data/live_data.glade.h:4
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>Algemeen</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:5
 #: ../plugins/live_data/live_data.glade.h:5
 msgid "<b>Intake</b>"
-msgstr ""
+msgstr "<b>Inlaat</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:6
 #: ../plugins/live_data/live_data.glade.h:6
 msgid "<b>O2 Sensors + Fuel Trim Bank 1</b>"
-msgstr ""
+msgstr "<b>Lambdasondes + mengsels Bank 1</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:7
 #: ../plugins/live_data/live_data.glade.h:7
 msgid "<b>O2 Sensors + Fuel Trim Bank 2</b>"
-msgstr ""
+msgstr "<b>Lambdasondes + mengsels Bank 2</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:8
 msgid "<b>Trouble Code</b>"
-msgstr ""
+msgstr "<b>Foutcode</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:9
 #: ../plugins/live_data/live_data.glade.h:12
 msgid "Air Flow Rate"
-msgstr ""
+msgstr "Luchtmassa"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:10
 #: ../plugins/live_data/live_data.glade.h:13
 msgid "Air Temp"
-msgstr ""
+msgstr "Luchttemperatuur"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:12
 msgid "Coolant Temp"
-msgstr ""
+msgstr "Temperatuur Koelvloeistof"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:14
 msgid "Engine Load"
-msgstr ""
+msgstr "Motorbelasting"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:16
 #: ../plugins/live_data/live_data.glade.h:20
 msgid "Feedback 1"
-msgstr ""
+msgstr "Feedback 1"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:17
 #: ../plugins/live_data/live_data.glade.h:21
 msgid "Feedback 2"
-msgstr ""
+msgstr "Feedback 2"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:19
 #: ../plugins/live_data/live_data.glade.h:23
 msgid "Long Term"
-msgstr ""
+msgstr "Lange termijn"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:20
 msgid "Manifold Pressure"
-msgstr ""
+msgstr "Spruitstuk Druk"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:23
 #: ../plugins/live_data/live_data.glade.h:26
 msgid "Sensor 1"
-msgstr ""
+msgstr "Sonde 1"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:24
 #: ../plugins/live_data/live_data.glade.h:27
 msgid "Sensor 2"
-msgstr ""
+msgstr "Sonde 2"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:25
 #: ../plugins/live_data/live_data.glade.h:28
 msgid "Sensor 3"
-msgstr ""
+msgstr "Sonde 3"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:26
 #: ../plugins/live_data/live_data.glade.h:29
 msgid "Sensor 4"
-msgstr ""
+msgstr "Sonde 4"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:27
 #: ../plugins/live_data/live_data.glade.h:30
 msgid "Short Term"
-msgstr ""
+msgstr "Korte termijn"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:28
 msgid "Throttle"
-msgstr ""
+msgstr "Gasklep"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:29
 msgid "Timing Adv"
-msgstr ""
+msgstr "Vervroeging"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:30
 #: ../plugins/live_data/live_data.glade.h:34
 msgid "V"
-msgstr ""
+msgstr "V"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:32
 #: ../plugins/live_data/live_data.glade.h:37
 msgid "g/s"
-msgstr ""
+msgstr "g/s"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:33
 #: ../plugins/live_data/live_data.glade.h:38
 msgid "kPa"
-msgstr ""
+msgstr "kPa"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:34
 #: ../plugins/live_data/live_data.glade.h:39
 msgid "km/h"
-msgstr ""
+msgstr "km/h"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:35
 #: ../plugins/live_data/live_data.glade.h:40
 msgid "rpm"
-msgstr ""
+msgstr "tr/m"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:36
 #: ../plugins/live_data/live_data.glade.h:41
 msgid "°"
-msgstr ""
+msgstr "°"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:37
 #: ../plugins/live_data/live_data.glade.h:42
 msgid "°C"
-msgstr ""
+msgstr "°C"
 
 #: ../plugins/live_data/live_data.glade.h:8
 msgid "<b>OBD Designation</b>"
-msgstr ""
+msgstr "<b>OBD aanduiding</b>"
 
 #: ../plugins/live_data/live_data.glade.h:9
 msgid "<b>Protocol</b>"
-msgstr ""
+msgstr "<b>Protocol</b>"
 
 #: ../plugins/live_data/live_data.glade.h:10
 msgid "<b>System Info</b>"
-msgstr ""
+msgstr "<b>Systeem Info</b>"
 
 #: ../plugins/live_data/live_data.glade.h:11
 msgid "<b>Trouble Codes</b>"
-msgstr ""
+msgstr "<b>Foutcodes</b>"
 
 #: ../plugins/live_data/live_data.glade.h:15
 msgid "Coolant Temperature"
