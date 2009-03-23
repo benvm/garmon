@@ -1,5 +1,11 @@
 2009-03-23  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/trouble_codes.py:
+	    make trouble codes translatable, see #2707333
+	    
+
+2009-03-23  Ben Van Mechelen  <me@benvm.be>
+
 	* aclocal.m4:
 	* configure.ac:
 	* data/Makefile.am:

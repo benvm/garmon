@@ -2,6 +2,13 @@
 
 	* garmon.pot:
 	* nl.po:
+	    Make trouble code descriptions translatable, see #2707333
+	    
+
+2009-03-23  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon.pot:
+	* nl.po:
 	    Don't translate debug strings
 	    
 
