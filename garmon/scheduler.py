@@ -26,7 +26,9 @@
 import gobject
 from gobject import GObject
 import gtk
+from gettext import gettext as _
 import datetime
+
 
 import garmon
 from garmon.obd_device import OBDDevice
@@ -173,14 +175,14 @@ class SchedulerTimer(gtk.Label, PropertyObject):
         
         self._rate = 0
         self._samples = []
-        self.set_text('refresh rate: N/A')
+        self.set_text(_('refresh rate: N/A'))
         
         scheduler.connect('command_executed', self._scheduler_command_executed_cb)
         scheduler.connect('notify::working', self._scheduler_notify_working_cb)
                     
     def _scheduler_notify_working_cb(self, scheduler, working):
         if not working:
-            self.set_text('refresh rate: N/A')
+            self.set_text(_('refresh rate: N/A'))
     
     def _scheduler_command_executed_cb(self, scheduler):
         now = datetime.datetime.now()
@@ -202,7 +204,7 @@ class SchedulerTimer(gtk.Label, PropertyObject):
                 
             rate = round(count / total, 1)
             
-            self.set_text('refresh rate: %s Hz' % rate)
+            self.set_text(_('refresh rate: %s Hz') % rate)
         
         
         

@@ -1,3 +1,10 @@
+2009-03-23  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon.pot:
+	* nl.po:
+	    Don't translate debug strings
+	    
+
 2009-03-22  Ben Van Mechelen  <me@benvm.be>
 
 	* nl.po:

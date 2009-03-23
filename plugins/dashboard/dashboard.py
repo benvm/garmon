@@ -67,7 +67,7 @@ class DashBoard (gtk.VBox, Plugin):
 
         fname = os.path.join(self.dir, 'dashboard.glade')
         xml = gtk.glade.XML(fname, 'prefs-vbox', 'garmon')
-        app.prefs.add_dialog_page(xml, 'prefs-vbox', 'Dashboard')
+        app.prefs.add_dialog_page(xml, 'prefs-vbox', _('Dashboard'))
         
         self._needle_color = app.prefs.get('dashboard.needle-color')
         self._background = app.prefs.get('dashboard.background')

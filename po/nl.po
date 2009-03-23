@@ -9,12 +9,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: garmon 0.2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-21 21:46+0100\n"
-"PO-Revision-Date: 2009-03-22 23:58+0100\n"
+"POT-Creation-Date: 2009-03-23 18:37+0100\n"
+"PO-Revision-Date: 2009-03-23 18:44+0100\n"
 "Last-Translator: Ben Van Mechelen <me@benvm.be>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit"
 
 #: ../data/garmon.desktop.in.in.h:1
@@ -55,13 +55,13 @@ msgstr "<b>Poortnaam:</b>"
 
 #: ../data/prefs.glade.h:7
 msgid "<b>Serial Port:</b>"
-msgstr "<b>Seriële Poort:</b>"
+msgstr "<b>SeriÃ«le Poort:</b>"
 
 #: ../data/prefs.glade.h:8
 msgid "<b>Units:</b>"
 msgstr "<b>Eenheden:</b>"
 
-#: ../data/prefs.glade.h:9
+#: ../data/prefs.glade.h:9 ../garmon/garmon_app.py:203
 msgid "General"
 msgstr "Algemeen"
 
@@ -75,7 +75,7 @@ msgstr "Verhoog baudrate na verbinden"
 
 #: ../data/prefs.glade.h:12
 msgid "Initial Baudrate: "
-msgstr "Initiële baudrate"
+msgstr "InitiÃ«le baudrate"
 
 #: ../data/prefs.glade.h:13
 msgid "Load saved plugins  when program starts"
@@ -104,6 +104,99 @@ msgstr "pagina 4"
 #: ../garmon/backdoor.py:38
 msgid "Python Shell. Inspect Garmons internals."
 msgstr "Python shell: Inspecteer Garmon's werking"
+
+#: ../garmon/garmon_app.py:219
+msgid "Device"
+msgstr "Apparaat"
+
+#: ../garmon/garmon_app.py:228
+msgid "_File"
+msgstr "_Bestand"
+
+#. name, stock id, label
+#: ../garmon/garmon_app.py:229
+msgid "_Edit"
+msgstr "B_ewerk"
+
+#: ../garmon/garmon_app.py:230
+msgid "_View"
+msgstr "Bee_ld"
+
+#: ../garmon/garmon_app.py:231 ../garmon/garmon_app.py:254
+msgid "_Monitor"
+msgstr "_Monitor"
+
+#: ../garmon/garmon_app.py:232
+msgid "_Device"
+msgstr "A_pparaat"
+
+#: ../garmon/garmon_app.py:233
+msgid "_Help"
+msgstr "_Hulp"
+
+#: ../garmon/garmon_app.py:235
+msgid "_Quit"
+msgstr "_Afsluiten"
+
+#: ../garmon/garmon_app.py:236
+msgid "Quit"
+msgstr "Afsluiten"
+
+#: ../garmon/garmon_app.py:238
+msgid "_About"
+msgstr "_Over"
+
+#: ../garmon/garmon_app.py:239
+msgid "About"
+msgstr "Over"
+
+#: ../garmon/garmon_app.py:241
+msgid "_Preferences"
+msgstr "_Voorkeuren"
+
+#: ../garmon/garmon_app.py:242
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+#: ../garmon/garmon_app.py:244
+msgid "P_lugins"
+msgstr "_Plugins"
+
+#: ../garmon/garmon_app.py:245
+msgid "Plugin Manager"
+msgstr "Plugin Beheer"
+
+#: ../garmon/garmon_app.py:247
+msgid "_Reset"
+msgstr "_Reset"
+
+#: ../garmon/garmon_app.py:248
+msgid "Reset Device"
+msgstr "Reset Apparaat"
+
+#: ../garmon/garmon_app.py:255
+msgid "Monitoring"
+msgstr "Monitoren"
+
+#: ../garmon/garmon_app.py:258
+msgid "_Full Screen"
+msgstr "_Volledig Scherm"
+
+#: ../garmon/garmon_app.py:259
+msgid "Full Screen"
+msgstr "Volledig Scherm"
+
+#: ../garmon/garmon_app.py:262
+msgid "_Python Shell"
+msgstr "_Python Shell"
+
+#: ../garmon/garmon_app.py:263
+msgid "Show/Hide Python Shell"
+msgstr "Toon/Verberg Python Shell"
+
+#: ../garmon/garmon_app.py:299
+msgid "Gnome OBD Car Monitor"
+msgstr "GTK OBD Car Monitor"
 
 #: ../garmon/garmon_app.py:312
 msgid "Do You Really want to quit?"
@@ -180,40 +273,6 @@ msgstr "Moet een reset geprobeerd worden?"
 msgid "Garmon Plugin Manager"
 msgstr "Garmon Plugin Beheer"
 
-#: ../garmon/plugin_manager.py:191
-msgid "failed to load plugin: "
-msgstr "plugin laden mislukt: "
-
-#: ../garmon/plugin_manager.py:207
-#, python-format
-msgid "Failed to activate plugin %s"
-msgstr "Plugin %s activeren mislukt"
-
-#: ../garmon/plugin_manager.py:216
-#, python-format
-msgid "%s does not seem to be a valid Plugin"
-msgstr "%s lijkt geen geldige plugin"
-
-#: ../garmon/plugin_manager.py:225
-#, python-format
-msgid "building menus failed: %s"
-msgstr "Menus bouwen mislukt: %s"
-
-#: ../garmon/plugin_manager.py:230
-#, python-format
-msgid "Plugin activated: %s"
-msgstr "Plugin geactiveerd: %s"
-
-#: ../garmon/plugin_manager.py:253 ../garmon/plugin_manager.py:254
-#, python-format
-msgid "Plugin deactivated: %s"
-msgstr "Plugin gedeactiveerd: %s"
-
-#: ../garmon/plugin_manager.py:273
-#, python-format
-msgid "No file %s was found in %s"
-msgstr "Bestand %s niet gevonden in %s"
-
 #: ../garmon/plugin_manager.py:330
 msgid "<b>Version: </b>"
 msgstr "<b>Versie: </b>"
@@ -229,6 +288,15 @@ msgstr "<b>Omschrijving: </b>"
 #: ../garmon/prefs.py:46
 msgid "Garmon Preferences"
 msgstr "Garmon Voorkeuren"
+
+#: ../garmon/scheduler.py:178 ../garmon/scheduler.py:185
+msgid "refresh rate: N/A"
+msgstr "verversingssnelheid: NVT"
+
+#: ../garmon/scheduler.py:207
+#, python-format
+msgid "refresh rate: %s Hz"
+msgstr "verversingssnelheid: %s Hz"
 
 #: ../garmon/sensor.py:309
 msgid "Open Loop"
@@ -377,7 +445,6 @@ msgstr "Positie Gasklep"
 #: ../garmon/sensor.py:363
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:22
 #: ../plugins/live_data/live_data.glade.h:25
-#, fuzzy
 msgid "Secondary Air Status"
 msgstr "Tweede Lucht Status"
 
@@ -454,7 +521,6 @@ msgid "OBD Designation"
 msgstr "OBD aanduiding"
 
 #: ../garmon/sensor.py:383
-#, fuzzy
 msgid "Aux input status"
 msgstr "Aux Ingang Status"
 
@@ -534,7 +600,8 @@ msgstr "achtergrond"
 msgid "needle"
 msgstr "naald"
 
-#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:238
+#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:70
+#: ../plugins/dashboard/dashboard.py:238
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -741,7 +808,7 @@ msgstr "Gasklep"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:29
 msgid "Timing Adv"
-msgstr "Vervroeging"
+msgstr "Ontstekingsvervroeging"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:30
 #: ../plugins/live_data/live_data.glade.h:34
@@ -770,13 +837,28 @@ msgstr "tr/m"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:36
 #: ../plugins/live_data/live_data.glade.h:41
-msgid "°"
-msgstr "°"
+msgid "Â°"
+msgstr "Â°"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:37
 #: ../plugins/live_data/live_data.glade.h:42
-msgid "°C"
-msgstr "°C"
+msgid "Â°C"
+msgstr "Â°C"
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:48
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:213
+msgid "Freeze Frame Data"
+msgstr "Freeze Frame Data"
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:51
+msgid ""
+"View Freeze Frame data associated with a certain dtc\n"
+"\n"
+"EXPERIMENTAL"
+msgstr ""
+"Bekijk Freeze Frame data gelinkt met een bepaalde dtc\n"
+"\n"
+"EXPERIMENTAL"
 
 #: ../plugins/live_data/live_data.glade.h:8
 msgid "<b>OBD Designation</b>"
@@ -829,7 +911,8 @@ msgid ""
 " *Intake\n"
 " *VIN\n"
 " *...\n"
-msgstr "Bekijk de belangrijkste live data zoals:\n"
+msgstr ""
+"Bekijk de belangrijkste live data zoals:\n"
 " *Brandstofsysteem\n"
 ".*Inlaat\n"
 ".*Chassisnummer\n"
@@ -842,3 +925,23 @@ msgstr "Spanning"
 msgid "Protocol"
 msgstr "Protocol"
 
+#~ msgid "No file %s was found in %s"
+#~ msgstr "Bestand %s niet gevonden in %s"
+
+#~ msgid "failed to load plugin: "
+#~ msgstr "plugin laden mislukt: "
+
+#~ msgid "Failed to activate plugin %s"
+#~ msgstr "Plugin %s activeren mislukt"
+
+#~ msgid "%s does not seem to be a valid Plugin"
+#~ msgstr "%s lijkt geen geldige plugin"
+
+#~ msgid "building menus failed: %s"
+#~ msgstr "Menus bouwen mislukt: %s"
+
+#~ msgid "Plugin activated: %s"
+#~ msgstr "Plugin geactiveerd: %s"
+
+#~ msgid "Plugin deactivated: %s"
+#~ msgstr "Plugin gedeactiveerd: %s"

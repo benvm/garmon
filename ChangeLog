@@ -1,8 +1,12 @@
-2009-03-21  Ben Van Mechelen  <ben@ranchero>
+2009-03-23  Ben Van Mechelen  <me@benvm.be>
 
-	reviewed by: <delete if not using a buddy>
+	* garmon/garmon_app.py:
+	* garmon/plugin_manager.py:
+	* garmon/scheduler.py:
+	* plugins/dashboard/dashboard.py:
+	    All strings were not yet translatable
+        Don't translate debug strings
 
-	* aclocal.m4:
 
 2009-02-27  Ben Van Mechelen  <me@benvm.be>
 

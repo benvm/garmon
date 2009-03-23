@@ -1,14 +1,14 @@
-# Dutch translation of garmon.
-# Copyright (C) 2009 Ben Van Mechelen
-# This file is distributed under the same license as the garmon package.
-# Ben Van Mechelen <me@benvm.be>, 2009.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-21 21:58+0100\n"
+"POT-Creation-Date: 2009-03-23 18:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,7 +60,7 @@ msgstr ""
 msgid "<b>Units:</b>"
 msgstr ""
 
-#: ../data/prefs.glade.h:9
+#: ../data/prefs.glade.h:9 ../garmon/garmon_app.py:203
 msgid "General"
 msgstr ""
 
@@ -102,6 +102,99 @@ msgstr ""
 
 #: ../garmon/backdoor.py:38
 msgid "Python Shell. Inspect Garmons internals."
+msgstr ""
+
+#: ../garmon/garmon_app.py:219
+msgid "Device"
+msgstr ""
+
+#: ../garmon/garmon_app.py:228
+msgid "_File"
+msgstr ""
+
+#. name, stock id, label
+#: ../garmon/garmon_app.py:229
+msgid "_Edit"
+msgstr ""
+
+#: ../garmon/garmon_app.py:230
+msgid "_View"
+msgstr ""
+
+#: ../garmon/garmon_app.py:231 ../garmon/garmon_app.py:254
+msgid "_Monitor"
+msgstr ""
+
+#: ../garmon/garmon_app.py:232
+msgid "_Device"
+msgstr ""
+
+#: ../garmon/garmon_app.py:233
+msgid "_Help"
+msgstr ""
+
+#: ../garmon/garmon_app.py:235
+msgid "_Quit"
+msgstr ""
+
+#: ../garmon/garmon_app.py:236
+msgid "Quit"
+msgstr ""
+
+#: ../garmon/garmon_app.py:238
+msgid "_About"
+msgstr ""
+
+#: ../garmon/garmon_app.py:239
+msgid "About"
+msgstr ""
+
+#: ../garmon/garmon_app.py:241
+msgid "_Preferences"
+msgstr ""
+
+#: ../garmon/garmon_app.py:242
+msgid "Preferences"
+msgstr ""
+
+#: ../garmon/garmon_app.py:244
+msgid "P_lugins"
+msgstr ""
+
+#: ../garmon/garmon_app.py:245
+msgid "Plugin Manager"
+msgstr ""
+
+#: ../garmon/garmon_app.py:247
+msgid "_Reset"
+msgstr ""
+
+#: ../garmon/garmon_app.py:248
+msgid "Reset Device"
+msgstr ""
+
+#: ../garmon/garmon_app.py:255
+msgid "Monitoring"
+msgstr ""
+
+#: ../garmon/garmon_app.py:258
+msgid "_Full Screen"
+msgstr ""
+
+#: ../garmon/garmon_app.py:259
+msgid "Full Screen"
+msgstr ""
+
+#: ../garmon/garmon_app.py:262
+msgid "_Python Shell"
+msgstr ""
+
+#: ../garmon/garmon_app.py:263
+msgid "Show/Hide Python Shell"
+msgstr ""
+
+#: ../garmon/garmon_app.py:299
+msgid "Gnome OBD Car Monitor"
 msgstr ""
 
 #: ../garmon/garmon_app.py:312
@@ -177,40 +270,6 @@ msgstr ""
 msgid "Garmon Plugin Manager"
 msgstr ""
 
-#: ../garmon/plugin_manager.py:191
-msgid "failed to load plugin: "
-msgstr ""
-
-#: ../garmon/plugin_manager.py:207
-#, python-format
-msgid "Failed to activate plugin %s"
-msgstr ""
-
-#: ../garmon/plugin_manager.py:216
-#, python-format
-msgid "%s does not seem to be a valid Plugin"
-msgstr ""
-
-#: ../garmon/plugin_manager.py:225
-#, python-format
-msgid "building menus failed: %s"
-msgstr ""
-
-#: ../garmon/plugin_manager.py:230
-#, python-format
-msgid "Plugin activated: %s"
-msgstr ""
-
-#: ../garmon/plugin_manager.py:253 ../garmon/plugin_manager.py:254
-#, python-format
-msgid "Plugin deactivated: %s"
-msgstr ""
-
-#: ../garmon/plugin_manager.py:273
-#, python-format
-msgid "No file %s was found in %s"
-msgstr ""
-
 #: ../garmon/plugin_manager.py:330
 msgid "<b>Version: </b>"
 msgstr ""
@@ -225,6 +284,15 @@ msgstr ""
 
 #: ../garmon/prefs.py:46
 msgid "Garmon Preferences"
+msgstr ""
+
+#: ../garmon/scheduler.py:178 ../garmon/scheduler.py:185
+msgid "refresh rate: N/A"
+msgstr ""
+
+#: ../garmon/scheduler.py:207
+#, python-format
+msgid "refresh rate: %s Hz"
 msgstr ""
 
 #: ../garmon/sensor.py:309
@@ -529,7 +597,8 @@ msgstr ""
 msgid "needle"
 msgstr ""
 
-#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:238
+#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:70
+#: ../plugins/dashboard/dashboard.py:238
 msgid "Dashboard"
 msgstr ""
 
@@ -754,6 +823,18 @@ msgstr ""
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:37
 #: ../plugins/live_data/live_data.glade.h:42
 msgid "°C"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:48
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:213
+msgid "Freeze Frame Data"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:51
+msgid ""
+"View Freeze Frame data associated with a certain dtc\n"
+"\n"
+"EXPERIMENTAL"
 msgstr ""
 
 #: ../plugins/live_data/live_data.glade.h:8

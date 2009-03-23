@@ -200,7 +200,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         
         fname = os.path.join(GLADE_DIR, 'prefs.glade')
         xml = gtk.glade.XML(fname, 'general_prefs_vbox', 'garmon')
-        self._prefs.add_dialog_page(xml, 'general_prefs_vbox', 'General')
+        self._prefs.add_dialog_page(xml, 'general_prefs_vbox', _('General'))
         
         xml = gtk.glade.XML(fname, 'device_prefs_vbox', 'garmon')
         
@@ -216,7 +216,7 @@ class GarmonApp(gtk.Window, PropertyObject):
             model.append((item,))
         combo.set_model(model)
         
-        self._prefs.add_dialog_page(xml, 'device_prefs_vbox', 'Device')
+        self._prefs.add_dialog_page(xml, 'device_prefs_vbox', _('Device'))
         cb_id = self._prefs.add_watch('device.portname', self._notify_port_cb)
         cb_id = self._prefs.add_watch('device.baudrate', self._notify_port_cb)
         
@@ -225,42 +225,42 @@ class GarmonApp(gtk.Window, PropertyObject):
     def _create_action_group(self):
         # GtkActionEntry
         entries = (
-            ( "FileMenu", None, "_File" ),          # name, stock id, label
-            ( "EditMenu", None, "_Edit" ),
-            ( "ViewMenu", None, "_View" ),
-            ( "MonitorMenu", None, "_Monitor" ),
-            ( "DeviceMenu", None, "_Device" ),
-            ( "HelpMenu", None, "_Help" ),
+            ( "FileMenu", None, _("_File") ),          # name, stock id, label
+            ( "EditMenu", None, _("_Edit") ),
+            ( "ViewMenu", None, _("_View") ),
+            ( "MonitorMenu", None, _("_Monitor") ),
+            ( "DeviceMenu", None, _("_Device") ),
+            ( "HelpMenu", None, _("_Help") ),
             ( "Quit", gtk.STOCK_QUIT,
-                "_Quit", "<control>Q",                      
-                "Quit", self._activate_quit ),
+                _("_Quit"), "<control>Q",                      
+                _("Quit"), self._activate_quit ),
             ( "About", gtk.STOCK_ABOUT,                   
-                "_About", "<control>A",                     
-                "About", self._activate_about ),
+                _("_About"), "<control>A",                     
+                _("About"), self._activate_about ),
             ( "Preferences", gtk.STOCK_PREFERENCES,       
-                "_Preferences", "<control>P",
-                "Preferences", self._activate_prefs_dialog ),
+                _("_Preferences"), "<control>P",
+                _("Preferences"), self._activate_prefs_dialog ),
             ( "Plugins", None,       
-                "P_lugins", "<control>L",               
-                "Plugin Manager", self._activate_plugin_dialog ),
+                _("P_lugins"), "<control>L",               
+                _("Plugin Manager"), self._activate_plugin_dialog ),
             ( "Reset", gtk.STOCK_REFRESH,
-                "_Reset", "<control>R",
-                "Reset Device", self._activate_reset )
+                _("_Reset"), "<control>R",
+                _("Reset Device"), self._activate_reset )
             );
         
         # GtkToggleActionEntry
         toggle_entries = (
             ( "Monitor", gtk.STOCK_EXECUTE,
-                "_Monitor", "<control>M",
-                "Monitoring", self._activate_monitor,
+                _("_Monitor"), "<control>M",
+                _("Monitoring"), self._activate_monitor,
                 False ),
             ( "FullScreen", gtk.STOCK_FULLSCREEN,
-                "_Full Screen", "F11",
-                "Full Screen", self._toggle_fullscreen,
+                _("_Full Screen"), "F11",
+                _("Full Screen"), self._toggle_fullscreen,
                 False ),
             ( "PythonShell", None,
-                "_Python Shell", "",
-                "Show/Hide Python Shell", self._toggle_python_shell,
+                _("_Python Shell"), "",
+                _("Show/Hide Python Shell"), self._toggle_python_shell,
                 False ),
             );
 
@@ -296,7 +296,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog.set_copyright("Copyright \302\251 2007 Ben Van Mechelen")
         dialog.set_website("http://www.sf.net/projects/garmon")
         dialog.set_version(GARMON_VERSION)
-        dialog.set_comments("Gnome OBD Car Monitor")
+        dialog.set_comments(_("Gnome OBD Car Monitor"))
         dialog.set_authors(["Ben Van Mechelen <me@benvm.be>"])
         dialog.set_license(gpl)
         
