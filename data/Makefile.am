@@ -5,12 +5,12 @@ Accessoriesdir = $(datadir)/applications
 Accessories_in_files = garmon.desktop.in
 Accessories_DATA = $(Accessories_in_files:.desktop.in=.desktop)
 
-icondir = $(datadir)/icons/hicolor/48x48/apps
+icondir = $(ICONSDIR)/48x48/apps
 icon_DATA = garmon.png
-svgicondir = $(datadir)/icons/hicolor/scalable/apps
+svgicondir = $(ICONSDIR)/scalable/apps
 svgicon_DATA = garmon.svg
 
-gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
+gtk_update_icon_cache = gtk-update-icon-cache -f -t $(ICONSDIR)
 
 install-data-hook: update-icon-cache
 uninstall-hook: update-icon-cache
@@ -23,13 +23,13 @@ update-icon-cache:
 		echo "***   $(gtk_update_icon_cache)"; \
 	fi
 
-garmon_pixmapsdir = $(pkgdatadir)/pixmaps
+garmon_pixmapsdir = $(PIXMAPDIR)
 
 garmon_pixmaps_DATA = \
 	garmon.svg \
 	garmon.png 
 
-gladedir = $(pkgdatadir)/glade
+gladedir = $(GLADEDIR)
 
 glade_DATA = prefs.glade
 	

@@ -1,5 +1,17 @@
 2009-03-23  Ben Van Mechelen  <me@benvm.be>
 
+	* aclocal.m4:
+	* configure.ac:
+	* data/Makefile.am:
+	* garmon/__init__.py:
+	* garmon/defs.py.in:
+	* plugins/Makefile.am:
+	    Update to the project layout
+	    Install plugins in a subdir of the python module
+	
+
+2009-03-23  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/garmon_app.py:
 	    Add an icon to all windows
     

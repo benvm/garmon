@@ -1,5 +1,3 @@
-pluginsdir = $(datadir)/garmon/plugins
-
 SUBDIRS = \
 	dashboard\
 	dtc_clearer\

@@ -28,9 +28,11 @@ AC_SUBST(PACKAGE)
 
 AS_AC_EXPAND(GARMON_VERSION, $VERSION)
 AS_AC_EXPAND(PYTHONDIR, $pythondir)
+AS_AC_EXPAND(PLUGINDIR, $pythondir/$PACKAGE/plugins)
 AS_AC_EXPAND(PKGDATADIR, $datarootdir/$PACKAGE)
-AS_AC_EXPAND(PLUGINDIR, $datarootdir/$PACKAGE/plugins)
 AS_AC_EXPAND(GLADEDIR, $datarootdir/$PACKAGE/glade)
+AS_AC_EXPAND(ICONSDIR, $datarootdir/icons/hicolor)
+AS_AC_EXPAND(PIXMAPDIR, $datarootdir/pixmaps/$PACKAGE)
 
 AC_OUTPUT([
 Makefile

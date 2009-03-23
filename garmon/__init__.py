@@ -13,7 +13,7 @@ if INSTALLED:
 else:
     PLUGIN_DIR =                os.path.join(DIRECTORY, "plugins")
     GLADE_DIR =                 os.path.join(DIRECTORY, "data")
-    USE_GCONF =                 False
+    PIXMAP_DIR =                os.path.join(DIRECTORY, "data")
     
 DEBUG_LEVEL = logging.INFO
 DEBUG_LEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
