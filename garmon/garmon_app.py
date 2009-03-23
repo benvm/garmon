@@ -41,7 +41,7 @@ gettext.textdomain('garmon')
 gtk.glade.textdomain('garmon')
 
 import garmon
-from garmon import GLADE_DIR, GARMON_VERSION, logger
+from garmon import GLADE_DIR, GARMON_VERSION, PIXMAP_DIR, logger
 
 import garmon.plugin_manager as plugin_manager
 
@@ -117,6 +117,10 @@ class GarmonApp(gtk.Window, PropertyObject):
         #Create the toplevel window
         gtk.Window.__init__(self)
         
+        icon = gtk.gdk.pixbuf_new_from_file(os.path.join(PIXMAP_DIR, 
+                                                         'garmon.svg'))
+        gtk.window_set_default_icon_list(icon)
+
         self._setup_prefs()
         
         self._backdoor = None

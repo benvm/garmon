@@ -1,6 +1,12 @@
 2009-03-23  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/garmon_app.py:
+	    Add an icon to all windows
+    
+
+2009-03-23  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
 	* garmon/plugin_manager.py:
 	* garmon/scheduler.py:
 	* plugins/dashboard/dashboard.py:
