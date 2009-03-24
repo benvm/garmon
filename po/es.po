@@ -1,108 +1,109 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Traduccion al espaÃ±ol de garmon.
+# Copyright (C) 2009 Ben Van Mechelen
+# Este archivo es distribuido bajo la misma licencia que el paquete garmon.
+# Ben Van Mechelen <me@benvm.be>, 2009. (original en ingles)
+# rrockanrolito <14puertas@gmail.com>, 2009 (traduccion al espaÃ±ol)
 #
-#, fuzzy
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: garmon 0.2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-25 00:39+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2009-03-21 22:35+0100\n"
+"Last-Translator: rrockanrolito <14puertas@gmail.com>\n"
+"Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/garmon.desktop.in.in.h:1
 msgid "Connect to an ELM based OBD tool"
-msgstr ""
+msgstr "Conectar a una herramienta OBD basada en ELM"
 
 #: ../data/garmon.desktop.in.in.h:2
 msgid "Garmon"
-msgstr ""
+msgstr "Garmon"
 
 #: ../data/garmon.desktop.in.in.h:3
 msgid "OBD Scanner"
-msgstr ""
+msgstr "Escaner OBD"
 
 #: ../data/prefs.glade.h:1
 msgid "\"OFF\" color"
-msgstr ""
+msgstr "\"APAGAR\" kleur"
 
 #: ../data/prefs.glade.h:2
 msgid "\"ON\" color"
-msgstr ""
+msgstr "\"ENCENDER\" kleur"
 
 #: ../data/prefs.glade.h:3
 msgid "<b>Baudrate:</b>"
-msgstr ""
+msgstr "<b>Velociad en baudios:</b>"
 
 #: ../data/prefs.glade.h:4
 msgid "<b>Malfunction Indicator Light:</b>"
-msgstr ""
+msgstr "<b>Luz indicadora de mal funcionamiento</b>"
 
 #: ../data/prefs.glade.h:5
 msgid "<b>Plugin Manager:</b>"
-msgstr ""
+msgstr "<b>Administrador de complementos</b>"
 
 #: ../data/prefs.glade.h:6
 msgid "<b>Portname:</b>"
-msgstr ""
+msgstr "<b>Puerto</b>"
 
 #: ../data/prefs.glade.h:7
 msgid "<b>Serial Port:</b>"
-msgstr ""
+msgstr "<b>Puerto serie</b>"
 
 #: ../data/prefs.glade.h:8
 msgid "<b>Units:</b>"
-msgstr ""
+msgstr "<b>Unidades</b>"
 
 #: ../data/prefs.glade.h:9 ../garmon/garmon_app.py:207
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: ../data/prefs.glade.h:10
 msgid "Imperial"
-msgstr ""
+msgstr "Imperial"
 
 #: ../data/prefs.glade.h:11
 msgid "Increase baudrate after connection: "
-msgstr ""
+msgstr "Acelerar velocidad en baudios despues de conectarse"
 
 #: ../data/prefs.glade.h:12
 msgid "Initial Baudrate: "
-msgstr ""
+msgstr "Velocidad en baudios inicial"
 
 #: ../data/prefs.glade.h:13
 msgid "Load saved plugins  when program starts"
-msgstr ""
+msgstr "Cargar complementos grabados al iniciar"
 
 #: ../data/prefs.glade.h:14
 msgid "Metric"
-msgstr ""
+msgstr "Metrica"
 
 #: ../data/prefs.glade.h:15
 msgid "Save active plugins on exit"
-msgstr ""
+msgstr "Grabar complementos activos al iniciar"
 
 #: ../data/prefs.glade.h:16
 msgid "page 2"
-msgstr ""
+msgstr "pagina 2"
 
 #: ../data/prefs.glade.h:17
 msgid "page 3"
-msgstr ""
+msgstr "pagina 3"
 
 #: ../data/prefs.glade.h:18
 msgid "page 4"
-msgstr ""
+msgstr "pagina 4"
 
 #: ../garmon/backdoor.py:38
 msgid "Python Shell. Inspect Garmons internals."
-msgstr ""
+msgstr "Python shell: Revisar Garmon por dentro"
 
 #: ../garmon/garmon_app.py:223
 msgid "Device"
@@ -150,20 +151,23 @@ msgid "About"
 msgstr ""
 
 #: ../garmon/garmon_app.py:245
+#, fuzzy
 msgid "_Preferences"
-msgstr ""
+msgstr "Preferencias Garmon"
 
 #: ../garmon/garmon_app.py:246
+#, fuzzy
 msgid "Preferences"
-msgstr ""
+msgstr "Preferencias Garmon"
 
 #: ../garmon/garmon_app.py:248
 msgid "P_lugins"
 msgstr ""
 
 #: ../garmon/garmon_app.py:249
+#, fuzzy
 msgid "Plugin Manager"
-msgstr ""
+msgstr "Administrador de complementos de Garmon"
 
 #: ../garmon/garmon_app.py:251
 msgid "_Reset"
@@ -199,92 +203,94 @@ msgstr ""
 
 #: ../garmon/garmon_app.py:316
 msgid "Do You Really want to quit?"
-msgstr ""
+msgstr "Â¿Realmente desea salir?"
 
 #: ../garmon/garmon_app.py:375
 msgid "Please make sure the device is connected and your settings are correct"
-msgstr ""
+msgstr "Asegurese que el dispositivo esta conectado y bien configurado"
 
 #: ../garmon/obd_device.py:179 ../garmon/obd_device.py:500
 #: ../garmon/obd_device.py:519 ../garmon/obd_device.py:564
 #: ../garmon/obd_device.py:588
 msgid "The port is not open"
-msgstr ""
+msgstr "El puerto no esta abierto"
 
 #: ../garmon/obd_device.py:198
 msgid "Unable to write to "
-msgstr ""
+msgstr "Imposible escribir en "
 
 #: ../garmon/obd_device.py:215
 msgid "Read timeout from "
-msgstr ""
+msgstr "Leer timeout desde "
 
 #: ../garmon/obd_device.py:221
 msgid "Unable to read from "
-msgstr ""
+msgstr "Imposible leer desde "
 
 #: ../garmon/obd_device.py:365
 msgid ""
 "could not read supported pids\n"
 "\n"
 msgstr ""
+"No se pueden leer los PIDs soportados\n"
+"\n"
 
 #: ../garmon/obd_device.py:389
 msgid "atz command failed"
-msgstr ""
+msgstr "comando ATZ fallo"
 
 #: ../garmon/obd_device.py:402
 msgid "ate0 command failed"
-msgstr ""
+msgstr "comando ATE0 fallo"
 
 #: ../garmon/obd_device.py:418
 msgid "No portname has been set."
-msgstr ""
+msgstr "No se ha configurado el nombre del puerto"
 
 #: ../garmon/obd_device.py:428
 #, python-format
 msgid "Unable to open %s"
-msgstr ""
+msgstr "Imposible abrir %s"
 
 #: ../garmon/obd_device.py:600 ../garmon/obd_device.py:628
 msgid "No data was received from the device"
-msgstr ""
+msgstr "No se han recibido datos desde el dispositivo"
 
 #: ../garmon/obd_device.py:609
 msgid "Did not get a mode 03 result from the device"
-msgstr ""
+msgstr "No se consiguio el resultado del modo 03 desde el dispositivo"
 
 #: ../garmon/obd_device.py:615
 msgid "Did not get a valid length of data"
-msgstr ""
+msgstr "No se consiguio un largo de datos valido"
 
 #: ../garmon/plugin.py:52
 msgid "Please make sure the device is connected."
-msgstr ""
+msgstr "Asegure que el dispositivo esta conectado"
 
 #: ../garmon/plugin.py:53
 msgid "Should we attempt a reset?"
-msgstr ""
+msgstr "Debemos intentar reiniciar?"
 
 #: ../garmon/plugin_manager.py:69
 msgid "Garmon Plugin Manager"
-msgstr ""
+msgstr "Administrador de complementos de Garmon"
 
 #: ../garmon/plugin_manager.py:330
 msgid "<b>Version: </b>"
-msgstr ""
+msgstr "<b>Version: </b>"
 
 #: ../garmon/plugin_manager.py:343
 msgid "<b>Author: </b>"
-msgstr ""
+msgstr "<b>Autor: </b>"
 
 #: ../garmon/plugin_manager.py:356
 msgid "<b>Description: </b>"
-msgstr ""
+msgstr "<b>Descripcion: </b>"
 
 #: ../garmon/prefs.py:46
 msgid "Garmon Preferences"
-msgstr ""
+msgstr "Preferencias Garmon"
 
 #: ../garmon/scheduler.py:178 ../garmon/scheduler.py:185
 msgid "refresh rate: N/A"
@@ -297,213 +303,213 @@ msgstr ""
 
 #: ../garmon/sensor.py:309
 msgid "Open Loop"
-msgstr ""
+msgstr "Abrir Loop"
 
 #: ../garmon/sensor.py:310
 msgid "Closed Loop"
-msgstr ""
+msgstr "Cerrar Loop"
 
 #: ../garmon/sensor.py:311
 msgid "Open Loop - Caused by driving conditions"
-msgstr ""
+msgstr "Abrir Loop - Causado por las condiciones de manejo"
 
 #: ../garmon/sensor.py:312
 msgid "Open Loop - Caused by system fault"
-msgstr ""
+msgstr "Open Loop - Causado por falla del sistema"
 
 #: ../garmon/sensor.py:313
 msgid "Closed Loop - But there is a fault"
-msgstr ""
+msgstr "Cerrar Loop - Pero hay una falla"
 
 #: ../garmon/sensor.py:318
 msgid "Upstream of first Catalytic convertor."
-msgstr ""
+msgstr "Upstream of first Catalytic convertor."
 
 #: ../garmon/sensor.py:319
 msgid "Downstream of first Catalytic convertor inlet."
-msgstr ""
+msgstr "Downstream of first Catalytic convertor inlet."
 
 #: ../garmon/sensor.py:320
 msgid "Atmosphere/off"
-msgstr ""
+msgstr "Atmosfera/uit"
 
 #: ../garmon/sensor.py:324
 msgid "OBD II (California ARB)"
-msgstr ""
+msgstr "OBD II (California ARB)"
 
 #: ../garmon/sensor.py:325
 msgid "OBD (Federal EPA)"
-msgstr ""
+msgstr "OBD (Federal EPA)"
 
 #: ../garmon/sensor.py:326
 msgid "OBD and OBD II"
-msgstr ""
+msgstr "OBD en OBD II"
 
 #: ../garmon/sensor.py:327
 msgid "OBD I"
-msgstr ""
+msgstr "OBD I"
 
 #: ../garmon/sensor.py:328
 msgid "Not intended to meet any OBD requirements."
-msgstr ""
+msgstr "No destinados a afrontar cualquier requisito OBD"
 
 #: ../garmon/sensor.py:329
 msgid "EOBD (Europe)"
-msgstr ""
+msgstr "EOBD (Europa)"
 
 #. PID               Name                            formula                        unit
 #. metric     imperial
 #: ../garmon/sensor.py:343 ../garmon/sensor.py:385
 msgid "Supported PIDs"
-msgstr ""
+msgstr "PIDs soportados"
 
 #: ../garmon/sensor.py:344
 msgid "Number of trouble codes"
-msgstr ""
+msgstr "Cantidad de codigos de fallas"
 
 #: ../garmon/sensor.py:345
 msgid "Malfunction Indicator Light"
-msgstr ""
+msgstr "Luz indicadora de malfuncionamiento"
 
 #: ../garmon/sensor.py:346
 msgid "DTC Causing Freeze Frame"
-msgstr ""
+msgstr "DTC Freeze Frame"
 
 #: ../garmon/sensor.py:347
 msgid "Fuel System Status 1"
-msgstr ""
+msgstr "Estado del sistema de combustible 1"
 
 #: ../garmon/sensor.py:348
 msgid "Fuel System Status 2"
-msgstr ""
+msgstr "Estado del sistema de combustible 2"
 
 #: ../garmon/sensor.py:349
 msgid "Calculated Engine Load Value"
-msgstr ""
+msgstr "Valor de carga del motor calculado"
 
 #: ../garmon/sensor.py:350
 msgid "Engine coolant temperature"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/sensor.py:351
 msgid "Short Term Fuel Trim - Bank 1"
-msgstr ""
+msgstr "Short Term Fuel Trim - Bank 1"
 
 #: ../garmon/sensor.py:352
 msgid "Long Term Fuel Trim - Bank 1"
-msgstr ""
+msgstr "Long Term Fuel Trim - Bank 1"
 
 #: ../garmon/sensor.py:353
 msgid "Short Term Fuel Trim - Bank 2"
-msgstr ""
+msgstr "Short Term Fuel Trim - Bank 2"
 
 #: ../garmon/sensor.py:354
 msgid "Long Term Fuel Trim - Bank 2"
-msgstr ""
+msgstr "Long Term Fuel Trim - Bank 2"
 
 #: ../garmon/sensor.py:355
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:18
 #: ../plugins/live_data/live_data.glade.h:22
 msgid "Fuel Pressure"
-msgstr ""
+msgstr "Presion del combusible"
 
 #: ../garmon/sensor.py:356
 msgid "Intake Manifold Pressure"
-msgstr ""
+msgstr "PresiÃ³n en colector de admisiÃ³n"
 
 #: ../garmon/sensor.py:357
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:15
 #: ../plugins/live_data/live_data.glade.h:18
 msgid "Engine RPM"
-msgstr ""
+msgstr "RPM del motor"
 
 #: ../garmon/sensor.py:358
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:31
 #: ../plugins/live_data/live_data.glade.h:35
 msgid "Vehicle Speed"
-msgstr ""
+msgstr "Velocidad"
 
 #: ../garmon/sensor.py:359 ../plugins/live_data/live_data.glade.h:33
 msgid "Timing Advance"
-msgstr ""
+msgstr "Timing Advance"
 
 #: ../garmon/sensor.py:360
 msgid "Intake Air Temp"
-msgstr ""
+msgstr "Temperatura del aire de admisiÃ³n"
 
 #: ../garmon/sensor.py:361
 msgid "MAF Air Flow Rate"
-msgstr ""
+msgstr "MAF caudal de aire"
 
 #: ../garmon/sensor.py:362 ../plugins/live_data/live_data.glade.h:32
 msgid "Throttle Position"
-msgstr ""
+msgstr "PosiciÃ³n del acelerador"
 
 #: ../garmon/sensor.py:363
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:22
 #: ../plugins/live_data/live_data.glade.h:25
 msgid "Secondary Air Status"
-msgstr ""
+msgstr "Estado del aire secundario"
 
 #: ../garmon/sensor.py:364 ../garmon/sensor.py:382
 msgid "O2 Sensors present"
-msgstr ""
+msgstr "Sensor de O2 presente"
 
 #: ../garmon/sensor.py:365
 msgid "O2 Sensor: 1 - 1 Voltage"
-msgstr ""
+msgstr "Sensor de O2: 1 - 1 Voltaje"
 
 #: ../garmon/sensor.py:366
 msgid "O2 Sensor: 1 - 1 Fuel Trim"
-msgstr ""
+msgstr "Sensor de O2: 1 - 1 Ahorro de combustible"
 
 #: ../garmon/sensor.py:367
 msgid "O2 Sensor: 1 - 2 Voltage"
-msgstr ""
+msgstr "Sensor de O2: 1 - 2 Voltaje"
 
 #: ../garmon/sensor.py:368
 msgid "O2 Sensor: 1 - 2 Fuel Trim"
-msgstr ""
+msgstr "Sensor de O2: 1 - 2 Ahorro de combustible"
 
 #: ../garmon/sensor.py:369
 msgid "O2 Sensor: 1 - 3 Voltage"
-msgstr ""
+msgstr "Sensor de O2: 1 - 3 Voltaje"
 
 #: ../garmon/sensor.py:370
 msgid "O2 Sensor: 1 - 3 Fuel Trim"
-msgstr ""
+msgstr "Sensor de O2: 1 - 3 Ahorro de combustible"
 
 #: ../garmon/sensor.py:371
 msgid "O2 Sensor: 1 - 4 Voltage"
-msgstr ""
+msgstr "Sensor de O2: 1 - 4 Voltaje"
 
 #: ../garmon/sensor.py:372
 msgid "O2 Sensor: 1 - 4 Fuel Trim"
-msgstr ""
+msgstr "Sensor de O2: 1 - 4 Ahorro de combustible"
 
 #: ../garmon/sensor.py:373
 msgid "O2 Sensor: 2 - 1 Voltage"
-msgstr ""
+msgstr "Sensor de O2: 2 - 1 Voltaje"
 
 #: ../garmon/sensor.py:374
 msgid "O2 Sensor: 2 - 1 Fuel Trim"
-msgstr ""
+msgstr "Sensor de O2: 2 - 1 Ahorro de combustible"
 
 #: ../garmon/sensor.py:375
 msgid "O2 Sensor: 2 - 2 Voltage"
-msgstr ""
+msgstr "Sensor de O2: 2 - 2 Voltaje"
 
 #: ../garmon/sensor.py:376
 msgid "O2 Sensor: 2 - 2 Fuel Trim"
-msgstr ""
+msgstr "Sensor de O2: 2 - 2 Ahorro de combustible"
 
 #: ../garmon/sensor.py:377
 msgid "O2 Sensor: 2 - 3 Voltage"
-msgstr ""
+msgstr "Sensor de O2: 2 - 3 Voltaje"
 
 #: ../garmon/sensor.py:378
 msgid "O2 Sensor: 2 - 3 Fuel Trim"
-msgstr ""
+msgstr "Sensor de O2: 2 - 3 Ahorro de combustible"
 
 #: ../garmon/sensor.py:379
 msgid "O2 Sensor: 2 - 4 Voltage"
@@ -511,79 +517,79 @@ msgstr ""
 
 #: ../garmon/sensor.py:380
 msgid "O2 Sensor: 2 - 4 Fuel Trim"
-msgstr ""
+msgstr "Sensor de O2: 2 - 4 Ahorro de combustible"
 
 #: ../garmon/sensor.py:381
 msgid "OBD Designation"
-msgstr ""
+msgstr "Designacion OBD"
 
 #: ../garmon/sensor.py:383
 msgid "Aux input status"
-msgstr ""
+msgstr "Estado de la entrada auxiliar"
 
 #: ../garmon/sensor.py:384
 msgid "Time Since Engine Start"
-msgstr ""
+msgstr "Tiempo desde el encendido del motor"
 
 #: ../garmon/sensor.py:386
 msgid "Distance traveled with MIL on"
-msgstr ""
+msgstr "Distancia recorrida con MIL (luz de falla)"
 
 #: ../garmon/sensor.py:387
 msgid "Fuel Rail Pressure "
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible "
 
 #: ../garmon/sensor.py:388
 msgid "(relative to manifold vacuum)"
-msgstr ""
+msgstr "(relativo al vacÃ­o del mÃºltiple)"
 
 #: ../garmon/sensor.py:389
 msgid "Fuel Rail Pressure (diesel)"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible (diesel)"
 
 #: ../garmon/sensor.py:390
 msgid "02S1_WR_Lambda"
-msgstr ""
+msgstr "02S1_WR_Lambda"
 
 #: ../garmon/sensor.py:391
 msgid "02S2_WR_Lambda"
-msgstr ""
+msgstr "02S2_WR_Lambda"
 
 #: ../garmon/sensor.py:392
 msgid "02S3_WR_Lambda"
-msgstr ""
+msgstr "02S3_WR_Lambda"
 
 #: ../garmon/sensor.py:393
 msgid "02S4_WR_Lambda"
-msgstr ""
+msgstr "02S4_WR_Lambda"
 
 #: ../garmon/sensor.py:394
 msgid "02S5_WR_Lambda"
-msgstr ""
+msgstr "02S5_WR_Lambda"
 
 #: ../garmon/sensor.py:395
 msgid "02S6_WR_Lambda"
-msgstr ""
+msgstr "02S6_WR_Lambda"
 
 #: ../garmon/sensor.py:396
 msgid "02S7_WR_Lambda"
-msgstr ""
+msgstr "02S7_WR_Lambda"
 
 #: ../garmon/sensor.py:397
 msgid "02S8_WR_Lambda"
-msgstr ""
+msgstr "02S8_WR_Lambda"
 
 #: ../garmon/sensor.py:398
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:11
 #: ../plugins/live_data/live_data.glade.h:14
 msgid "Commanded EGR"
-msgstr ""
+msgstr "EGR comandado"
 
 #: ../garmon/sensor.py:399
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:13
 #: ../plugins/live_data/live_data.glade.h:17
 msgid "EGR Error"
-msgstr ""
+msgstr "Error EGR"
 
 #: ../garmon/trouble_codes.py:32
 msgid "Fuel Volume Regulator Control Circuit/Open"
@@ -614,8 +620,9 @@ msgid "Fuel Shutoff Valve 'A' Control Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:39 ../garmon/trouble_codes.py:40
+#, fuzzy
 msgid "Engine Position System Performance"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:41 ../garmon/trouble_codes.py:51
 msgid "'A' Camshaft Position Actuator Circuit"
@@ -735,8 +742,9 @@ msgid "Air Assisted Injector Control Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:99
+#, fuzzy
 msgid "MAP/MAF - Throttle Position Correlation"
-msgstr ""
+msgstr "PosiciÃ³n del acelerador"
 
 #: ../garmon/trouble_codes.py:100
 msgid "Manifold Absolute Pressure - Barometric Pressure Correlation"
@@ -787,12 +795,14 @@ msgid "Exhaust Valve Control Solenoid Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:118
+#, fuzzy
 msgid "Fuel Rail/System Pressure - Too Low"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible "
 
 #: ../garmon/trouble_codes.py:119
+#, fuzzy
 msgid "Fuel Rail/System Pressure - Too High"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible "
 
 #: ../garmon/trouble_codes.py:120
 msgid "Fuel Pressure Regulator 1 Performance"
@@ -900,24 +910,29 @@ msgid "Intake Air Temperature Sensor 1 Circuit Intermittent"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:146
+#, fuzzy
 msgid "Engine Coolant Temperature Circuit"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:147
+#, fuzzy
 msgid "Engine Coolant Temperature Circuit Range/Performance"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:148
+#, fuzzy
 msgid "Engine Coolant Temperature Circuit Low"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:149
+#, fuzzy
 msgid "Engine Coolant Temperature Circuit High"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:150
+#, fuzzy
 msgid "Engine Coolant Temperature Circuit Intermittent"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:151
 msgid "Throttle/Pedal Position Sensor/Switch 'A' Circuit"
@@ -948,8 +963,9 @@ msgid "Insufficient Coolant Temperature for Stable Operation"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:158
+#, fuzzy
 msgid "Intake Air Temperature Too High"
-msgstr ""
+msgstr "Temperatura del aire de admisiÃ³n"
 
 #: ../garmon/trouble_codes.py:159
 msgid ""
@@ -964,20 +980,23 @@ msgstr ""
 #: ../garmon/trouble_codes.py:161 ../garmon/trouble_codes.py:167
 #: ../garmon/trouble_codes.py:173 ../garmon/trouble_codes.py:181
 #: ../garmon/trouble_codes.py:187 ../garmon/trouble_codes.py:193
+#, fuzzy
 msgid "O2 Sensor Circuit"
-msgstr ""
+msgstr "Sensor de O2 presente"
 
 #: ../garmon/trouble_codes.py:162 ../garmon/trouble_codes.py:168
 #: ../garmon/trouble_codes.py:174 ../garmon/trouble_codes.py:182
 #: ../garmon/trouble_codes.py:188 ../garmon/trouble_codes.py:194
+#, fuzzy
 msgid "O2 Sensor Circuit Low Voltage"
-msgstr ""
+msgstr "Sensor de O2: 1 - 1 Voltaje"
 
 #: ../garmon/trouble_codes.py:163 ../garmon/trouble_codes.py:169
 #: ../garmon/trouble_codes.py:175 ../garmon/trouble_codes.py:183
 #: ../garmon/trouble_codes.py:189 ../garmon/trouble_codes.py:195
+#, fuzzy
 msgid "O2 Sensor Circuit High Voltage"
-msgstr ""
+msgstr "Sensor de O2: 1 - 1 Voltaje"
 
 #: ../garmon/trouble_codes.py:164 ../garmon/trouble_codes.py:170
 #: ../garmon/trouble_codes.py:176 ../garmon/trouble_codes.py:184
@@ -994,8 +1013,9 @@ msgstr ""
 #: ../garmon/trouble_codes.py:166 ../garmon/trouble_codes.py:172
 #: ../garmon/trouble_codes.py:178 ../garmon/trouble_codes.py:186
 #: ../garmon/trouble_codes.py:192 ../garmon/trouble_codes.py:198
+#, fuzzy
 msgid "O2 Sensor Heater Circuit"
-msgstr ""
+msgstr "Sensor de O2 presente"
 
 #: ../garmon/trouble_codes.py:179
 msgid "Fuel Delivery Error"
@@ -1018,8 +1038,9 @@ msgid "Fuel Trim"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:202 ../garmon/trouble_codes.py:205
+#, fuzzy
 msgid "System Too Lean"
-msgstr ""
+msgstr "Voltaje del sistema"
 
 #: ../garmon/trouble_codes.py:203 ../garmon/trouble_codes.py:206
 msgid "System Too Rich"
@@ -1082,40 +1103,47 @@ msgid "Fuel Temperature Sensor B Circuit Intermittent"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:221
+#, fuzzy
 msgid "Fuel Rail Pressure Sensor Circuit"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible "
 
 #: ../garmon/trouble_codes.py:222
 msgid "Fuel Rail Pressure Sensor Circuit Range/Performance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:223
+#, fuzzy
 msgid "Fuel Rail Pressure Sensor Circuit Low"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible "
 
 #: ../garmon/trouble_codes.py:224
+#, fuzzy
 msgid "Fuel Rail Pressure Sensor Circuit High"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible "
 
 #: ../garmon/trouble_codes.py:225
+#, fuzzy
 msgid "Fuel Rail Pressure Sensor Circuit Intermittent"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible (diesel)"
 
 #: ../garmon/trouble_codes.py:226
+#, fuzzy
 msgid "Engine Oil Temperature Sensor"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:227
 msgid "Engine Oil Temperature Sensor Range/Performance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:228
+#, fuzzy
 msgid "Engine Oil Temperature Sensor Low"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:229
+#, fuzzy
 msgid "Engine Oil Temperature Sensor High"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:230
 msgid "Engine Oil Temperature Sensor Intermittent"
@@ -1190,8 +1218,9 @@ msgid "Injector/Injection Timing Control Circuit"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:248
+#, fuzzy
 msgid "Engine Coolant Over Temperature Condition"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:249
 msgid "Transmission Fluid Over Temperature Condition"
@@ -1516,12 +1545,14 @@ msgid "Cylinder 12 Contribution/Balance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:328
+#, fuzzy
 msgid "Vehicle Overspeed Condition"
-msgstr ""
+msgstr "Velocidad"
 
 #: ../garmon/trouble_codes.py:329
+#, fuzzy
 msgid "Engine Oil Over Temperature"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:330
 msgid "Turbo/Super Charger Underboost"
@@ -1764,8 +1795,9 @@ msgid "Misfire Detected - Fueling Disabled"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:395
+#, fuzzy
 msgid "Reserved"
-msgstr ""
+msgstr "Releer"
 
 #: ../garmon/trouble_codes.py:396 ../garmon/trouble_codes.py:421
 msgid "Camshaft Position Sensor 'B' Circuit"
@@ -1904,8 +1936,9 @@ msgid "Exhaust Gas Recirculation Sensor 'A' Circuit"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:436
+#, fuzzy
 msgid "Secondary Air Injection System"
-msgstr ""
+msgstr "Estado del aire secundario"
 
 #: ../garmon/trouble_codes.py:437
 msgid "Secondary Air Injection System Incorrect Flow Detected"
@@ -1964,16 +1997,18 @@ msgid "Heated Catalyst Temperature Below Threshold"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:451 ../garmon/trouble_codes.py:461
+#, fuzzy
 msgid "Catalyst Temperature Sensor"
-msgstr ""
+msgstr "Temperatura del refrigerante"
 
 #: ../garmon/trouble_codes.py:452 ../garmon/trouble_codes.py:462
 msgid "Catalyst Temperature Sensor Range/Performance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:453 ../garmon/trouble_codes.py:463
+#, fuzzy
 msgid "Catalyst Temperature Sensor Low"
-msgstr ""
+msgstr "Temperatura del refrigerante"
 
 #: ../garmon/trouble_codes.py:454 ../garmon/trouble_codes.py:464
 msgid "Catalyst Temperature Sensor High"
@@ -2220,8 +2255,9 @@ msgid "Evaporative Emission System Vent Valve Control Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:526
+#, fuzzy
 msgid "Vehicle Speed Sensor 'A'"
-msgstr ""
+msgstr "Velocidad"
 
 #: ../garmon/trouble_codes.py:527
 msgid "Vehicle Speed Sensor 'A' Range/Performance"
@@ -2260,8 +2296,9 @@ msgid "Idle Air Control System Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:536
+#, fuzzy
 msgid "Closed Throttle Position Switch"
-msgstr ""
+msgstr "PosiciÃ³n del acelerador"
 
 #: ../garmon/trouble_codes.py:537
 msgid "Idle Air Control Circuit"
@@ -2316,8 +2353,9 @@ msgid "Engine Oil Pressure Sensor/Switch High Voltage"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:550
+#, fuzzy
 msgid "Engine Oil Pressure Too Low"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible "
 
 #: ../garmon/trouble_codes.py:551
 msgid "Cruise Control Servo Control Circuit Range/Performance"
@@ -2452,19 +2490,22 @@ msgstr ""
 
 #: ../garmon/trouble_codes.py:586 ../plugins/live_data/live_data.glade.h:31
 msgid "System Voltage"
-msgstr ""
+msgstr "Voltaje del sistema"
 
 #: ../garmon/trouble_codes.py:587
+#, fuzzy
 msgid "System Voltage Unstable"
-msgstr ""
+msgstr "Voltaje del sistema"
 
 #: ../garmon/trouble_codes.py:588
+#, fuzzy
 msgid "System Voltage Low"
-msgstr ""
+msgstr "Voltaje del sistema"
 
 #: ../garmon/trouble_codes.py:589
+#, fuzzy
 msgid "System Voltage High"
-msgstr ""
+msgstr "Voltaje del sistema"
 
 #: ../garmon/trouble_codes.py:590
 msgid "Cruise Control Multi-Function Input 'A' Circuit"
@@ -2807,8 +2848,9 @@ msgid "Speed Control Lamp Control Circuit"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:676
+#, fuzzy
 msgid "Malfunction Indicator Lamp (MIL) Control Circuit"
-msgstr ""
+msgstr "Luz indicadora de malfuncionamiento"
 
 #: ../garmon/trouble_codes.py:677
 msgid "Sensor Reference Voltage 'B' Circuit/Open"
@@ -3315,8 +3357,9 @@ msgid "Pressure Control Solenoid 'B' Intermittent"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:806
+#, fuzzy
 msgid "Shift Error"
-msgstr ""
+msgstr "Error EGR"
 
 #: ../garmon/trouble_codes.py:807
 msgid "1-2 Shift"
@@ -3663,16 +3706,19 @@ msgid "TCM Communication Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:893
+#, fuzzy
 msgid "Transmission Fluid Pressure"
-msgstr ""
+msgstr "Colector de presiÃ³n"
 
 #: ../garmon/trouble_codes.py:894
+#, fuzzy
 msgid "Transmission Fluid Pressure Low"
-msgstr ""
+msgstr "Colector de presiÃ³n"
 
 #: ../garmon/trouble_codes.py:895
+#, fuzzy
 msgid "Transmission Fluid Pressure High"
-msgstr ""
+msgstr "Colector de presiÃ³n"
 
 #: ../garmon/trouble_codes.py:896
 msgid "Transmission Fluid Pressure Sensor/Switch 'C' Circuit"
@@ -3963,8 +4009,9 @@ msgid "Hydraulic Oil Temperature Sensor Circuit Intermittent"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:968
+#, fuzzy
 msgid "Hydraulic Pressure Unit"
-msgstr ""
+msgstr "Tren de presiÃ³n de combustible "
 
 #: ../garmon/trouble_codes.py:969
 msgid "Hydraulic Pressure Unit Cycling Period Too Short"
@@ -4794,8 +4841,9 @@ msgid "Fuel Injector Group 'D' Supply Voltage Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1211
+#, fuzzy
 msgid "Vehicle Speed Sensor 'B'"
-msgstr ""
+msgstr "Velocidad"
 
 #: ../garmon/trouble_codes.py:1212
 msgid "Vehicle Speed Sensor 'B' Range/Performance"
@@ -4882,20 +4930,23 @@ msgid "Cooling System Performance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1235
+#, fuzzy
 msgid "Engine Coolant Temperature Sensor 2 Circuit"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:1236
 msgid "Engine Coolant Temperature Sensor 2 Circuit Range/Performance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1237
+#, fuzzy
 msgid "Engine Coolant Temperature Sensor 2 Circuit Low"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:1238
+#, fuzzy
 msgid "Engine Coolant Temperature Sensor 2 Circuit High"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:1239
 msgid "Engine Coolant Temperature Sensor 2 Circuit Intermittent/Erratic"
@@ -4934,8 +4985,9 @@ msgid "Intake Air Temperature Sensor 1 / 2 Correlation"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1253 ../garmon/trouble_codes.py:1266
+#, fuzzy
 msgid "NOx Sensor Circuit"
-msgstr ""
+msgstr "Sensor de O2 presente"
 
 #: ../garmon/trouble_codes.py:1254 ../garmon/trouble_codes.py:1267
 msgid "NOx Sensor Circuit Range/Performance"
@@ -5116,8 +5168,9 @@ msgid "O2 Sensor Signals Swapped Bank 1 Sensor 3 / Bank 2 Sensor 3"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1332
+#, fuzzy
 msgid "Intake Air System Leak"
-msgstr ""
+msgstr "Temperatura del aire de admisiÃ³n"
 
 #: ../garmon/trouble_codes.py:1333
 msgid "Air Flow Restriction / Air Leak Between Air Filter and MAF"
@@ -5548,16 +5601,19 @@ msgid "Generator Lamp/L-Terminal Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1451
+#, fuzzy
 msgid "Charging System Voltage"
-msgstr ""
+msgstr "Voltaje del sistema"
 
 #: ../garmon/trouble_codes.py:1452
+#, fuzzy
 msgid "Charging System Voltage Low"
-msgstr ""
+msgstr "Voltaje del sistema"
 
 #: ../garmon/trouble_codes.py:1453
+#, fuzzy
 msgid "Charging System Voltage High"
-msgstr ""
+msgstr "Voltaje del sistema"
 
 #: ../garmon/trouble_codes.py:1454
 msgid "ECM/PCM Power Input Signal"
@@ -5780,8 +5836,9 @@ msgid "Engine Coolant Level Sensor/Switch Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1509
+#, fuzzy
 msgid "Engine Coolant Level Low"
-msgstr ""
+msgstr "Temperatura del refrigerante del motor"
 
 #: ../garmon/trouble_codes.py:1510
 msgid "A/C Control Module Requested MIL Illumination"
@@ -5939,16 +5996,19 @@ msgid "Crankshaft Position Signal Output Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1547
+#, fuzzy
 msgid "Throttle Position Output Circuit/Open"
-msgstr ""
+msgstr "PosiciÃ³n del acelerador"
 
 #: ../garmon/trouble_codes.py:1548
+#, fuzzy
 msgid "Throttle Position Output Circuit Low"
-msgstr ""
+msgstr "PosiciÃ³n del acelerador"
 
 #: ../garmon/trouble_codes.py:1549
+#, fuzzy
 msgid "Throttle Position Output Circuit High"
-msgstr ""
+msgstr "PosiciÃ³n del acelerador"
 
 #: ../garmon/trouble_codes.py:1550
 msgid "Injector Control Pressure Regulator Circuit/Open"
@@ -6451,8 +6511,9 @@ msgid "Gear Shift Actuator Temperature Too High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1686
+#, fuzzy
 msgid "Clutch Temperature Too High"
-msgstr ""
+msgstr "Temperatura del refrigerante"
 
 #: ../garmon/trouble_codes.py:1687
 msgid "Auto Shift Manual Adaptive Learning at Limit"
@@ -6926,40 +6987,40 @@ msgstr ""
 
 #: ../plugins/dashboard/dashboard.glade.h:1
 msgid "<b>Colors</b>"
-msgstr ""
+msgstr "<b>Colores</b>"
 
 #: ../plugins/dashboard/dashboard.glade.h:2
 msgid "background"
-msgstr ""
+msgstr "fondo"
 
 #: ../plugins/dashboard/dashboard.glade.h:3
 msgid "needle"
-msgstr ""
+msgstr "aguja"
 
 #: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:70
 #: ../plugins/dashboard/dashboard.py:238
 msgid "Dashboard"
-msgstr ""
+msgstr "Tablero"
 
 #: ../plugins/dashboard/dashboard.py:46
 msgid "A dashboard-like plugin with meters showing OBD information"
-msgstr ""
+msgstr "Complemento simulador de tablero con informacion OBD"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:36
 msgid "DTC Clearer"
-msgstr ""
+msgstr "Limpiador DTC"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:39
 msgid "Clears the stored trouble codes in the vehicle"
-msgstr ""
+msgstr "Borra los codigos de error almacenados en el vehiculo"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:89
 msgid "_Clear DTC"
-msgstr ""
+msgstr "_Borrar DTC"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:90
 msgid "Clear stored trouble codes"
-msgstr ""
+msgstr "Borra los codigos de error almacenados"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:105
 msgid ""
@@ -6968,6 +7029,10 @@ msgid ""
 "Please make sure your device is connected.\n"
 "The ignition must be turned on but the engine should not be running"
 msgstr ""
+"Ocurrio un error mientras intentaba reiniciar el DTC.\n"
+"\n"
+"Asegurese que el dispositivo esta conectado.\n"
+"La llave debe estar en contacto pero con el motor apagado"
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:115
 msgid ""
@@ -6986,173 +7051,187 @@ msgid ""
 "    Your vehicle may run poorly for a short period of time,\n"
 "    while it performs a recalibration."
 msgstr ""
+"Â¿Esta seguro que desea borrar los codigos de fallas?\n"
+"                \n"
+"    Esto quitara las luces indicadoras de falla.\n"
+"    Ademas tambien:\n"
+"\n"
+"     - Reinicia la cantidad de codigos de error\n"
+"     - Borrar cualquier codigo de falla diagnosticado\n"
+"     - Borrar cualquier dato almacenado (instantaneas)\n"
+"     - Borrar DTCs iniciado por las instantaneas\n"
+"     - Borrar los datos de los sensores de O2\n"
+"     - Borrar la informacion de los modos 06 y 07\n"
+"\n"
+"    Tu vehiculo puede tener una baja performance por un\n"
+"     periodo corto de tiempo, mientras se hace la recalibracion."
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:1
 msgid "<b>Additional Info</b>"
-msgstr ""
+msgstr "<b>Informacion adicional</b>"
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:2
 msgid "<b>DTC Code Class</b>"
-msgstr ""
+msgstr "<b>DTC Code Class</b>"
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:3
 msgid "<b>DTC Code</b>"
-msgstr ""
+msgstr "<b>Codigo DTC</b>"
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:4
 msgid "<b>Description</b>"
-msgstr ""
+msgstr "<b>Descripcion</b>"
 
 #: ../plugins/dtc_reader/dtc_reader.glade.h:5
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:21
 msgid "Re-read"
-msgstr ""
+msgstr "Releer"
 
 #: ../plugins/dtc_reader/dtc_reader.py:42
 #: ../plugins/dtc_reader/dtc_reader.py:165
 msgid "DTC Reader"
-msgstr ""
+msgstr "Lector DTC"
 
 #: ../plugins/dtc_reader/dtc_reader.py:45
 msgid "Reads the stored trouble codes from the vehicle"
-msgstr ""
+msgstr "Leer los codigos de fallas del vehiculo"
 
 #. column = gtk.TreeViewColumn(_('Bits'), gtk.CellRendererText(),
 #. text=COLUMN_CODE)
 #. treeview.append_column(column)
 #: ../plugins/dtc_reader/dtc_reader.py:89
 msgid "DTC"
-msgstr ""
+msgstr "DTC"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:2
 #: ../plugins/live_data/live_data.glade.h:2
 #, no-c-format
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:3
 #: ../plugins/live_data/live_data.glade.h:3
 msgid "<b>Fuel System</b>"
-msgstr ""
+msgstr "<b>Sistema de combustible</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:4
 #: ../plugins/live_data/live_data.glade.h:4
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>General</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:5
 #: ../plugins/live_data/live_data.glade.h:5
 msgid "<b>Intake</b>"
-msgstr ""
+msgstr "<b>Consumo</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:6
 #: ../plugins/live_data/live_data.glade.h:6
 msgid "<b>O2 Sensors + Fuel Trim Bank 1</b>"
-msgstr ""
+msgstr "<b>Sensores O2 + Fuel Trim Bank 1</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:7
 #: ../plugins/live_data/live_data.glade.h:7
 msgid "<b>O2 Sensors + Fuel Trim Bank 2</b>"
-msgstr ""
+msgstr "<b>Sensores O2 + Fuel Trim Bank 2</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:8
 msgid "<b>Trouble Code</b>"
-msgstr ""
+msgstr "<b>Codigos de fallas</b>"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:9
 #: ../plugins/live_data/live_data.glade.h:12
 msgid "Air Flow Rate"
-msgstr ""
+msgstr "Caudal de aire"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:10
 #: ../plugins/live_data/live_data.glade.h:13
 msgid "Air Temp"
-msgstr ""
+msgstr "Temperatura del aire"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:12
 msgid "Coolant Temp"
-msgstr ""
+msgstr "Temperatura del refrigerante"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:14
 msgid "Engine Load"
-msgstr ""
+msgstr "Carga del motor"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:16
 #: ../plugins/live_data/live_data.glade.h:20
 msgid "Feedback 1"
-msgstr ""
+msgstr "Feedback 1"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:17
 #: ../plugins/live_data/live_data.glade.h:21
 msgid "Feedback 2"
-msgstr ""
+msgstr "Feedback 2"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:19
 #: ../plugins/live_data/live_data.glade.h:23
 msgid "Long Term"
-msgstr ""
+msgstr "Long Term"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:20
 msgid "Manifold Pressure"
-msgstr ""
+msgstr "Colector de presiÃ³n"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:23
 #: ../plugins/live_data/live_data.glade.h:26
 msgid "Sensor 1"
-msgstr ""
+msgstr "Sensor 1"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:24
 #: ../plugins/live_data/live_data.glade.h:27
 msgid "Sensor 2"
-msgstr ""
+msgstr "Sensor 2"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:25
 #: ../plugins/live_data/live_data.glade.h:28
 msgid "Sensor 3"
-msgstr ""
+msgstr "Sensor 3"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:26
 #: ../plugins/live_data/live_data.glade.h:29
 msgid "Sensor 4"
-msgstr ""
+msgstr "Sensor 4"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:27
 #: ../plugins/live_data/live_data.glade.h:30
 msgid "Short Term"
-msgstr ""
+msgstr "Short Term"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:28
 msgid "Throttle"
-msgstr ""
+msgstr "Acelerador"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:29
 msgid "Timing Adv"
-msgstr ""
+msgstr "Timing Adv"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:30
 #: ../plugins/live_data/live_data.glade.h:34
 msgid "V"
-msgstr ""
+msgstr "V"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:32
 #: ../plugins/live_data/live_data.glade.h:37
 msgid "g/s"
-msgstr ""
+msgstr "g/s"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:33
 #: ../plugins/live_data/live_data.glade.h:38
 msgid "kPa"
-msgstr ""
+msgstr "KPa"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:34
 #: ../plugins/live_data/live_data.glade.h:39
 msgid "km/h"
-msgstr ""
+msgstr "km/h"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:35
 #: ../plugins/live_data/live_data.glade.h:40
 msgid "rpm"
-msgstr ""
+msgstr "rpm"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:36
 #: ../plugins/live_data/live_data.glade.h:41
@@ -7161,8 +7240,9 @@ msgstr ""
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:37
 #: ../plugins/live_data/live_data.glade.h:42
+#, fuzzy
 msgid "°C"
-msgstr ""
+msgstr "Â°C"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.py:48
 #: ../plugins/freeze_frame_data/freeze_frame_data.py:213
@@ -7178,43 +7258,43 @@ msgstr ""
 
 #: ../plugins/live_data/live_data.glade.h:8
 msgid "<b>OBD Designation</b>"
-msgstr ""
+msgstr "<b>Designacion OBD</b>"
 
 #: ../plugins/live_data/live_data.glade.h:9
 msgid "<b>Protocol</b>"
-msgstr ""
+msgstr "<b>Protocolo</b>"
 
 #: ../plugins/live_data/live_data.glade.h:10
 msgid "<b>System Info</b>"
-msgstr ""
+msgstr "<b>Informacion del sistema</b>"
 
 #: ../plugins/live_data/live_data.glade.h:11
 msgid "<b>Trouble Codes</b>"
-msgstr ""
+msgstr "<b>Codigos de fallas</b>"
 
 #: ../plugins/live_data/live_data.glade.h:15
 msgid "Coolant Temperature"
-msgstr ""
+msgstr "Temperatura del refrigerante"
 
 #: ../plugins/live_data/live_data.glade.h:16
 msgid "DeActivate all"
-msgstr ""
+msgstr "Desactivar todo"
 
 #: ../plugins/live_data/live_data.glade.h:19
 msgid "Engine load"
-msgstr ""
+msgstr "Carga del motor"
 
 #: ../plugins/live_data/live_data.glade.h:24
 msgid "Manifold pressure"
-msgstr ""
+msgstr "PresiÃ³n en el colector"
 
 #: ../plugins/live_data/live_data.glade.h:36
 msgid "deactivate all sensors"
-msgstr ""
+msgstr "Desactivar todos los sensores"
 
 #: ../plugins/live_data/live_data.py:46 ../plugins/live_data/live_data.py:285
 msgid "Live Data"
-msgstr ""
+msgstr "Datos en directo"
 
 #: ../plugins/live_data/live_data.py:49
 msgid ""
@@ -7224,11 +7304,36 @@ msgid ""
 " *VIN\n"
 " *...\n"
 msgstr ""
+"Ver los datos mas importantes como:\n"
+" *Sistema de combustible\n"
+".*Admision\n"
+".*VIN\n"
 
 #: ../plugins/live_data/live_data.py:310
 msgid "Voltage"
-msgstr ""
+msgstr "Voltaje"
 
 #: ../plugins/live_data/live_data.py:312
 msgid "Protocol"
-msgstr ""
+msgstr "Protocolo"
+
+#~ msgid "failed to load plugin: "
+#~ msgstr "fallo al cargar complemento: "
+
+#~ msgid "Failed to activate plugin %s"
+#~ msgstr "Fallo al activar complemento"
+
+#~ msgid "%s does not seem to be a valid Plugin"
+#~ msgstr "%s no parece un complemnto valido"
+
+#~ msgid "building menus failed: %s"
+#~ msgstr "Creacion de menues fallida"
+
+#~ msgid "Plugin activated: %s"
+#~ msgstr "Complemento activado: %s"
+
+#~ msgid "Plugin deactivated: %s"
+#~ msgstr "Complemento esactivado %s"
+
+#~ msgid "No file %s was found in %s"
+#~ msgstr "El archivo %s no se enconto en %s"
