@@ -20,6 +20,8 @@ AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
 
 AM_PATH_PYTHON
+AM_CHECK_PYMOD(serial,,,[AC_MSG_ERROR(Please install the pyserial module)])
+
 
 PKG_CHECK_MODULES(PYGTK, pygtk-2.0)
 

@@ -1,3 +1,12 @@
+2009-05-02  Ben Van Mechelen  <me@benvm.be>
+
+	* acinclude.m4:
+	    Added AM_CHECK_PYMOD 
+	* configure.ac:
+	    Check for pyserial module
+	    see #2
+	    
+
 2009-03-23  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/trouble_codes.py:
