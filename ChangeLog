@@ -1,3 +1,9 @@
+2009-05-03  Ben Van Mechelen  <me@benvm.be>
+
+	* aclocal.m4:
+        remove from repo
+        
+
 2009-05-02  Ben Van Mechelen  <me@benvm.be>
 
 	* acinclude.m4:
