@@ -1,5 +1,11 @@
 2009-05-03  Ben Van Mechelen  <me@benvm.be>
 
+	* configure.ac:
+	    change version to 0.3.0
+
+
+2009-05-03  Ben Van Mechelen  <me@benvm.be>
+
 	* aclocal.m4:
         remove from repo
         
