@@ -1,5 +1,11 @@
 2009-05-03  Ben Van Mechelen  <me@benvm.be>
 
+	* garmon/garmon_app.py:
+	    Update info in about dialog
+	
+
+2009-05-03  Ben Van Mechelen  <me@benvm.be>
+
 	* configure.ac:
 	    change version to 0.3.0
 
