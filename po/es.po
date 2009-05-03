@@ -2,17 +2,17 @@
 # Copyright (C) 2009 Ben Van Mechelen
 # Este archivo es distribuido bajo la misma licencia que el paquete garmon.
 # Ben Van Mechelen <me@benvm.be>, 2009. (original en ingles)
-# rrockanrolito <14puertas@gmail.com>, 2009 (traduccion al espaÃ±ol)
 #
 #
+# rrockanrolito <14puertas@gmail.com>, 2009 (traduccion al espaÃ±ol), 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: garmon 0.2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-25 00:39+0100\n"
-"PO-Revision-Date: 2009-03-21 22:35+0100\n"
+"PO-Revision-Date: 2009-05-03 18:05+0200\n"
 "Last-Translator: rrockanrolito <14puertas@gmail.com>\n"
-"Language-Team: Spanish\n"
+"Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,11 +31,11 @@ msgstr "Escaner OBD"
 
 #: ../data/prefs.glade.h:1
 msgid "\"OFF\" color"
-msgstr "\"APAGAR\" kleur"
+msgstr "\"APAGAR\" color"
 
 #: ../data/prefs.glade.h:2
 msgid "\"ON\" color"
-msgstr "\"ENCENDER\" kleur"
+msgstr "\"ENCENDER\" color"
 
 #: ../data/prefs.glade.h:3
 msgid "<b>Baudrate:</b>"
@@ -151,23 +151,20 @@ msgid "About"
 msgstr ""
 
 #: ../garmon/garmon_app.py:245
-#, fuzzy
 msgid "_Preferences"
-msgstr "Preferencias Garmon"
+msgstr "_Preferencias"
 
 #: ../garmon/garmon_app.py:246
-#, fuzzy
 msgid "Preferences"
-msgstr "Preferencias Garmon"
+msgstr "Preferencias"
 
 #: ../garmon/garmon_app.py:248
 msgid "P_lugins"
 msgstr ""
 
 #: ../garmon/garmon_app.py:249
-#, fuzzy
 msgid "Plugin Manager"
-msgstr "Administrador de complementos de Garmon"
+msgstr "Administrador de complementos"
 
 #: ../garmon/garmon_app.py:251
 msgid "_Reset"
@@ -513,7 +510,7 @@ msgstr "Sensor de O2: 2 - 3 Ahorro de combustible"
 
 #: ../garmon/sensor.py:379
 msgid "O2 Sensor: 2 - 4 Voltage"
-msgstr ""
+msgstr "Sensor de O2: 2 - 4 Voltaje"
 
 #: ../garmon/sensor.py:380
 msgid "O2 Sensor: 2 - 4 Fuel Trim"
