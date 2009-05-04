@@ -29,7 +29,7 @@ from gettext import gettext as _
 
 import gobject
 import gtk
-from gtk import glade, gdk
+from gtk import gdk
 
 import garmon
 import garmon.plugin
@@ -65,9 +65,10 @@ class DashBoard (gtk.VBox, Plugin):
         app.prefs.register('dashboard.needle-color', '#F20D1B')
         app.prefs.register('dashboard.background', '#2F2323')
 
-        fname = os.path.join(self.dir, 'dashboard.glade')
-        xml = gtk.glade.XML(fname, 'prefs-vbox', 'garmon')
-        app.prefs.add_dialog_page(xml, 'prefs-vbox', _('Dashboard'))
+        fname = os.path.join(self.dir, 'dashboard.ui')
+        builder = gtk.Builder()
+        builder.add_from_file(fname)
+        app.prefs.add_dialog_page(builder, 'prefs-vbox', _('Dashboard'))
         
         self._needle_color = app.prefs.get('dashboard.needle-color')
         self._background = app.prefs.get('dashboard.background')

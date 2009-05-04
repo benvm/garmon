@@ -29,7 +29,6 @@ from gettext import gettext as _
 import gobject
 from gobject import GObject
 import gtk
-from gtk import glade
 
 import garmon
 import garmon.plugin
@@ -95,14 +94,16 @@ class FreezeFrameData (gtk.VBox, Plugin):
     
     def _setup_gui(self):
         dirname = os.path.dirname(__file__)
-        filename = os.path.join(dirname, 'freeze_frame_data.glade')
-        self.glade_xml = glade.XML(filename, 'main_hbox')
-        main_hbox = self.glade_xml.get_widget('main_hbox')
+        filename = os.path.join(dirname, 'freeze_frame_data.ui')
+        self._builder = gtk.Builder()
+        self._builder.add_from_file(filename)
+        
+        main_hbox = self._builder.get_object('main_hbox')
         self.pack_start(main_hbox)
         main_hbox.show_all()
         self.show_all()
         
-        button = self.glade_xml.get_widget('re-read-button')
+        button = self._builder.get_object('re-read-button')
         button.connect('clicked', self._reread_button_clicked)
         
         
@@ -110,18 +111,16 @@ class FreezeFrameData (gtk.VBox, Plugin):
 
         self.views = []
 
-        xml = self.glade_xml
-               
         for item in SENSORS: 
             label = entry = unit = None
             pid = item[PID]
             index = item[INDEX]
             if item[LABEL]:
-                label = xml.get_widget(item[LABEL])
+                label = self._builder.get_object(item[LABEL])
             if item[ENTRY]:
-                entry = xml.get_widget(item[ENTRY])
+                entry = self._builder.get_object(item[ENTRY])
             if item[UNIT]:
-                unit = xml.get_widget(item[UNIT])
+                unit = self._builder.get_object(item[UNIT])
             func = (item[HELPER])
             
             view = SensorView(pid, index, units=self._unit_standard,
@@ -135,9 +134,9 @@ class FreezeFrameData (gtk.VBox, Plugin):
             pid = item[PID]
             index = item[INDEX]
             if item[LABEL]:
-                label = xml.get_widget(item[LABEL])
+                label = self._builder.get_object(item[LABEL])
             if item[BAR]:
-                bar = xml.get_widget(item[BAR])
+                bar = self._builder.get_object(item[BAR])
             func = (item[HELPER])
             
             view = SensorProgressView(pid, index,

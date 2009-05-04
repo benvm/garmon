@@ -27,7 +27,6 @@ import os
 import gobject
 from gobject import GObject
 import gtk
-from gtk import glade
 from gettext import gettext as _
 
 import garmon
@@ -63,19 +62,20 @@ class DTCReader (gtk.VBox, Plugin):
         self.dir = os.path.dirname(__file__)
         self.status = STATUS_STOP
         
-        fname = os.path.join(self.dir, 'dtc_reader.glade')
-        self._glade = glade.XML(fname, 'hpaned')
+        fname = os.path.join(self.dir, 'dtc_reader.ui')
+        self._builder = gtk.Builder()
+        self._builder.add_from_file(fname)
 
-        self._dtc_info = DTCInfo(self._glade)
+        self._dtc_info = DTCInfo(self._builder)
         
-        button = self._glade.get_widget('re-read-button')
+        button = self._builder.get_object('re-read-button')
         button.connect('clicked', self._reread_button_clicked)
         
-        hpaned = self._glade.get_widget('hpaned')
+        hpaned = self._builder.get_object('hpaned')
         self.pack_start(hpaned, True, True)
         hpaned.set_border_width(5)
 
-        dtc_frame = self._glade.get_widget('dtc_frame')
+        dtc_frame = self._builder.get_object('dtc_frame')
 
 
         self.treemodel = gtk.ListStore(gobject.TYPE_STRING,
@@ -180,14 +180,14 @@ class DTCInfo(GObject, PropertyObject) :
     gproperty('additional', str)
 
 
-    def __init__(self, glade):
+    def __init__(self, builder):
         GObject.__init__(self)
         PropertyObject.__init__(self)
 
-        self._code_label = glade.get_widget('code_label')
-        self._class_label = glade.get_widget('class_label')
-        self._description_label = glade.get_widget('description_label')
-        self._additional_textview = glade.get_widget('additional_textview')
+        self._code_label = builder.get_object('code_label')
+        self._class_label = builder.get_object('class_label')
+        self._description_label = builder.get_object('description_label')
+        self._additional_textview = builder.get_object('additional_textview')
     
         self._additional_buffer = gtk.TextBuffer()
         self._additional_textview.set_buffer(self._additional_buffer)

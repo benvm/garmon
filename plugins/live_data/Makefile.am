@@ -2,7 +2,7 @@ live_datadir = $(PLUGINDIR)/live_data
 
 live_data_PYTHON = \
 	live_data.py\
-	live_data.glade
+	live_data.ui
 
 ## File created by the gnome-build tools
 

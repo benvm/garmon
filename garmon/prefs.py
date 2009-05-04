@@ -30,7 +30,6 @@ import random
 import string
 
 import gtk
-from gtk import glade
 import gobject
 from gobject import GObject
 
@@ -38,7 +37,7 @@ from xdg.BaseDirectory import save_config_path
 from ConfigParser import RawConfigParser as ConfigParser
 
 import garmon
-from garmon import GLADE_DIR, logger
+from garmon import UI_DIR, logger
 
 class _PrefsDialog (gtk.Dialog):
 
@@ -209,32 +208,35 @@ class PreferenceManager(GObject):
         self._dialog.hide()
         
         
-    def add_dialog_page(self, xml, root, name):
-        top = xml.get_widget(root)
+    def add_dialog_page(self, builder, widget, name):
+        top = builder.get_object(widget)
         top.cb_ids = []
         self._dialog.notebook.append_page(top, gtk.Label(name))
-        widgets = xml.get_widget_prefix('preference')
-        for widget in widgets:
-            name = gtk.glade.get_widget_name(widget)[len('preference;'):]
-            wtype, ptype, pname = string.split(name, ';')
-            if wtype == 'toggle':
-                widget.connect('toggled', self._toggle_widget_cb, pname)
-            elif wtype == 'text':
-                widget.connect('activate', self._text_widget_activate_cb, pname)
-                widget.connect('focus-out-event', self._text_widget_focus_out_cb, pname)
-            elif wtype == 'color':
-                widget.connect('color-set', self._color_widget_cb, pname)
-            elif wtype == 'combo':
-                widget.connect('changed', self._combo_widget_cb, pname)
-            else:
-                #FIXME: should not reach here
-                pass
-                
-            cb_id = self.add_watch(pname, 
-                                   self._pref_notify_cb, 
-                                   widget)
-            top.cb_ids.append(cb_id)
-            self.notify(pname)
+        objects = builder.get_objects()
+        for item in objects:
+            if isinstance(item, gtk.Widget):
+                widget = item
+                if widget.name[:len('preference')] == 'preference': 
+                    name = widget.name[len('preference;'):]
+                    wtype, ptype, pname = string.split(name, ';')
+                    if wtype == 'toggle':
+                        widget.connect('toggled', self._toggle_widget_cb, pname)
+                    elif wtype == 'text':
+                        widget.connect('activate', self._text_widget_activate_cb, pname)
+                        widget.connect('focus-out-event', self._text_widget_focus_out_cb, pname)
+                    elif wtype == 'color':
+                        widget.connect('color-set', self._color_widget_cb, pname)
+                    elif wtype == 'combo':
+                        widget.connect('changed', self._combo_widget_cb, pname)
+                    else:
+                        #FIXME: should not reach here
+                        pass
+                        
+                    cb_id = self.add_watch(pname, 
+                                           self._pref_notify_cb, 
+                                           widget)
+                    top.cb_ids.append(cb_id)
+                    self.notify(pname)
 
 
     def save(self):

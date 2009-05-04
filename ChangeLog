@@ -1,5 +1,51 @@
 2009-05-04  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/dtc_reader/dtc_reader.glade:
+	* plugins/dtc_reader/dtc_reader.py:
+	* plugins/dtc_reader/dtc_reader.ui:
+	* plugins/freeze_frame_data/freeze_frame_data.glade:
+	* plugins/freeze_frame_data/freeze_frame_data.py:
+	* plugins/freeze_frame_data/freeze_frame_data.ui:
+	* plugins/live_data/live_data.glade:
+	* plugins/live_data/live_data.py:
+	* plugins/live_data/live_data.ui:
+	    removed *.data, added *.ui and migrated *.py to Builder
+	
+
+2009-05-04  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/dashboard/dashboard.glade:
+	    removed from repo
+	* plugins/dashboard/dashboard.py:
+	    migrate to builder
+	* plugins/dashboard/dashboard.ui:
+	    new file
+	    
+
+2009-05-04  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
+	* garmon/prefs.py:
+	    Preference dialog now in GtkBuilder
+	
+
+2009-05-04  Ben Van Mechelen  <me@benvm.be>
+
+	* configure.ac:
+	* data/Makefile.am:
+	* garmon/__init__.py:
+	* garmon/defs.py.in:
+	* garmon/garmon_app.py:
+	* garmon/prefs.py:
+	* plugins/dashboard/Makefile.am:
+	* plugins/dtc_reader/Makefile.am:
+	* plugins/freeze_frame_data/Makefile.am:
+	* plugins/live_data/Makefile.am:
+	    rename glade to ui
+	
+
+2009-05-04  Ben Van Mechelen  <me@benvm.be>
+
 	* garmon/garmon_app.py:
 	    don't import gconf. fix #5
 	    

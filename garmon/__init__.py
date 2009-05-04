@@ -12,7 +12,7 @@ if INSTALLED:
         sys.path.insert(0, PYTHONDIR)
 else:
     PLUGIN_DIR =                os.path.join(DIRECTORY, "plugins")
-    GLADE_DIR =                 os.path.join(DIRECTORY, "data")
+    UI_DIR =                    os.path.join(DIRECTORY, "data")
     PIXMAP_DIR =                os.path.join(DIRECTORY, "data")
     
 DEBUG_LEVEL = logging.INFO

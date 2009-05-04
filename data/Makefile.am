@@ -29,16 +29,16 @@ garmon_pixmaps_DATA = \
 	garmon.svg \
 	garmon.png 
 
-gladedir = $(GLADEDIR)
+uidir = $(UIDIR)
 
-glade_DATA = prefs.glade
+ui_DATA = prefs.ui
 	
 			
 EXTRA_DIST = $(Accessories_in_files) \
 			$(garmon_pixmaps_DATA) \
 			$(icon_DATA) \
 			$(svgicon_DATA) \
-			$(glade_DATA)
+			$(ui_DATA)
 			
              
 CLEANFILES = garmon.desktop garmon.desktop.in

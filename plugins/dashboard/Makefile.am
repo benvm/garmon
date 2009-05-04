@@ -1,7 +1,7 @@
 dashboarddir = $(PLUGINDIR)/dashboard
 
 dashboard_PYTHON = \
-	dashboard.glade\
+	dashboard.ui\
 	load.svg \
 	rpm.svg \
 	speed_metric.svg \

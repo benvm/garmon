@@ -28,7 +28,6 @@ along with this program.  If not, write to:
 
 import gobject
 import gtk
-from gtk import glade
 import locale
 import gettext
 import os
@@ -37,10 +36,9 @@ import os
 locale.setlocale(locale.LC_ALL, '')
 from gettext import gettext as _
 gettext.textdomain('garmon')
-gtk.glade.textdomain('garmon')
 
 import garmon
-from garmon import GLADE_DIR, GARMON_VERSION, PIXMAP_DIR, logger
+from garmon import UI_DIR, GARMON_VERSION, PIXMAP_DIR, logger
 
 import garmon.plugin_manager as plugin_manager
 
@@ -119,7 +117,8 @@ class GarmonApp(gtk.Window, PropertyObject):
         icon = gtk.gdk.pixbuf_new_from_file(os.path.join(PIXMAP_DIR, 
                                                          'garmon.svg'))
         gtk.window_set_default_icon_list(icon)
-
+        
+        self._builder = gtk.Builder()
         self._setup_prefs()
         
         self._backdoor = None
@@ -201,25 +200,24 @@ class GarmonApp(gtk.Window, PropertyObject):
         self._prefs.register('plugins.start', True)
         self._prefs.register('plugins.saved', '')
         
-        fname = os.path.join(GLADE_DIR, 'prefs.glade')
-        xml = gtk.glade.XML(fname, 'general_prefs_vbox', 'garmon')
-        self._prefs.add_dialog_page(xml, 'general_prefs_vbox', _('General'))
+        fname = os.path.join(UI_DIR, 'prefs.ui')
+        self._builder.add_from_file(fname)
         
-        xml = gtk.glade.XML(fname, 'device_prefs_vbox', 'garmon')
+        self._prefs.add_dialog_page(self._builder, 'general_prefs_vbox', _('General'))
         
-        combo = xml.get_widget('preference;combo;int;device.baudrate')
+        combo = self._builder.get_object('preference;combo;int;device.baudrate')
         model = gtk.ListStore(gobject.TYPE_INT)
         for item in baudrates:
             model.append((item,))
         combo.set_model(model)
 
-        combo = xml.get_widget('preference;combo;int;device.higher-baudrate')
+        combo = self._builder.get_object('preference;combo;int;device.higher-baudrate')
         model = gtk.ListStore(gobject.TYPE_INT)
         for item in higher_rates:
             model.append((item,))
         combo.set_model(model)
         
-        self._prefs.add_dialog_page(xml, 'device_prefs_vbox', _('Device'))
+        self._prefs.add_dialog_page(self._builder, 'device_prefs_vbox', _('Device'))
         cb_id = self._prefs.add_watch('device.portname', self._notify_port_cb)
         cb_id = self._prefs.add_watch('device.baudrate', self._notify_port_cb)
         
