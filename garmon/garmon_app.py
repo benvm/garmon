@@ -29,7 +29,6 @@ along with this program.  If not, write to:
 import gobject
 import gtk
 from gtk import glade
-import gconf
 import locale
 import gettext
 import os
@@ -298,9 +297,9 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog = gtk.AboutDialog()
         dialog.set_name("Garmon")
         dialog.set_copyright("Copyright \302\251 2007 Ben Van Mechelen")
-        dialog.set_website("http://www.sf.net/projects/garmon")
+        dialog.set_website("http://garmon.sourceforge.net")
         dialog.set_version(GARMON_VERSION)
-        dialog.set_comments(_("Gnome OBD Car Monitor"))
+        dialog.set_comments(_("Gtk OBD Car Monitor"))
         dialog.set_authors(["Ben Van Mechelen <me@benvm.be>"])
         dialog.set_license(gpl)
         
