@@ -29,7 +29,6 @@ along with this program.  If not, write to:
 import gobject
 import gtk
 from gtk import glade
-import gconf
 import locale
 import gettext
 import os
