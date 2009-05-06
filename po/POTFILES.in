@@ -2,7 +2,7 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetical order.
 data/garmon.desktop.in.in
-data/prefs.glade
+[type: gettext/glade]data/prefs.ui
 garmon/backdoor.py
 garmon/garmon
 garmon/garmon_app.py
@@ -15,12 +15,12 @@ garmon/scheduler.py
 garmon/sensor.py
 garmon/trouble_codes.py
 garmon/widgets.py
-plugins/dashboard/dashboard.glade
 plugins/dashboard/dashboard.py
+[type: gettext/glade]plugins/dashboard/dashboard.ui
 plugins/dtc_clearer/dtc_clearer.py
-plugins/dtc_reader/dtc_reader.glade
 plugins/dtc_reader/dtc_reader.py
-plugins/freeze_frame_data/freeze_frame_data.glade
+[type: gettext/glade]plugins/dtc_reader/dtc_reader.ui
 plugins/freeze_frame_data/freeze_frame_data.py
-plugins/live_data/live_data.glade
+[type: gettext/glade]plugins/freeze_frame_data/freeze_frame_data.ui
 plugins/live_data/live_data.py
+[type: gettext/glade]plugins/live_data/live_data.ui

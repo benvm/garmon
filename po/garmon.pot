@@ -8,12 +8,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-25 00:39+0100\n"
+"POT-Creation-Date: 2009-05-06 19:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/garmon.desktop.in.in.h:1
@@ -28,180 +28,168 @@ msgstr ""
 msgid "OBD Scanner"
 msgstr ""
 
-#: ../data/prefs.glade.h:1
+#: ../data/prefs.ui.h:1
 msgid "\"OFF\" color"
 msgstr ""
 
-#: ../data/prefs.glade.h:2
+#: ../data/prefs.ui.h:2
 msgid "\"ON\" color"
 msgstr ""
 
-#: ../data/prefs.glade.h:3
+#: ../data/prefs.ui.h:3
 msgid "<b>Baudrate:</b>"
 msgstr ""
 
-#: ../data/prefs.glade.h:4
+#: ../data/prefs.ui.h:4
 msgid "<b>Malfunction Indicator Light:</b>"
 msgstr ""
 
-#: ../data/prefs.glade.h:5
+#: ../data/prefs.ui.h:5
 msgid "<b>Plugin Manager:</b>"
 msgstr ""
 
-#: ../data/prefs.glade.h:6
+#: ../data/prefs.ui.h:6
 msgid "<b>Portname:</b>"
 msgstr ""
 
-#: ../data/prefs.glade.h:7
-msgid "<b>Serial Port:</b>"
-msgstr ""
-
-#: ../data/prefs.glade.h:8
+#: ../data/prefs.ui.h:7
 msgid "<b>Units:</b>"
 msgstr ""
 
-#: ../data/prefs.glade.h:9 ../garmon/garmon_app.py:207
-msgid "General"
-msgstr ""
-
-#: ../data/prefs.glade.h:10
+#: ../data/prefs.ui.h:8
 msgid "Imperial"
 msgstr ""
 
-#: ../data/prefs.glade.h:11
+#: ../data/prefs.ui.h:9
 msgid "Increase baudrate after connection: "
 msgstr ""
 
-#: ../data/prefs.glade.h:12
+#: ../data/prefs.ui.h:10
 msgid "Initial Baudrate: "
 msgstr ""
 
-#: ../data/prefs.glade.h:13
+#: ../data/prefs.ui.h:11
 msgid "Load saved plugins  when program starts"
 msgstr ""
 
-#: ../data/prefs.glade.h:14
+#: ../data/prefs.ui.h:12
 msgid "Metric"
 msgstr ""
 
-#: ../data/prefs.glade.h:15
+#: ../data/prefs.ui.h:13
 msgid "Save active plugins on exit"
-msgstr ""
-
-#: ../data/prefs.glade.h:16
-msgid "page 2"
-msgstr ""
-
-#: ../data/prefs.glade.h:17
-msgid "page 3"
-msgstr ""
-
-#: ../data/prefs.glade.h:18
-msgid "page 4"
 msgstr ""
 
 #: ../garmon/backdoor.py:38
 msgid "Python Shell. Inspect Garmons internals."
 msgstr ""
 
-#: ../garmon/garmon_app.py:223
+#: ../garmon/garmon_app.py:206
+msgid "General"
+msgstr ""
+
+#: ../garmon/garmon_app.py:220
 msgid "Device"
 msgstr ""
 
-#: ../garmon/garmon_app.py:232
+#: ../garmon/garmon_app.py:229
 msgid "_File"
 msgstr ""
 
 #. name, stock id, label
-#: ../garmon/garmon_app.py:233
+#: ../garmon/garmon_app.py:230
 msgid "_Edit"
 msgstr ""
 
-#: ../garmon/garmon_app.py:234
+#: ../garmon/garmon_app.py:231
 msgid "_View"
 msgstr ""
 
-#: ../garmon/garmon_app.py:235 ../garmon/garmon_app.py:258
+#: ../garmon/garmon_app.py:232 ../garmon/garmon_app.py:255
 msgid "_Monitor"
 msgstr ""
 
-#: ../garmon/garmon_app.py:236
+#: ../garmon/garmon_app.py:233
 msgid "_Device"
 msgstr ""
 
-#: ../garmon/garmon_app.py:237
+#: ../garmon/garmon_app.py:234
 msgid "_Help"
 msgstr ""
 
-#: ../garmon/garmon_app.py:239
+#: ../garmon/garmon_app.py:236
 msgid "_Quit"
 msgstr ""
 
-#: ../garmon/garmon_app.py:240
+#: ../garmon/garmon_app.py:237
 msgid "Quit"
 msgstr ""
 
-#: ../garmon/garmon_app.py:242
+#: ../garmon/garmon_app.py:239
 msgid "_About"
 msgstr ""
 
-#: ../garmon/garmon_app.py:243
+#: ../garmon/garmon_app.py:240
 msgid "About"
 msgstr ""
 
-#: ../garmon/garmon_app.py:245
+#: ../garmon/garmon_app.py:242
 msgid "_Preferences"
 msgstr ""
 
-#: ../garmon/garmon_app.py:246
+#: ../garmon/garmon_app.py:243
 msgid "Preferences"
 msgstr ""
 
-#: ../garmon/garmon_app.py:248
+#: ../garmon/garmon_app.py:245
 msgid "P_lugins"
 msgstr ""
 
-#: ../garmon/garmon_app.py:249
+#: ../garmon/garmon_app.py:246
 msgid "Plugin Manager"
 msgstr ""
 
-#: ../garmon/garmon_app.py:251
+#: ../garmon/garmon_app.py:248
 msgid "_Reset"
 msgstr ""
 
-#: ../garmon/garmon_app.py:252
+#: ../garmon/garmon_app.py:249
 msgid "Reset Device"
 msgstr ""
 
-#: ../garmon/garmon_app.py:259
+#: ../garmon/garmon_app.py:256
 msgid "Monitoring"
 msgstr ""
 
-#: ../garmon/garmon_app.py:262
+#: ../garmon/garmon_app.py:259
 msgid "_Full Screen"
 msgstr ""
 
-#: ../garmon/garmon_app.py:263
+#: ../garmon/garmon_app.py:260
 msgid "Full Screen"
 msgstr ""
 
-#: ../garmon/garmon_app.py:266
+#: ../garmon/garmon_app.py:263
 msgid "_Python Shell"
 msgstr ""
 
-#: ../garmon/garmon_app.py:267
+#: ../garmon/garmon_app.py:264
 msgid "Show/Hide Python Shell"
 msgstr ""
 
-#: ../garmon/garmon_app.py:303
-msgid "Gnome OBD Car Monitor"
+#: ../garmon/garmon_app.py:300
+msgid "Gtk OBD Car Monitor"
 msgstr ""
 
-#: ../garmon/garmon_app.py:316
+#: ../garmon/garmon_app.py:303
+msgid "translator-credits"
+msgstr ""
+
+#: ../garmon/garmon_app.py:314
 msgid "Do You Really want to quit?"
 msgstr ""
 
-#: ../garmon/garmon_app.py:375
+#: ../garmon/garmon_app.py:373
 msgid "Please make sure the device is connected and your settings are correct"
 msgstr ""
 
@@ -282,7 +270,7 @@ msgstr ""
 msgid "<b>Description: </b>"
 msgstr ""
 
-#: ../garmon/prefs.py:46
+#: ../garmon/prefs.py:45
 msgid "Garmon Preferences"
 msgstr ""
 
@@ -402,8 +390,8 @@ msgid "Long Term Fuel Trim - Bank 2"
 msgstr ""
 
 #: ../garmon/sensor.py:355
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:18
-#: ../plugins/live_data/live_data.glade.h:22
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:20
+#: ../plugins/live_data/live_data.ui.h:24
 msgid "Fuel Pressure"
 msgstr ""
 
@@ -412,18 +400,18 @@ msgid "Intake Manifold Pressure"
 msgstr ""
 
 #: ../garmon/sensor.py:357
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:15
-#: ../plugins/live_data/live_data.glade.h:18
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:17
+#: ../plugins/live_data/live_data.ui.h:20
 msgid "Engine RPM"
 msgstr ""
 
 #: ../garmon/sensor.py:358
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:31
-#: ../plugins/live_data/live_data.glade.h:35
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:33
+#: ../plugins/live_data/live_data.ui.h:37
 msgid "Vehicle Speed"
 msgstr ""
 
-#: ../garmon/sensor.py:359 ../plugins/live_data/live_data.glade.h:33
+#: ../garmon/sensor.py:359 ../plugins/live_data/live_data.ui.h:35
 msgid "Timing Advance"
 msgstr ""
 
@@ -435,13 +423,13 @@ msgstr ""
 msgid "MAF Air Flow Rate"
 msgstr ""
 
-#: ../garmon/sensor.py:362 ../plugins/live_data/live_data.glade.h:32
+#: ../garmon/sensor.py:362 ../plugins/live_data/live_data.ui.h:34
 msgid "Throttle Position"
 msgstr ""
 
 #: ../garmon/sensor.py:363
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:22
-#: ../plugins/live_data/live_data.glade.h:25
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:24
+#: ../plugins/live_data/live_data.ui.h:27
 msgid "Secondary Air Status"
 msgstr ""
 
@@ -574,14 +562,14 @@ msgid "02S8_WR_Lambda"
 msgstr ""
 
 #: ../garmon/sensor.py:398
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:11
-#: ../plugins/live_data/live_data.glade.h:14
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:13
+#: ../plugins/live_data/live_data.ui.h:16
 msgid "Commanded EGR"
 msgstr ""
 
 #: ../garmon/sensor.py:399
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:13
-#: ../plugins/live_data/live_data.glade.h:17
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:15
+#: ../plugins/live_data/live_data.ui.h:19
 msgid "EGR Error"
 msgstr ""
 
@@ -2450,7 +2438,7 @@ msgstr ""
 msgid "Brake Booster Pressure Sensor Circuit Intermittent"
 msgstr ""
 
-#: ../garmon/trouble_codes.py:586 ../plugins/live_data/live_data.glade.h:31
+#: ../garmon/trouble_codes.py:586 ../plugins/live_data/live_data.ui.h:33
 msgid "System Voltage"
 msgstr ""
 
@@ -6924,25 +6912,25 @@ msgstr ""
 msgid "Manufacturer Controlled Fuel and Air Merering"
 msgstr ""
 
-#: ../plugins/dashboard/dashboard.glade.h:1
-msgid "<b>Colors</b>"
-msgstr ""
-
-#: ../plugins/dashboard/dashboard.glade.h:2
-msgid "background"
-msgstr ""
-
-#: ../plugins/dashboard/dashboard.glade.h:3
-msgid "needle"
-msgstr ""
-
-#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:70
-#: ../plugins/dashboard/dashboard.py:238
+#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:71
+#: ../plugins/dashboard/dashboard.py:239
 msgid "Dashboard"
 msgstr ""
 
 #: ../plugins/dashboard/dashboard.py:46
 msgid "A dashboard-like plugin with meters showing OBD information"
+msgstr ""
+
+#: ../plugins/dashboard/dashboard.ui.h:1
+msgid "<b>Colors</b>"
+msgstr ""
+
+#: ../plugins/dashboard/dashboard.ui.h:2
+msgid "background"
+msgstr ""
+
+#: ../plugins/dashboard/dashboard.ui.h:3
+msgid "needle"
 msgstr ""
 
 #: ../plugins/dtc_clearer/dtc_clearer.py:36
@@ -6987,33 +6975,12 @@ msgid ""
 "    while it performs a recalibration."
 msgstr ""
 
-#: ../plugins/dtc_reader/dtc_reader.glade.h:1
-msgid "<b>Additional Info</b>"
-msgstr ""
-
-#: ../plugins/dtc_reader/dtc_reader.glade.h:2
-msgid "<b>DTC Code Class</b>"
-msgstr ""
-
-#: ../plugins/dtc_reader/dtc_reader.glade.h:3
-msgid "<b>DTC Code</b>"
-msgstr ""
-
-#: ../plugins/dtc_reader/dtc_reader.glade.h:4
-msgid "<b>Description</b>"
-msgstr ""
-
-#: ../plugins/dtc_reader/dtc_reader.glade.h:5
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:21
-msgid "Re-read"
-msgstr ""
-
-#: ../plugins/dtc_reader/dtc_reader.py:42
+#: ../plugins/dtc_reader/dtc_reader.py:41
 #: ../plugins/dtc_reader/dtc_reader.py:165
 msgid "DTC Reader"
 msgstr ""
 
-#: ../plugins/dtc_reader/dtc_reader.py:45
+#: ../plugins/dtc_reader/dtc_reader.py:44
 msgid "Reads the stored trouble codes from the vehicle"
 msgstr ""
 
@@ -7024,199 +6991,184 @@ msgstr ""
 msgid "DTC"
 msgstr ""
 
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:2
-#: ../plugins/live_data/live_data.glade.h:2
-#, no-c-format
-msgid "%"
+#: ../plugins/dtc_reader/dtc_reader.ui.h:1
+msgid "<b>Additional Info</b>"
 msgstr ""
 
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:3
-#: ../plugins/live_data/live_data.glade.h:3
-msgid "<b>Fuel System</b>"
+#: ../plugins/dtc_reader/dtc_reader.ui.h:2
+msgid "<b>DTC Code Class</b>"
 msgstr ""
 
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:4
-#: ../plugins/live_data/live_data.glade.h:4
-msgid "<b>General</b>"
+#: ../plugins/dtc_reader/dtc_reader.ui.h:3
+msgid "<b>DTC Code</b>"
 msgstr ""
 
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:5
-#: ../plugins/live_data/live_data.glade.h:5
-msgid "<b>Intake</b>"
+#: ../plugins/dtc_reader/dtc_reader.ui.h:4
+msgid "<b>Description</b>"
 msgstr ""
 
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:6
-#: ../plugins/live_data/live_data.glade.h:6
-msgid "<b>O2 Sensors + Fuel Trim Bank 1</b>"
+#: ../plugins/dtc_reader/dtc_reader.ui.h:5
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:23
+msgid "Re-read"
 msgstr ""
 
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:7
-#: ../plugins/live_data/live_data.glade.h:7
-msgid "<b>O2 Sensors + Fuel Trim Bank 2</b>"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:8
-msgid "<b>Trouble Code</b>"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:9
-#: ../plugins/live_data/live_data.glade.h:12
-msgid "Air Flow Rate"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:10
-#: ../plugins/live_data/live_data.glade.h:13
-msgid "Air Temp"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:12
-msgid "Coolant Temp"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:14
-msgid "Engine Load"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:16
-#: ../plugins/live_data/live_data.glade.h:20
-msgid "Feedback 1"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:17
-#: ../plugins/live_data/live_data.glade.h:21
-msgid "Feedback 2"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:19
-#: ../plugins/live_data/live_data.glade.h:23
-msgid "Long Term"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:20
-msgid "Manifold Pressure"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:23
-#: ../plugins/live_data/live_data.glade.h:26
-msgid "Sensor 1"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:24
-#: ../plugins/live_data/live_data.glade.h:27
-msgid "Sensor 2"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:25
-#: ../plugins/live_data/live_data.glade.h:28
-msgid "Sensor 3"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:26
-#: ../plugins/live_data/live_data.glade.h:29
-msgid "Sensor 4"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:27
-#: ../plugins/live_data/live_data.glade.h:30
-msgid "Short Term"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:28
-msgid "Throttle"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:29
-msgid "Timing Adv"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:30
-#: ../plugins/live_data/live_data.glade.h:34
-msgid "V"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:32
-#: ../plugins/live_data/live_data.glade.h:37
-msgid "g/s"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:33
-#: ../plugins/live_data/live_data.glade.h:38
-msgid "kPa"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:34
-#: ../plugins/live_data/live_data.glade.h:39
-msgid "km/h"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:35
-#: ../plugins/live_data/live_data.glade.h:40
-msgid "rpm"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:36
-#: ../plugins/live_data/live_data.glade.h:41
-msgid "°"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.glade.h:37
-#: ../plugins/live_data/live_data.glade.h:42
-msgid "°C"
-msgstr ""
-
-#: ../plugins/freeze_frame_data/freeze_frame_data.py:48
-#: ../plugins/freeze_frame_data/freeze_frame_data.py:213
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:47
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:212
 msgid "Freeze Frame Data"
 msgstr ""
 
-#: ../plugins/freeze_frame_data/freeze_frame_data.py:51
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:50
 msgid ""
 "View Freeze Frame data associated with a certain dtc\n"
 "\n"
 "EXPERIMENTAL"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:8
-msgid "<b>OBD Designation</b>"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:2
+#: ../plugins/live_data/live_data.ui.h:2
+#, no-c-format
+msgid "%"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:9
-msgid "<b>Protocol</b>"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:3
+#: ../plugins/live_data/live_data.ui.h:3
+msgid "&#xB0;"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:10
-msgid "<b>System Info</b>"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:4
+#: ../plugins/live_data/live_data.ui.h:4
+msgid "&#xB0;C"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:11
-msgid "<b>Trouble Codes</b>"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:5
+#: ../plugins/live_data/live_data.ui.h:5
+msgid "<b>Fuel System</b>"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:15
-msgid "Coolant Temperature"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:6
+#: ../plugins/live_data/live_data.ui.h:6
+msgid "<b>General</b>"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:16
-msgid "DeActivate all"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:7
+#: ../plugins/live_data/live_data.ui.h:7
+msgid "<b>Intake</b>"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:19
-msgid "Engine load"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:8
+#: ../plugins/live_data/live_data.ui.h:8
+msgid "<b>O2 Sensors + Fuel Trim Bank 1</b>"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:24
-msgid "Manifold pressure"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:9
+#: ../plugins/live_data/live_data.ui.h:9
+msgid "<b>O2 Sensors + Fuel Trim Bank 2</b>"
 msgstr ""
 
-#: ../plugins/live_data/live_data.glade.h:36
-msgid "deactivate all sensors"
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:10
+msgid "<b>Trouble Code</b>"
 msgstr ""
 
-#: ../plugins/live_data/live_data.py:46 ../plugins/live_data/live_data.py:285
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:11
+#: ../plugins/live_data/live_data.ui.h:14
+msgid "Air Flow Rate"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:12
+#: ../plugins/live_data/live_data.ui.h:15
+msgid "Air Temp"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:14
+msgid "Coolant Temp"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:16
+msgid "Engine Load"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:18
+#: ../plugins/live_data/live_data.ui.h:22
+msgid "Feedback 1"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:19
+#: ../plugins/live_data/live_data.ui.h:23
+msgid "Feedback 2"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:21
+#: ../plugins/live_data/live_data.ui.h:25
+msgid "Long Term"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:22
+msgid "Manifold Pressure"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:25
+#: ../plugins/live_data/live_data.ui.h:28
+msgid "Sensor 1"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:26
+#: ../plugins/live_data/live_data.ui.h:29
+msgid "Sensor 2"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:27
+#: ../plugins/live_data/live_data.ui.h:30
+msgid "Sensor 3"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:28
+#: ../plugins/live_data/live_data.ui.h:31
+msgid "Sensor 4"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:29
+#: ../plugins/live_data/live_data.ui.h:32
+msgid "Short Term"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:30
+msgid "Throttle"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:31
+msgid "Timing Adv"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:32
+#: ../plugins/live_data/live_data.ui.h:36
+msgid "V"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:34
+#: ../plugins/live_data/live_data.ui.h:39
+msgid "g/s"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:35
+#: ../plugins/live_data/live_data.ui.h:40
+msgid "kPa"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:36
+#: ../plugins/live_data/live_data.ui.h:41
+msgid "km/h"
+msgstr ""
+
+#: ../plugins/freeze_frame_data/freeze_frame_data.ui.h:37
+#: ../plugins/live_data/live_data.ui.h:42
+msgid "rpm"
+msgstr ""
+
+#: ../plugins/live_data/live_data.py:45 ../plugins/live_data/live_data.py:285
 msgid "Live Data"
 msgstr ""
 
-#: ../plugins/live_data/live_data.py:49
+#: ../plugins/live_data/live_data.py:48
 msgid ""
 "View the most important live data like:\n"
 " *Fuel System\n"
@@ -7231,4 +7183,40 @@ msgstr ""
 
 #: ../plugins/live_data/live_data.py:312
 msgid "Protocol"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:10
+msgid "<b>OBD Designation</b>"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:11
+msgid "<b>Protocol</b>"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:12
+msgid "<b>System Info</b>"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:13
+msgid "<b>Trouble Codes</b>"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:17
+msgid "Coolant Temperature"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:18
+msgid "DeActivate all"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:21
+msgid "Engine load"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:26
+msgid "Manifold pressure"
+msgstr ""
+
+#: ../plugins/live_data/live_data.ui.h:38
+msgid "deactivate all sensors"
 msgstr ""

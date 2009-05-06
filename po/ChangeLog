@@ -1,3 +1,13 @@
+2009-05-06  Ben Van Mechelen  <me@benvm.be>
+
+	* POTFILES.in:
+	    trick intltool into thinking this is a glade file.
+	* es.po:
+	* garmon.pot:
+	* nl.po:
+	    updated
+	    
+
 2009-05-03  Ben Van Mechelen  <me@benvm.be>
 
 	* es.po:
