@@ -64,6 +64,7 @@ class DTCReader (gtk.VBox, Plugin):
         
         fname = os.path.join(self.dir, 'dtc_reader.ui')
         self._builder = gtk.Builder()
+        self._builder.set_translation_domain('garmon')
         self._builder.add_from_file(fname)
 
         self._dtc_info = DTCInfo(self._builder)

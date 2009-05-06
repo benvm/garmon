@@ -1,3 +1,13 @@
+2009-05-06  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
+	* plugins/dashboard/dashboard.py:
+	* plugins/dtc_reader/dtc_reader.py:
+	* plugins/freeze_frame_data/freeze_frame_data.py:
+	* plugins/live_data/live_data.py:
+	    Set translation domain for GtkBuilder; fix #7
+	
+
 2009-05-04  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/dtc_reader/dtc_reader.glade:

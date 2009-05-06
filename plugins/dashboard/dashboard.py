@@ -67,6 +67,7 @@ class DashBoard (gtk.VBox, Plugin):
 
         fname = os.path.join(self.dir, 'dashboard.ui')
         builder = gtk.Builder()
+        builder.set_translation_domain('garmon')
         builder.add_from_file(fname)
         app.prefs.add_dialog_page(builder, 'prefs-vbox', _('Dashboard'))
         

@@ -119,6 +119,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         gtk.window_set_default_icon_list(icon)
         
         self._builder = gtk.Builder()
+        self._builder.set_translation_domain('garmon')
         self._setup_prefs()
         
         self._backdoor = None
@@ -300,6 +301,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog.set_comments(_("Gtk OBD Car Monitor"))
         dialog.set_authors(["Ben Van Mechelen <me@benvm.be>"])
         dialog.set_license(gpl)
+        dialog.set_translator_credits(_("translator-credits"))
         
         ## Close dialog on user response
         dialog.connect ("response", lambda d, r: d.destroy())

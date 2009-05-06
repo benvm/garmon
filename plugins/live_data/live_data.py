@@ -95,6 +95,7 @@ class LiveData (gtk.VBox, Plugin):
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, 'live_data.ui')
         self._builder = gtk.Builder()
+        self._builder.set_translation_domain('garmon')
         self._builder.add_from_file(filename)
         
         main_hbox = self._builder.get_object('main_hbox')
