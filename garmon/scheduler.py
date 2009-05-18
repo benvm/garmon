@@ -38,7 +38,7 @@ from garmon.sensor import Command
 
 class QueueItem(str):
     def __init__(self, command):
-        str.__init__(self, command)
+        str.__init__(self)
         
         self.list = []
         
