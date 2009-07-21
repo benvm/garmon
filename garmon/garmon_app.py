@@ -201,22 +201,19 @@ class GarmonApp(gtk.Window, PropertyObject):
         self._prefs.register('plugins.start', True)
         self._prefs.register('plugins.saved', '')
         
-        fname = os.path.join(UI_DIR, 'prefs.ui')
+        fname = os.path.join(UI_DIR, 'general_prefs.ui')
         self._builder.add_from_file(fname)
         
         self._prefs.add_dialog_page(self._builder, 'general_prefs_vbox', _('General'))
         
+        fname = os.path.join(UI_DIR, 'device_prefs.ui')
+        self._builder.add_from_file(fname)
+        
         combo = self._builder.get_object('preference;combo;int;device.baudrate')
-        model = gtk.ListStore(gobject.TYPE_INT)
-        for item in baudrates:
-            model.append((item,))
-        combo.set_model(model)
-
-        combo = self._builder.get_object('preference;combo;int;device.higher-baudrate')
-        model = gtk.ListStore(gobject.TYPE_INT)
-        for item in higher_rates:
-            model.append((item,))
-        combo.set_model(model)
+        cell = gtk.CellRendererText()
+        combo.pack_start(cell, True)
+        combo.add_attribute(cell, 'text', 0)
+        model = self._builder.get_object('baudrate_store')
         
         self._prefs.add_dialog_page(self._builder, 'device_prefs_vbox', _('Device'))
         cb_id = self._prefs.add_watch('device.portname', self._notify_port_cb)

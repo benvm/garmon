@@ -1,3 +1,11 @@
+2009-07-21  Ben Van Mechelen  <me@benvm.be>
+
+	* data/device_prefs.ui:
+	* data/general_prefs.ui:
+	* data/prefs.ui:
+	* garmon/garmon_app.py:
+	    No baudrates are shown in the combobox; fix #8
+
 2009-05-18  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/scheduler.py:
