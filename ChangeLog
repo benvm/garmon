@@ -1,3 +1,12 @@
+2009-12-01  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/Makefile.am:
+	* plugins/dashboardcairo/Makefile.am:
+	* plugins/dashboardcairo/dashboard.ui:
+	* plugins/dashboardcairo/dashboardcairo.py:
+		Create a new dashboard plugin that will use cairo
+			
+
 2009-07-21  Ben Van Mechelen  <me@benvm.be>
 
 	* data/device_prefs.ui:
