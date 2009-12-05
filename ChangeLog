@@ -1,3 +1,21 @@
+2009-12-05  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/dashboardcairo/Makefile.am:
+	* plugins/dashboardcairo/dashboard.ui:
+	* plugins/dashboardcairo/dashboardcairo.py:
+	    So far the gauges are showing but marks are still missing
+	* plugins/dashboardcairo/themes/Makefile.am:
+	* plugins/dashboardcairo/themes/default/Makefile.am:
+	* plugins/dashboardcairo/themes/default/backplate-shadow.svg:
+	* plugins/dashboardcairo/themes/default/backplate.svg:
+	* plugins/dashboardcairo/themes/default/centric-needle-shadow.svg:
+	* plugins/dashboardcairo/themes/default/centric-needle.svg:
+	* plugins/dashboardcairo/themes/default/excentric-needle.svg:
+	* plugins/dashboardcairo/themes/default/glass.svg:
+	* plugins/dashboardcairo/themes/default/rim.svg:
+	    Created a default theme
+	    
+
 2009-12-01  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/Makefile.am:

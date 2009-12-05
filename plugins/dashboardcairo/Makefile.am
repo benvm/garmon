@@ -6,3 +6,5 @@ dashboardcairo_PYTHON = \
 
 ## File created by the gnome-build tools
 
+SUBDIRS = themes
+
