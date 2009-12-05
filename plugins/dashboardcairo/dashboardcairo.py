@@ -23,6 +23,10 @@
 #   Boston, MA  02110-1301, USA.
 
 
+# A lot of the cairo ideas and graphics for the default theme come 
+# from Maclow's Cairo Clock. http://macslow.thepimp.net/cairo-clock
+
+
 import os
 import math
 from gettext import gettext as _

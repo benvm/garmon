@@ -1,5 +1,11 @@
 2009-12-05  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/dashboardcairo/dashboardcairo.py:
+	    Give credit to Maclow for the code from his Cairo Clock
+	
+
+2009-12-05  Ben Van Mechelen  <me@benvm.be>
+
 	* plugins/dashboardcairo/Makefile.am:
 	* plugins/dashboardcairo/dashboard.ui:
 	* plugins/dashboardcairo/dashboardcairo.py:
