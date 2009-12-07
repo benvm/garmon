@@ -1,3 +1,10 @@
+2009-12-08  Ben Van Mechelen  <me@benvm.be>
+
+	* scripts/elm_sim.py:
+	    Add possibility to specify a port on the command line
+	    + some minor improvements
+	
+
 2009-12-07  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/dashboardcairo/dashboardcairo.py:

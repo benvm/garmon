@@ -19,13 +19,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
 
 
+import sys
 import serial
 
+DEFAULT_PORT = '/dev/ttyUSB1'
 
-commands = {'atz' : 'ELM327 v1.2',
-            'ate0' : 'OK',
-            'atrv' : '12.4V',
-            'atdp' : 'Some Protocol',
+
+commands = {'ATZ' : 'ELM327 v1.2',
+            'ATE0' : 'OK',
+            'ATRV' : '12.4V',
+            'ATDP' : 'Some Protocol',
+            'ATH0' : 'OK',
+            'ATH1' : 'OK',
             '0100' : '41 00 FFFFFFFF',
             '0120' : '41 00 00000000',
             '0101' : '41 01 82 07 65 04',
@@ -100,10 +105,12 @@ commands = {'atz' : 'ELM327 v1.2',
                         
                      }
                       
-alternate_commands = {'atz' : 'ELM327 v1.2',
-            'ate0' : 'OK',
-            'atrv' : '14.0V',
-            'atdp' : 'other Protocol',
+alternate_commands = {'ATZ' : 'ELM327 v1.2',
+            'ATE0' : 'OK',
+            'ATRV' : '12.4V',
+            'ATDP' : 'Some Protocol',
+            'ATH0' : 'OK',
+            'ATH1' : 'OK',
             '0100' : '41 00 FFFFFFFF',
             '0120' : '41 00 00180000',
             '0101' : '41 01 82 07 65 04',
@@ -162,7 +169,8 @@ class ElmSimulator(object):
         
         except serial.SerialException, e:
             print 'Failed to open serial port: %s' % port
-            print e
+            raise
+            
             
             
     def start(self):
@@ -183,6 +191,7 @@ class ElmSimulator(object):
                     buf = buf + ch
                         
             print 'received %s' % buf
+            buf = buf.upper()
             
             self.port.flushOutput()
             self.port.flushInput()
@@ -204,14 +213,20 @@ class ElmSimulator(object):
             else:
                 print 'unknown command'
                 self.port.write('?\r\r>')
-                
-                
+
+
+
 if __name__ == "__main__":
-    sim = ElmSimulator('/dev/ttyUSB1')
+    try:
+        port = sys.argv[1]
+    except IndexError:
+        print 'No port specified'
+        port = DEFAULT_PORT
+    print 'trying port: %s' % port
+    try:
+        sim = ElmSimulator(port)
+    except:
+        sys.exit(2)
     sim.start()
     
     
-        
-        
-    
-            
