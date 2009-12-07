@@ -389,10 +389,10 @@ class Gauge (gtk.EventBox, StateMixin, UnitMixin,
 
 
     def _notify_active_cb(self, o, pspec):
-        logger.debug('in _notify_active_cb')
+        logger.debug('in _notify_active_cb: %s' % self.sensor.command)
         self._draw_area.set_sensitive(self.active)
-        if self.active:
-            self._draw()
+        #if self.active:
+        #    self._draw()
         self.emit('active-changed', self.active)
 
     
@@ -402,8 +402,10 @@ class Gauge (gtk.EventBox, StateMixin, UnitMixin,
 
 
     def _sensor_data_changed_cb(self, sensor, data):
+        logger.debug('in _sensor_data_changed: %s' % self.sensor.command)
         self._value = eval(self.sensor.metric_value)
-        self._draw()
+        window = self._draw_area.window
+        window.invalidate_rect(self._draw_area.allocation, False)
            
                
     def _set_default_values(self):
@@ -488,12 +490,11 @@ class Gauge (gtk.EventBox, StateMixin, UnitMixin,
 
 
     def update_theme (self, theme):
-        logger.debug('in _update_theme: %s' % self.sensor.command)
+        logger.debug('in update_theme: %s' % self.sensor.command)
         self._theme = theme
         self._surfaces_need_update = True
         window = self._draw_area.window
-        window.invalidate_rect(window.allocation, False)
-        window.process_updates()
+        window.invalidate_rect(self._draw_area.allocation, False)
         
 
     def idle (self) :
@@ -519,23 +520,25 @@ class ExCentricGauge (Gauge) :
         
         
     def _draw_needle(self):
-        logger.debug('in _update_theme: %s' % self.sensor.command)
+        logger.debug('in _draw_needle: %s' % self.sensor.command)
         
         angle_range = self.max_angle - self.min_angle
         value_range = self.max_value - self.min_value
-        value = self._value
+        value = float(self._value)
         if value < self.min_value:
             value = self.min_value
         if value > self.max_value:
             value = self.max_value
         angle = (value - self.min_value) / value_range * angle_range + self.min_angle
+        rad = math.radians(angle)
+        logger.debug('drawing needle for value: %s ; Angle: %s(%s)' % (value, angle, rad))
     
         self._main_context.save()
         self._main_context.scale(1.0 * self._width / self._theme.width, 
                                  1.0 * self._height / self._theme.height)
         self._main_context.translate(self._needle_x, self._needle_y)
         
-        self._main_context.rotate(math.radians(angle)) 
+        self._main_context.rotate(rad) 
         self._theme.excentric_needle.render_cairo(self._main_context)
         
         self._main_context.restore()
@@ -562,11 +565,11 @@ class CentricGauge (Gauge) :
         self.min_value = 0.0
         self.idle_value = 0.0
         self.max_angle = 50.0
-        self.min_angle = 130.0
+        self.min_angle = -230.0
         
         
     def _draw_needle(self):
-        logger.debug('in _update_theme: %s' % self.sensor.command)
+        logger.debug('in _draw_needle: %s' % self.sensor.command)
         
         angle_range = self.max_angle - self.min_angle
         value_range = self.max_value - self.min_value
@@ -576,13 +579,15 @@ class CentricGauge (Gauge) :
         if value > self.max_value:
             value = self.max_value
         angle = (value - self.min_value) / value_range * angle_range + self.min_angle
-    
+        rad = math.radians(angle)
+        logger.debug('drawing needle for value: %s ; Angle: %s(%s)' % (value, angle, rad))
+        
         self._main_context.save()
         self._main_context.scale(1.0 * self._width / self._theme.width, 
                                  1.0 * self._height / self._theme.height)
         self._main_context.translate(self._needle_x, self._needle_y)
         
-        self._main_context.rotate(math.radians(angle)) 
+        self._main_context.rotate(rad) 
         self._theme.centric_needle.render_cairo(self._main_context)
         
         self._main_context.restore()

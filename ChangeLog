@@ -1,3 +1,9 @@
+2009-12-07  Ben Van Mechelen  <me@benvm.be>
+
+	* plugins/dashboardcairo/dashboardcairo.py:
+	    Showing the needles in the correct position
+	
+
 2009-12-05  Ben Van Mechelen  <me@benvm.be>
 
 	* plugins/dashboardcairo/dashboardcairo.py:
