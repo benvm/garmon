@@ -199,7 +199,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         self._prefs.register('imperial', False)
         self._prefs.register('plugins.save', True)
         self._prefs.register('plugins.start', True)
-        self._prefs.register('plugins.saved', '')
+        self._prefs.register('plugins.saved', 'Live Data,DTC Reader,DTC Clearer')
         
         fname = os.path.join(UI_DIR, 'general_prefs.ui')
         self._builder.add_from_file(fname)

@@ -1,3 +1,9 @@
+2010-01-03  Ben Van Mechelen  <me@benvm.be>
+
+	* garmon/garmon_app.py:
+	    Load some default plugins when there is no config file. Fixes #9
+	
+
 2009-12-08  Ben Van Mechelen  <me@benvm.be>
 
 	* scripts/elm_sim.py:
