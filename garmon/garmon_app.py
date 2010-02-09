@@ -48,6 +48,12 @@ from garmon.scheduler import Scheduler, SchedulerTimer
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.backdoor import BackDoor
 
+GTK_RECOMMENDED = (2,16,0)
+GTK_VERSION = gtk.ver
+if GTK_VERSION < GTK_RECOMMENDED:
+    logger.warning('Recommended version of pygtk is %s, but found %s' % (GTK_RECOMMENDED, GTK_VERSION))
+    logger.warning('Expect warning messages from UI Builder')
+
 ui_info = \
 '''<ui>
   <menubar name='MenuBar'>

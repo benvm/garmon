@@ -1,5 +1,18 @@
 2010-02-09  Ben Van Mechelen  <me@benvm.be>
 
+	* plugins/freeze_frame_data/freeze_frame_data.ui
+	* plugins/dashboardcairo/dashboard.ui
+	* plugins/dashboard/dashboard.ui
+	* plugins/live_data/live_data.ui
+	* plugins/dtc_reader/dtc_reader.ui
+	* garmon/garmon_app.py
+	* data/general_prefs.ui
+	* data/device_prefs.ui
+	    Removed 'requires' tag so older pygtk version don't complain
+
+
+2010-02-09  Ben Van Mechelen  <me@benvm.be>
+
         * plugins/dashboardcairo/themes/default/Makefile.am
 	* garmon/garmon
 	* garmon/garmon.in
