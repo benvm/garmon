@@ -31,7 +31,8 @@ garmon_pixmaps_DATA = \
 
 uidir = $(UIDIR)
 
-ui_DATA = prefs.ui
+ui_DATA = general_prefs.ui \
+          device_prefs.ui
 	
 			
 EXTRA_DIST = $(Accessories_in_files) \

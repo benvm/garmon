@@ -1,3 +1,13 @@
+2010-02-09  Ben Van Mechelen  <me@benvm.be>
+
+        * plugins/dashboardcairo/themes/default/Makefile.am
+	* garmon/garmon
+	* garmon/garmon.in
+	* configure.ac
+	* data/Makefile.am
+	    Fix errors in automake system
+
+
 2010-01-03  Ben Van Mechelen  <me@benvm.be>
 
 	* garmon/garmon_app.py:

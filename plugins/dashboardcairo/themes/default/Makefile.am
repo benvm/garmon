@@ -1,13 +1,12 @@
-defaultthemedir = $(dashboardcairodir)/themes/default
+defaultthemedir = $(PLUGINDIR)/dashboardcairo/themes/default
 
 defaulttheme_DATA =	    \
-	    backplate-shadow.svg	    \
-	    backplate.svg		    \
-	    rim.svg		    \
-	    glass.svg		    \
-	    needle-shadow.svg    \
-	    centric-needle.svg	    \
-        excentric-needle    \
-        needle-shadow.svg
+	    backplate.svg	    \
+	    backplate-shadow.svg		    \
+	    centric-needle.svg		    \
+	    centric-needle-shadow.svg    \
+	    excentric-needle.svg	    \
+            glass.svg			\
+            rim.svg
 
 EXTRA_DIST = $(defaulttheme_DATA)
