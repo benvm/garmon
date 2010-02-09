@@ -1,5 +1,0 @@
-name = garmon
-[Execute]
-controller = GENERIC_EXECUTION
-default = True
-command = python src/garmon.py

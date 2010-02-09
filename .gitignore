@@ -1,14 +1,8 @@
 .anjuta
 .tm_project*
-.libs
-.deps
-.*swp
-.nautilus-metafile.xml
 *.autosave
-*.pws
 *.bak
 *~
-#*#
 *.gladep
 *.la
 *.lo
@@ -35,3 +29,10 @@ config.guess
 config.sub
 Makefile
 Makefile.in
+
+data/garmon.desktop.in
+garmon/defs.py
+garmon/garmon
+po/Makefile.in.in
+po/POTFILES
+po/stamp-it
