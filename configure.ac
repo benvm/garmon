@@ -45,9 +45,6 @@ data/Makefile
 data/garmon.desktop.in
 plugins/Makefile
 plugins/dashboard/Makefile
-plugins/dashboardcairo/Makefile
-plugins/dashboardcairo/themes/Makefile
-plugins/dashboardcairo/themes/default/Makefile
 plugins/dtc_clearer/Makefile
 plugins/dtc_reader/Makefile
 plugins/live_data/Makefile
