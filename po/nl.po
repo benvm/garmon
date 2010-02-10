@@ -1,21 +1,20 @@
 # Dutch translation of garmon.
-# Copyright (C) 2009 Ben Van Mechelen
+# Copyright (C) 2009-2010 Ben Van Mechelen
 # This file is distributed under the same license as the garmon package.
-# Ben Van Mechelen <me@benvm.be>, 2009.
 # , fuzzy
-#
-#
+# Ben Van Mechelen <me@benvm.be>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: garmon 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-06 19:49+0200\n"
-"PO-Revision-Date: 2009-05-05 20:30+0200\n"
+"POT-Creation-Date: 2010-02-10 02:05+0100\n"
+"PO-Revision-Date: 2010-02-10 02:34+0100\n"
 "Last-Translator: Ben Van Mechelen <me@benvm.be>\n"
 "Language-Team: Dutch <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
 
 #: ../data/garmon.desktop.in.in.h:1
 msgid "Connect to an ELM based OBD tool"
@@ -29,55 +28,55 @@ msgstr "Garmon"
 msgid "OBD Scanner"
 msgstr "OBD Scanner"
 
-#: ../data/prefs.ui.h:1
-msgid "\"OFF\" color"
-msgstr "\"UIT\" kleur"
-
-#: ../data/prefs.ui.h:2
-msgid "\"ON\" color"
-msgstr "\"AAN\"-kleur"
-
-#: ../data/prefs.ui.h:3
+#: ../data/device_prefs.ui.h:1
 msgid "<b>Baudrate:</b>"
 msgstr "<b>Baudrate:</b>"
 
-#: ../data/prefs.ui.h:4
-msgid "<b>Malfunction Indicator Light:</b>"
-msgstr "<b>Storingsindicatielampje</b>"
-
-#: ../data/prefs.ui.h:5
-msgid "<b>Plugin Manager:</b>"
-msgstr "<b>Plugin Beheer:</b>"
-
-#: ../data/prefs.ui.h:6
+#: ../data/device_prefs.ui.h:2
 msgid "<b>Portname:</b>"
 msgstr "<b>Poortnaam:</b>"
 
-#: ../data/prefs.ui.h:7
-msgid "<b>Units:</b>"
-msgstr "<b>Eenheden:</b>"
-
-#: ../data/prefs.ui.h:8
-msgid "Imperial"
-msgstr "Imperiaal"
-
-#: ../data/prefs.ui.h:9
+#: ../data/device_prefs.ui.h:3
 msgid "Increase baudrate after connection: "
 msgstr "Verhoog baudrate na verbinden"
 
-#: ../data/prefs.ui.h:10
+#: ../data/device_prefs.ui.h:4
 msgid "Initial Baudrate: "
 msgstr "Initiële baudrate"
 
-#: ../data/prefs.ui.h:11
+#: ../data/general_prefs.ui.h:1
+msgid "\"OFF\" color"
+msgstr "\"UIT\" kleur"
+
+#: ../data/general_prefs.ui.h:2
+msgid "\"ON\" color"
+msgstr "\"AAN\"-kleur"
+
+#: ../data/general_prefs.ui.h:3
+msgid "<b>Malfunction Indicator Light:</b>"
+msgstr "<b>Storingsindicatielampje</b>"
+
+#: ../data/general_prefs.ui.h:4
+msgid "<b>Plugin Manager:</b>"
+msgstr "<b>Plugin Beheer:</b>"
+
+#: ../data/general_prefs.ui.h:5
+msgid "<b>Units:</b>"
+msgstr "<b>Eenheden:</b>"
+
+#: ../data/general_prefs.ui.h:6
+msgid "Imperial"
+msgstr "Imperiaal"
+
+#: ../data/general_prefs.ui.h:7
 msgid "Load saved plugins  when program starts"
 msgstr "Laad opgeslagen plugins bij opstarten"
 
-#: ../data/prefs.ui.h:12
+#: ../data/general_prefs.ui.h:8
 msgid "Metric"
 msgstr "Metrisch"
 
-#: ../data/prefs.ui.h:13
+#: ../data/general_prefs.ui.h:9
 msgid "Save active plugins on exit"
 msgstr "Sla actieve plugins op bij afsluiten"
 
@@ -85,112 +84,112 @@ msgstr "Sla actieve plugins op bij afsluiten"
 msgid "Python Shell. Inspect Garmons internals."
 msgstr "Python shell: Inspecteer Garmon's werking"
 
-#: ../garmon/garmon_app.py:206
+#: ../garmon/garmon_app.py:213
 msgid "General"
 msgstr "Algemeen"
 
-#: ../garmon/garmon_app.py:220
+#: ../garmon/garmon_app.py:224
 msgid "Device"
 msgstr "Apparaat"
 
-#: ../garmon/garmon_app.py:229
+#: ../garmon/garmon_app.py:233
 msgid "_File"
 msgstr "_Bestand"
 
 #. name, stock id, label
-#: ../garmon/garmon_app.py:230
+#: ../garmon/garmon_app.py:234
 msgid "_Edit"
 msgstr "B_ewerk"
 
-#: ../garmon/garmon_app.py:231
+#: ../garmon/garmon_app.py:235
 msgid "_View"
 msgstr "Bee_ld"
 
-#: ../garmon/garmon_app.py:232 ../garmon/garmon_app.py:255
+#: ../garmon/garmon_app.py:236 ../garmon/garmon_app.py:259
 msgid "_Monitor"
 msgstr "_Monitor"
 
-#: ../garmon/garmon_app.py:233
+#: ../garmon/garmon_app.py:237
 msgid "_Device"
 msgstr "A_pparaat"
 
-#: ../garmon/garmon_app.py:234
+#: ../garmon/garmon_app.py:238
 msgid "_Help"
 msgstr "_Hulp"
 
-#: ../garmon/garmon_app.py:236
+#: ../garmon/garmon_app.py:240
 msgid "_Quit"
 msgstr "_Afsluiten"
 
-#: ../garmon/garmon_app.py:237
+#: ../garmon/garmon_app.py:241
 msgid "Quit"
 msgstr "Afsluiten"
 
-#: ../garmon/garmon_app.py:239
+#: ../garmon/garmon_app.py:243
 msgid "_About"
 msgstr "_Over"
 
-#: ../garmon/garmon_app.py:240
+#: ../garmon/garmon_app.py:244
 msgid "About"
 msgstr "Over"
 
-#: ../garmon/garmon_app.py:242
+#: ../garmon/garmon_app.py:246
 msgid "_Preferences"
 msgstr "_Voorkeuren"
 
-#: ../garmon/garmon_app.py:243
+#: ../garmon/garmon_app.py:247
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: ../garmon/garmon_app.py:245
+#: ../garmon/garmon_app.py:249
 msgid "P_lugins"
 msgstr "_Plugins"
 
-#: ../garmon/garmon_app.py:246
+#: ../garmon/garmon_app.py:250
 msgid "Plugin Manager"
 msgstr "Plugin Beheer"
 
-#: ../garmon/garmon_app.py:248
+#: ../garmon/garmon_app.py:252
 msgid "_Reset"
 msgstr "_Reset"
 
-#: ../garmon/garmon_app.py:249
+#: ../garmon/garmon_app.py:253
 msgid "Reset Device"
 msgstr "Reset Apparaat"
 
-#: ../garmon/garmon_app.py:256
+#: ../garmon/garmon_app.py:260
 msgid "Monitoring"
 msgstr "Monitoren"
 
-#: ../garmon/garmon_app.py:259
+#: ../garmon/garmon_app.py:263
 msgid "_Full Screen"
 msgstr "_Volledig Scherm"
 
-#: ../garmon/garmon_app.py:260
+#: ../garmon/garmon_app.py:264
 msgid "Full Screen"
 msgstr "Volledig Scherm"
 
-#: ../garmon/garmon_app.py:263
+#: ../garmon/garmon_app.py:267
 msgid "_Python Shell"
 msgstr "_Python Shell"
 
-#: ../garmon/garmon_app.py:264
+#: ../garmon/garmon_app.py:268
 msgid "Show/Hide Python Shell"
 msgstr "Toon/Verberg Python Shell"
 
-#: ../garmon/garmon_app.py:300
+#: ../garmon/garmon_app.py:304
 msgid "Gtk OBD Car Monitor"
 msgstr "GTK OBD Car Monitor"
 
-#: ../garmon/garmon_app.py:303
+#: ../garmon/garmon_app.py:307
 msgid "translator-credits"
 msgstr "Ben Van Mechelen <me@benvm.be>"
 
-#: ../garmon/garmon_app.py:314
+#: ../garmon/garmon_app.py:318
 msgid "Do You Really want to quit?"
 msgstr "Weet U zeker dat U wil afsluiten"
 
-#: ../garmon/garmon_app.py:373
+#: ../garmon/garmon_app.py:377
 msgid "Please make sure the device is connected and your settings are correct"
 msgstr "Zorg er alstublieft voor dat het apparaat is aangesloten"
 
@@ -1073,47 +1072,40 @@ msgid "Fuel Temperature Sensor B Circuit Intermittent"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:221
-#, fuzzy
 msgid "Fuel Rail Pressure Sensor Circuit"
-msgstr "Druk Brandstofrail"
+msgstr "Brandstofrail Druksensor Circuit"
 
 #: ../garmon/trouble_codes.py:222
 msgid "Fuel Rail Pressure Sensor Circuit Range/Performance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:223
-#, fuzzy
 msgid "Fuel Rail Pressure Sensor Circuit Low"
-msgstr "Druk Brandstofrail"
+msgstr "Brandstofrail Druksensor laag"
 
 #: ../garmon/trouble_codes.py:224
-#, fuzzy
 msgid "Fuel Rail Pressure Sensor Circuit High"
-msgstr "Druk Brandstofrail"
+msgstr "Brandstofrail Druksensor hoog"
 
 #: ../garmon/trouble_codes.py:225
-#, fuzzy
 msgid "Fuel Rail Pressure Sensor Circuit Intermittent"
-msgstr "Druk Brandstofrail (diesel)"
+msgstr ""
 
 #: ../garmon/trouble_codes.py:226
-#, fuzzy
 msgid "Engine Oil Temperature Sensor"
-msgstr "temperatuur koelvloeistof"
+msgstr "Temperatuursensor Motorolie"
 
 #: ../garmon/trouble_codes.py:227
 msgid "Engine Oil Temperature Sensor Range/Performance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:228
-#, fuzzy
 msgid "Engine Oil Temperature Sensor Low"
-msgstr "temperatuur koelvloeistof"
+msgstr "Motorolie Temperatuursensor laag"
 
 #: ../garmon/trouble_codes.py:229
-#, fuzzy
 msgid "Engine Oil Temperature Sensor High"
-msgstr "temperatuur koelvloeistof"
+msgstr "Motorolie Temperatuursensor hoog"
 
 #: ../garmon/trouble_codes.py:230
 msgid "Engine Oil Temperature Sensor Intermittent"
@@ -1188,9 +1180,8 @@ msgid "Injector/Injection Timing Control Circuit"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:248
-#, fuzzy
 msgid "Engine Coolant Over Temperature Condition"
-msgstr "temperatuur koelvloeistof"
+msgstr "Koelvloeistof Overtemperatuur"
 
 #: ../garmon/trouble_codes.py:249
 msgid "Transmission Fluid Over Temperature Condition"
@@ -1515,14 +1506,12 @@ msgid "Cylinder 12 Contribution/Balance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:328
-#, fuzzy
 msgid "Vehicle Overspeed Condition"
-msgstr "Snelheid"
+msgstr ""
 
 #: ../garmon/trouble_codes.py:329
-#, fuzzy
 msgid "Engine Oil Over Temperature"
-msgstr "temperatuur koelvloeistof"
+msgstr "Motorolie Overtemperatuur"
 
 #: ../garmon/trouble_codes.py:330
 msgid "Turbo/Super Charger Underboost"
@@ -1765,9 +1754,8 @@ msgid "Misfire Detected - Fueling Disabled"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:395
-#, fuzzy
 msgid "Reserved"
-msgstr "Herlees"
+msgstr "Gereserveerd"
 
 #: ../garmon/trouble_codes.py:396 ../garmon/trouble_codes.py:421
 msgid "Camshaft Position Sensor 'B' Circuit"
@@ -1906,9 +1894,8 @@ msgid "Exhaust Gas Recirculation Sensor 'A' Circuit"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:436
-#, fuzzy
 msgid "Secondary Air Injection System"
-msgstr "Tweede Lucht Status"
+msgstr "Tweede Luchtinjectie Systeem"
 
 #: ../garmon/trouble_codes.py:437
 msgid "Secondary Air Injection System Incorrect Flow Detected"
@@ -1967,22 +1954,20 @@ msgid "Heated Catalyst Temperature Below Threshold"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:451 ../garmon/trouble_codes.py:461
-#, fuzzy
 msgid "Catalyst Temperature Sensor"
-msgstr "Temperatuur Koelvloeistof"
+msgstr "Katalysator Temperatuur Sensor"
 
 #: ../garmon/trouble_codes.py:452 ../garmon/trouble_codes.py:462
 msgid "Catalyst Temperature Sensor Range/Performance"
-msgstr ""
+msgstr "Katalysator Temperatuur Sensor Bereik/Prestatie"
 
 #: ../garmon/trouble_codes.py:453 ../garmon/trouble_codes.py:463
-#, fuzzy
 msgid "Catalyst Temperature Sensor Low"
-msgstr "Temperatuur Koelvloeistof"
+msgstr "Katalysator Temperatuur Sensor Laag"
 
 #: ../garmon/trouble_codes.py:454 ../garmon/trouble_codes.py:464
 msgid "Catalyst Temperature Sensor High"
-msgstr ""
+msgstr "Katalysator Temperatuur Sensor Hoog"
 
 #: ../garmon/trouble_codes.py:455 ../garmon/trouble_codes.py:465
 msgid "Catalyst Heater Control Circuit"
@@ -2225,17 +2210,16 @@ msgid "Evaporative Emission System Vent Valve Control Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:526
-#, fuzzy
 msgid "Vehicle Speed Sensor 'A'"
-msgstr "Snelheid"
+msgstr "Snelheid Sensor 'A'"
 
 #: ../garmon/trouble_codes.py:527
 msgid "Vehicle Speed Sensor 'A' Range/Performance"
-msgstr ""
+msgstr "Snelheid Sensor 'A' Bereik/Prestatie"
 
 #: ../garmon/trouble_codes.py:528
 msgid "Vehicle Speed Sensor 'A' Circuit Low Input"
-msgstr ""
+msgstr "Snelheid Sensor 'A' Ingang Laag"
 
 #: ../garmon/trouble_codes.py:529
 msgid "Vehicle Speed Sensor 'A' Intermittent/Erratic/High"
@@ -2266,9 +2250,8 @@ msgid "Idle Air Control System Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:536
-#, fuzzy
 msgid "Closed Throttle Position Switch"
-msgstr "Positie Gasklep"
+msgstr "Gasklep Positieschakelaar Gesloten"
 
 #: ../garmon/trouble_codes.py:537
 msgid "Idle Air Control Circuit"
@@ -2323,9 +2306,8 @@ msgid "Engine Oil Pressure Sensor/Switch High Voltage"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:550
-#, fuzzy
 msgid "Engine Oil Pressure Too Low"
-msgstr "Druk Brandstofrail"
+msgstr "Motorolie Druk te laag"
 
 #: ../garmon/trouble_codes.py:551
 msgid "Cruise Control Servo Control Circuit Range/Performance"
@@ -2463,19 +2445,16 @@ msgid "System Voltage"
 msgstr "Systeemspanning"
 
 #: ../garmon/trouble_codes.py:587
-#, fuzzy
 msgid "System Voltage Unstable"
-msgstr "Systeemspanning"
+msgstr "Systeemspanning Instabiel"
 
 #: ../garmon/trouble_codes.py:588
-#, fuzzy
 msgid "System Voltage Low"
-msgstr "Systeemspanning"
+msgstr "Systeemspanning Laag"
 
 #: ../garmon/trouble_codes.py:589
-#, fuzzy
 msgid "System Voltage High"
-msgstr "Systeemspanning"
+msgstr "Systeemspanning Hoog"
 
 #: ../garmon/trouble_codes.py:590
 msgid "Cruise Control Multi-Function Input 'A' Circuit"
@@ -2818,9 +2797,8 @@ msgid "Speed Control Lamp Control Circuit"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:676
-#, fuzzy
 msgid "Malfunction Indicator Lamp (MIL) Control Circuit"
-msgstr "Storingsindicatielampje"
+msgstr "Storingsindicatielampje Controle Circuit"
 
 #: ../garmon/trouble_codes.py:677
 msgid "Sensor Reference Voltage 'B' Circuit/Open"
@@ -3327,9 +3305,8 @@ msgid "Pressure Control Solenoid 'B' Intermittent"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:806
-#, fuzzy
 msgid "Shift Error"
-msgstr "EGR fout"
+msgstr "schakelfout"
 
 #: ../garmon/trouble_codes.py:807
 msgid "1-2 Shift"
@@ -3676,19 +3653,16 @@ msgid "TCM Communication Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:893
-#, fuzzy
 msgid "Transmission Fluid Pressure"
-msgstr "Spruitstuk Druk"
+msgstr "Transmissie Vloeistofdruk"
 
 #: ../garmon/trouble_codes.py:894
-#, fuzzy
 msgid "Transmission Fluid Pressure Low"
-msgstr "Spruitstuk Druk"
+msgstr "Transmissie Vloeistofdruk Laag"
 
 #: ../garmon/trouble_codes.py:895
-#, fuzzy
 msgid "Transmission Fluid Pressure High"
-msgstr "Spruitstuk Druk"
+msgstr "Transmissie Vloeistofdruk Hoog"
 
 #: ../garmon/trouble_codes.py:896
 msgid "Transmission Fluid Pressure Sensor/Switch 'C' Circuit"
@@ -3979,9 +3953,8 @@ msgid "Hydraulic Oil Temperature Sensor Circuit Intermittent"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:968
-#, fuzzy
 msgid "Hydraulic Pressure Unit"
-msgstr "Druk Brandstofrail"
+msgstr "Hydraulische drukeenheid"
 
 #: ../garmon/trouble_codes.py:969
 msgid "Hydraulic Pressure Unit Cycling Period Too Short"
@@ -4811,17 +4784,16 @@ msgid "Fuel Injector Group 'D' Supply Voltage Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1211
-#, fuzzy
 msgid "Vehicle Speed Sensor 'B'"
-msgstr "Snelheid"
+msgstr "Snelheid Sensor 'B'"
 
 #: ../garmon/trouble_codes.py:1212
 msgid "Vehicle Speed Sensor 'B' Range/Performance"
-msgstr ""
+msgstr "Snelheid Sensor 'B' Bereik/Prestatie"
 
 #: ../garmon/trouble_codes.py:1213
 msgid "Vehicle Speed Sensor 'B' Circuit Low"
-msgstr ""
+msgstr "Snelheid Sensor 'B' Laag"
 
 #: ../garmon/trouble_codes.py:1214
 msgid "Vehicle Speed Sensor 'B' Intermittent/Erratic"
@@ -4900,23 +4872,20 @@ msgid "Cooling System Performance"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1235
-#, fuzzy
 msgid "Engine Coolant Temperature Sensor 2 Circuit"
-msgstr "temperatuur koelvloeistof"
+msgstr "Koelvloeistof Temperatuur Circuit 2"
 
 #: ../garmon/trouble_codes.py:1236
 msgid "Engine Coolant Temperature Sensor 2 Circuit Range/Performance"
-msgstr ""
+msgstr "Koelvloeistof Temperatuur Circuit 2 Bereik/Prestatie"
 
 #: ../garmon/trouble_codes.py:1237
-#, fuzzy
 msgid "Engine Coolant Temperature Sensor 2 Circuit Low"
-msgstr "temperatuur koelvloeistof"
+msgstr "Koelvloeistof Temperatuur Circuit 2 Hoog"
 
 #: ../garmon/trouble_codes.py:1238
-#, fuzzy
 msgid "Engine Coolant Temperature Sensor 2 Circuit High"
-msgstr "temperatuur koelvloeistof"
+msgstr "Koelvloeistof Temperatuur Circuit 2 Hoog"
 
 #: ../garmon/trouble_codes.py:1239
 msgid "Engine Coolant Temperature Sensor 2 Circuit Intermittent/Erratic"
@@ -4955,9 +4924,8 @@ msgid "Intake Air Temperature Sensor 1 / 2 Correlation"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1253 ../garmon/trouble_codes.py:1266
-#, fuzzy
 msgid "NOx Sensor Circuit"
-msgstr "Aanwezige lambdasondes"
+msgstr "NOx Sensor Circuit"
 
 #: ../garmon/trouble_codes.py:1254 ../garmon/trouble_codes.py:1267
 msgid "NOx Sensor Circuit Range/Performance"
@@ -5138,9 +5106,8 @@ msgid "O2 Sensor Signals Swapped Bank 1 Sensor 3 / Bank 2 Sensor 3"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1332
-#, fuzzy
 msgid "Intake Air System Leak"
-msgstr "Inlaatlucht Temperatuur"
+msgstr "Inlaatlucht Lek"
 
 #: ../garmon/trouble_codes.py:1333
 msgid "Air Flow Restriction / Air Leak Between Air Filter and MAF"
@@ -5571,19 +5538,16 @@ msgid "Generator Lamp/L-Terminal Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1451
-#, fuzzy
 msgid "Charging System Voltage"
-msgstr "Systeemspanning"
+msgstr "Laadsysteem Spanning"
 
 #: ../garmon/trouble_codes.py:1452
-#, fuzzy
 msgid "Charging System Voltage Low"
-msgstr "Systeemspanning"
+msgstr "Laadsysteem Spanning Laag"
 
 #: ../garmon/trouble_codes.py:1453
-#, fuzzy
 msgid "Charging System Voltage High"
-msgstr "Systeemspanning"
+msgstr "Laadsysteem Spanning Laag"
 
 #: ../garmon/trouble_codes.py:1454
 msgid "ECM/PCM Power Input Signal"
@@ -5806,9 +5770,8 @@ msgid "Engine Coolant Level Sensor/Switch Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1509
-#, fuzzy
 msgid "Engine Coolant Level Low"
-msgstr "temperatuur koelvloeistof"
+msgstr "Koelvloeistof Laag Niveau"
 
 #: ../garmon/trouble_codes.py:1510
 msgid "A/C Control Module Requested MIL Illumination"
@@ -5966,19 +5929,16 @@ msgid "Crankshaft Position Signal Output Circuit High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1547
-#, fuzzy
 msgid "Throttle Position Output Circuit/Open"
-msgstr "Positie Gasklep"
+msgstr "Positie Gasklep Circuit Open"
 
 #: ../garmon/trouble_codes.py:1548
-#, fuzzy
 msgid "Throttle Position Output Circuit Low"
-msgstr "Positie Gasklep"
+msgstr "Positie Gasklep Uitgang Laag"
 
 #: ../garmon/trouble_codes.py:1549
-#, fuzzy
 msgid "Throttle Position Output Circuit High"
-msgstr "Positie Gasklep"
+msgstr "Positie Gasklep Uitgang Hoog"
 
 #: ../garmon/trouble_codes.py:1550
 msgid "Injector Control Pressure Regulator Circuit/Open"
@@ -6481,9 +6441,8 @@ msgid "Gear Shift Actuator Temperature Too High"
 msgstr ""
 
 #: ../garmon/trouble_codes.py:1686
-#, fuzzy
 msgid "Clutch Temperature Too High"
-msgstr "Temperatuur Koelvloeistof"
+msgstr "Temperatuur Koppeling te Hoog"
 
 #: ../garmon/trouble_codes.py:1687
 msgid "Auto Shift Manual Adaptive Learning at Limit"
@@ -6955,8 +6914,8 @@ msgstr ""
 msgid "Manufacturer Controlled Fuel and Air Merering"
 msgstr ""
 
-#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:71
-#: ../plugins/dashboard/dashboard.py:239
+#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:72
+#: ../plugins/dashboard/dashboard.py:240
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -7036,7 +6995,7 @@ msgstr ""
 "    terwijl een herkalibratie wordt uitgevoerd."
 
 #: ../plugins/dtc_reader/dtc_reader.py:41
-#: ../plugins/dtc_reader/dtc_reader.py:165
+#: ../plugins/dtc_reader/dtc_reader.py:166
 msgid "DTC Reader"
 msgstr "DTC Lezer"
 
@@ -7047,7 +7006,7 @@ msgstr "Leest de opgeslagen foutcodes van het voertuig"
 #. column = gtk.TreeViewColumn(_('Bits'), gtk.CellRendererText(),
 #. text=COLUMN_CODE)
 #. treeview.append_column(column)
-#: ../plugins/dtc_reader/dtc_reader.py:89
+#: ../plugins/dtc_reader/dtc_reader.py:90
 msgid "DTC"
 msgstr "DTC"
 
@@ -7073,7 +7032,7 @@ msgid "Re-read"
 msgstr "Herlees"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.py:47
-#: ../plugins/freeze_frame_data/freeze_frame_data.py:212
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:213
 msgid "Freeze Frame Data"
 msgstr "Freeze Frame Data"
 
@@ -7227,7 +7186,7 @@ msgstr "km/h"
 msgid "rpm"
 msgstr "tr/m"
 
-#: ../plugins/live_data/live_data.py:45 ../plugins/live_data/live_data.py:285
+#: ../plugins/live_data/live_data.py:45 ../plugins/live_data/live_data.py:286
 msgid "Live Data"
 msgstr "Live Data"
 
@@ -7244,11 +7203,11 @@ msgstr ""
 ".*Inlaat\n"
 ".*Chassisnummer\n"
 
-#: ../plugins/live_data/live_data.py:310
+#: ../plugins/live_data/live_data.py:311
 msgid "Voltage"
 msgstr "Spanning"
 
-#: ../plugins/live_data/live_data.py:312
+#: ../plugins/live_data/live_data.py:313
 msgid "Protocol"
 msgstr "Protocol"
 

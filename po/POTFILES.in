@@ -2,7 +2,8 @@
 # List of source files containing translatable strings.
 # Please keep this list in alphabetical order.
 data/garmon.desktop.in.in
-[type: gettext/glade]data/prefs.ui
+[type: gettext/glade]data/device_prefs.ui
+[type: gettext/glade]data/general_prefs.ui
 garmon/backdoor.py
 garmon/garmon
 garmon/garmon_app.py

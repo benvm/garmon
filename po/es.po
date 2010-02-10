@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: garmon 0.2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-06 19:49+0200\n"
+"POT-Creation-Date: 2010-02-10 02:05+0100\n"
 "PO-Revision-Date: 2009-05-03 18:05+0200\n"
 "Last-Translator: rrockanrolito <14puertas@gmail.com>\n"
 "Language-Team: Spanish <>\n"
@@ -29,55 +29,55 @@ msgstr "Garmon"
 msgid "OBD Scanner"
 msgstr "Escaner OBD"
 
-#: ../data/prefs.ui.h:1
-msgid "\"OFF\" color"
-msgstr "\"APAGAR\" color"
-
-#: ../data/prefs.ui.h:2
-msgid "\"ON\" color"
-msgstr "\"ENCENDER\" color"
-
-#: ../data/prefs.ui.h:3
+#: ../data/device_prefs.ui.h:1
 msgid "<b>Baudrate:</b>"
 msgstr "<b>Velociad en baudios:</b>"
 
-#: ../data/prefs.ui.h:4
-msgid "<b>Malfunction Indicator Light:</b>"
-msgstr "<b>Luz indicadora de mal funcionamiento</b>"
-
-#: ../data/prefs.ui.h:5
-msgid "<b>Plugin Manager:</b>"
-msgstr "<b>Administrador de complementos</b>"
-
-#: ../data/prefs.ui.h:6
+#: ../data/device_prefs.ui.h:2
 msgid "<b>Portname:</b>"
 msgstr "<b>Puerto</b>"
 
-#: ../data/prefs.ui.h:7
-msgid "<b>Units:</b>"
-msgstr "<b>Unidades</b>"
-
-#: ../data/prefs.ui.h:8
-msgid "Imperial"
-msgstr "Imperial"
-
-#: ../data/prefs.ui.h:9
+#: ../data/device_prefs.ui.h:3
 msgid "Increase baudrate after connection: "
 msgstr "Acelerar velocidad en baudios despues de conectarse"
 
-#: ../data/prefs.ui.h:10
+#: ../data/device_prefs.ui.h:4
 msgid "Initial Baudrate: "
 msgstr "Velocidad en baudios inicial"
 
-#: ../data/prefs.ui.h:11
+#: ../data/general_prefs.ui.h:1
+msgid "\"OFF\" color"
+msgstr "\"APAGAR\" color"
+
+#: ../data/general_prefs.ui.h:2
+msgid "\"ON\" color"
+msgstr "\"ENCENDER\" color"
+
+#: ../data/general_prefs.ui.h:3
+msgid "<b>Malfunction Indicator Light:</b>"
+msgstr "<b>Luz indicadora de mal funcionamiento</b>"
+
+#: ../data/general_prefs.ui.h:4
+msgid "<b>Plugin Manager:</b>"
+msgstr "<b>Administrador de complementos</b>"
+
+#: ../data/general_prefs.ui.h:5
+msgid "<b>Units:</b>"
+msgstr "<b>Unidades</b>"
+
+#: ../data/general_prefs.ui.h:6
+msgid "Imperial"
+msgstr "Imperial"
+
+#: ../data/general_prefs.ui.h:7
 msgid "Load saved plugins  when program starts"
 msgstr "Cargar complementos grabados al iniciar"
 
-#: ../data/prefs.ui.h:12
+#: ../data/general_prefs.ui.h:8
 msgid "Metric"
 msgstr "Metrica"
 
-#: ../data/prefs.ui.h:13
+#: ../data/general_prefs.ui.h:9
 msgid "Save active plugins on exit"
 msgstr "Grabar complementos activos al iniciar"
 
@@ -85,112 +85,112 @@ msgstr "Grabar complementos activos al iniciar"
 msgid "Python Shell. Inspect Garmons internals."
 msgstr "Python shell: Revisar Garmon por dentro"
 
-#: ../garmon/garmon_app.py:206
+#: ../garmon/garmon_app.py:213
 msgid "General"
 msgstr "General"
 
-#: ../garmon/garmon_app.py:220
+#: ../garmon/garmon_app.py:224
 msgid "Device"
 msgstr ""
 
-#: ../garmon/garmon_app.py:229
+#: ../garmon/garmon_app.py:233
 msgid "_File"
 msgstr ""
 
 #. name, stock id, label
-#: ../garmon/garmon_app.py:230
+#: ../garmon/garmon_app.py:234
 msgid "_Edit"
 msgstr ""
 
-#: ../garmon/garmon_app.py:231
+#: ../garmon/garmon_app.py:235
 msgid "_View"
 msgstr ""
 
-#: ../garmon/garmon_app.py:232 ../garmon/garmon_app.py:255
+#: ../garmon/garmon_app.py:236 ../garmon/garmon_app.py:259
 msgid "_Monitor"
 msgstr ""
 
-#: ../garmon/garmon_app.py:233
+#: ../garmon/garmon_app.py:237
 msgid "_Device"
 msgstr ""
 
-#: ../garmon/garmon_app.py:234
+#: ../garmon/garmon_app.py:238
 msgid "_Help"
 msgstr ""
 
-#: ../garmon/garmon_app.py:236
+#: ../garmon/garmon_app.py:240
 msgid "_Quit"
 msgstr ""
 
-#: ../garmon/garmon_app.py:237
+#: ../garmon/garmon_app.py:241
 msgid "Quit"
 msgstr ""
 
-#: ../garmon/garmon_app.py:239
+#: ../garmon/garmon_app.py:243
 msgid "_About"
 msgstr ""
 
-#: ../garmon/garmon_app.py:240
+#: ../garmon/garmon_app.py:244
 msgid "About"
 msgstr ""
 
-#: ../garmon/garmon_app.py:242
+#: ../garmon/garmon_app.py:246
 msgid "_Preferences"
 msgstr "_Preferencias"
 
-#: ../garmon/garmon_app.py:243
+#: ../garmon/garmon_app.py:247
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: ../garmon/garmon_app.py:245
+#: ../garmon/garmon_app.py:249
 msgid "P_lugins"
 msgstr ""
 
-#: ../garmon/garmon_app.py:246
+#: ../garmon/garmon_app.py:250
 msgid "Plugin Manager"
 msgstr "Administrador de complementos"
 
-#: ../garmon/garmon_app.py:248
+#: ../garmon/garmon_app.py:252
 msgid "_Reset"
 msgstr ""
 
-#: ../garmon/garmon_app.py:249
+#: ../garmon/garmon_app.py:253
 msgid "Reset Device"
 msgstr ""
 
-#: ../garmon/garmon_app.py:256
+#: ../garmon/garmon_app.py:260
 msgid "Monitoring"
 msgstr ""
 
-#: ../garmon/garmon_app.py:259
+#: ../garmon/garmon_app.py:263
 msgid "_Full Screen"
 msgstr ""
 
-#: ../garmon/garmon_app.py:260
+#: ../garmon/garmon_app.py:264
 msgid "Full Screen"
 msgstr ""
 
-#: ../garmon/garmon_app.py:263
+#: ../garmon/garmon_app.py:267
 msgid "_Python Shell"
 msgstr ""
 
-#: ../garmon/garmon_app.py:264
+#: ../garmon/garmon_app.py:268
 msgid "Show/Hide Python Shell"
 msgstr ""
 
-#: ../garmon/garmon_app.py:300
+#: ../garmon/garmon_app.py:304
 msgid "Gtk OBD Car Monitor"
 msgstr ""
 
-#: ../garmon/garmon_app.py:303
+#: ../garmon/garmon_app.py:307
 msgid "translator-credits"
 msgstr ""
 
-#: ../garmon/garmon_app.py:314
+#: ../garmon/garmon_app.py:318
 msgid "Do You Really want to quit?"
 msgstr "Â¿Realmente desea salir?"
 
-#: ../garmon/garmon_app.py:373
+#: ../garmon/garmon_app.py:377
 msgid "Please make sure the device is connected and your settings are correct"
 msgstr "Asegurese que el dispositivo esta conectado y bien configurado"
 
@@ -6970,8 +6970,8 @@ msgstr ""
 msgid "Manufacturer Controlled Fuel and Air Merering"
 msgstr ""
 
-#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:71
-#: ../plugins/dashboard/dashboard.py:239
+#: ../plugins/dashboard/dashboard.py:43 ../plugins/dashboard/dashboard.py:72
+#: ../plugins/dashboard/dashboard.py:240
 msgid "Dashboard"
 msgstr "Tablero"
 
@@ -7052,7 +7052,7 @@ msgstr ""
 "     periodo corto de tiempo, mientras se hace la recalibracion."
 
 #: ../plugins/dtc_reader/dtc_reader.py:41
-#: ../plugins/dtc_reader/dtc_reader.py:165
+#: ../plugins/dtc_reader/dtc_reader.py:166
 msgid "DTC Reader"
 msgstr "Lector DTC"
 
@@ -7063,7 +7063,7 @@ msgstr "Leer los codigos de fallas del vehiculo"
 #. column = gtk.TreeViewColumn(_('Bits'), gtk.CellRendererText(),
 #. text=COLUMN_CODE)
 #. treeview.append_column(column)
-#: ../plugins/dtc_reader/dtc_reader.py:89
+#: ../plugins/dtc_reader/dtc_reader.py:90
 msgid "DTC"
 msgstr "DTC"
 
@@ -7089,7 +7089,7 @@ msgid "Re-read"
 msgstr "Releer"
 
 #: ../plugins/freeze_frame_data/freeze_frame_data.py:47
-#: ../plugins/freeze_frame_data/freeze_frame_data.py:212
+#: ../plugins/freeze_frame_data/freeze_frame_data.py:213
 msgid "Freeze Frame Data"
 msgstr ""
 
@@ -7240,7 +7240,7 @@ msgstr "km/h"
 msgid "rpm"
 msgstr "rpm"
 
-#: ../plugins/live_data/live_data.py:45 ../plugins/live_data/live_data.py:285
+#: ../plugins/live_data/live_data.py:45 ../plugins/live_data/live_data.py:286
 msgid "Live Data"
 msgstr "Datos en directo"
 
@@ -7257,11 +7257,11 @@ msgstr ""
 ".*Admision\n"
 ".*VIN\n"
 
-#: ../plugins/live_data/live_data.py:310
+#: ../plugins/live_data/live_data.py:311
 msgid "Voltage"
 msgstr "Voltaje"
 
-#: ../plugins/live_data/live_data.py:312
+#: ../plugins/live_data/live_data.py:313
 msgid "Protocol"
 msgstr "Protocolo"
 
