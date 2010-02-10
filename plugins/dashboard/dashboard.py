@@ -23,6 +23,10 @@
 #   Boston, MA  02110-1301, USA.
 
 
+# A lot of the cairo ideas and graphics for the default theme come 
+# from Maclow's Cairo Clock. http://macslow.thepimp.net/cairo-clock
+
+
 import os
 import math
 from gettext import gettext as _
@@ -31,25 +35,61 @@ import gobject
 import gtk
 from gtk import gdk
 
+import pango
+import cairo
+from cairo import OPERATOR_SOURCE, OPERATOR_OVER, CONTENT_COLOR_ALPHA
+import rsvg
+
 import garmon
 import garmon.plugin
-
+from garmon import logger
 from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
 from garmon.obd_device import OBDDataError, OBDPortError
 from garmon.sensor import StateMixin, UnitMixin, Sensor
 from garmon.property_object import PropertyObject, gproperty, gsignal
 
 
-__name = _('Dashboard')
-__version = '0.2'
+__name = _('DashboardCairo')
+__version = '0.3'
 __author = 'Ben Van Mechelen'
 __description = _('A dashboard-like plugin with meters showing OBD information')
 __class = 'DashBoard'
 
 
 
+THEME_FILENAMES = {
+    'backplate':            'backplate.svg',
+    'backplate-shadow':     'backplate-shadow.svg',
+    'glass':                'glass.svg',
+    'needle':               'needle.svg',
+    'rim':                  'rim.svg',
+}
+
+
+class Theme (object):
+    def __init__(self, name, path):
+        self.name = name
+        self.path = path
+        self.width = None
+        self.height = None	  
+        self.backplate = None
+        self.backplate_shadow = None
+        self.glass = None
+        self.centric_needle = None
+        self.excentric_needle = None
+        self.rim = None	
+        self.background = None
+
+
 class DashBoard (gtk.VBox, Plugin):
-    __gtype_name__='DashBoard'
+    __gtype_name__='DashBoardCairo'
+    
+    gproperty('theme', object) 
+    
+    def prop_get_theme (self):
+        return self._theme
+        
+        
     def __init__(self, app) :
         gtk.VBox.__init__(self)
         Plugin.__init__(self)
@@ -61,9 +101,10 @@ class DashBoard (gtk.VBox, Plugin):
         self._notebook_cbs = []
         self._scheduler_cbs = []
         self._obd_cbs = []
+        self._theme = None
                 
-        app.prefs.register('dashboard.needle-color', '#F20D1B')
         app.prefs.register('dashboard.background', '#2F2323')
+        app.prefs.register('dashboard.theme', 'default')
 
         fname = os.path.join(self.dir, 'dashboard.ui')
         builder = gtk.Builder()
@@ -71,14 +112,15 @@ class DashBoard (gtk.VBox, Plugin):
         builder.add_from_file(fname)
         app.prefs.add_dialog_page(builder, 'prefs-vbox', _('Dashboard'))
         
-        self._needle_color = app.prefs.get('dashboard.needle-color')
-        self._background = app.prefs.get('dashboard.background')
-        cb_id = app.prefs.add_watch('dashboard.needle-color', 
-                                                self._prefs_notify_color_cb)
-        self._pref_cbs.append(('dashboard.needle-color', cb_id))
+        self._background = gtk.gdk.color_parse(app.prefs.get('dashboard.background'))
+
         cb_id = app.prefs.add_watch('dashboard.background', 
                                                 self._prefs_notify_color_cb)
         self._pref_cbs.append(('dashboard.background', cb_id))
+        cb_id = app.prefs.add_watch('dashboard.theme', 
+                                                self._prefs_notify_theme_cb)
+        self._pref_cbs.append(('dashboard.theme', cb_id))
+
 
         if app.prefs.get('imperial'):
             self._unit_standard = 'Imperial'
@@ -91,6 +133,8 @@ class DashBoard (gtk.VBox, Plugin):
 
         self.status = STATUS_STOP
         
+        app.prefs.notify('dashboard.theme')
+        
         self._setup_gui()
         self._setup_gauges()
         self._set_gauges_background()
@@ -100,27 +144,62 @@ class DashBoard (gtk.VBox, Plugin):
                                                 self._notebook_page_change_cb))
 
         self._scheduler_cbs.append(self.app.scheduler.connect('notify::working', 
-                                             self._scheduler_notify_working_cb))        
+                                             self._scheduler_notify_working_cb))
 
         self._obd_connected_cb(app.device)
 
-    def _prefs_notify_color_cb(self, pname, pvalue, args):
-        if pname == 'dashboard.needle-color':
-            self._needle_color = pvalue
-            for gauge in self.gauges:
-                gauge.needle_color = self._needle_color
-        elif pname == 'dashboard.background':
-            self._background = pvalue
-            self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self._background))
+    def _prefs_notify_color_cb (self, pname, pvalue, args):
+        logger.debug('in _prefs_notify_color_cb')
+        if pname == 'dashboard.background':
+            self._background = gtk.gdk.color_parse(pvalue)
+            self.layout.modify_bg(gtk.STATE_NORMAL, self._background)
             self._set_gauges_background()
-       
-        
+    
+    
+    def _prefs_notify_theme_cb (self, pname, pvalue, args):
+        logger.debug('in _prefs_notify_theme_cb')
+        if pname == 'dashboard.theme':
+            theme_path = os.path.join(self.dir, 'themes', pvalue)
+            logger.debug('trying to load theme: "%s" from "%s"' % (pvalue, theme_path))
+            if not os.path.isdir(theme_path):
+                #theme does not exist
+                logger.warning('theme does not exist')
+                if pvalue == 'default':
+                    #and there is no default theme
+                    logger.error('default theme does not exist either')
+                    return
+                else:
+                    logger.warning('will try default')
+                    self.app.prefs.set('dashboard.theme', 'default')
+            else:
+                t = Theme(pvalue, theme_path)
+                self._change_theme(t)
+            
+            
+    def _change_theme (self, theme):
+        try:
+            theme.backplate = rsvg.Handle(file=os.path.join(theme.path,'backplate.svg'))
+            theme.backplate_shadow = rsvg.Handle(file=os.path.join(theme.path,'backplate-shadow.svg'))
+            theme.glass = rsvg.Handle(file=os.path.join(theme.path,'glass.svg'))
+            theme.centric_needle = rsvg.Handle(file=os.path.join(theme.path,'centric-needle.svg'))
+            theme.excentric_needle = rsvg.Handle(file=os.path.join(theme.path,'excentric-needle.svg'))
+            theme.rim = rsvg.Handle(file=os.path.join(theme.path,'rim.svg'))
+            theme.width = theme.backplate_shadow.props.width
+            theme.height = theme.backplate_shadow.props.height
+            theme.background = self._background
+        except RuntimeError, e:
+            logger.error('Unable to activate the theme: %s' % e)
+            return
+        self._theme = theme
+        self.notify('theme')
+
+
     def _setup_gui (self) :
         alignment = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
         self.layout = gtk.Layout()
         alignment.add(self.layout)
         self.pack_start(alignment, True, True)
-        self.layout.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self._background))
+        self.layout.modify_bg(gtk.STATE_NORMAL, self._background)
         self.show_all()
         
         
@@ -131,14 +210,9 @@ class DashBoard (gtk.VBox, Plugin):
         for item in GAUGES:
             pid = item[PID]
             index = item[INDEX]
+            width, height = item[SIZE]
             
-            metric = gtk.gdk.pixbuf_new_from_file(os.path.join(self.dir, item[METRIC]))
-            if item[IMPERIAL]:
-                imperial = gtk.gdk.pixbuf_new_from_file(os.path.join(self.dir, item[IMPERIAL]))
-            else:
-                imperial = None
-                
-            gauge = item[TYPE](pid, metric, imperial, index)
+            gauge = item[TYPE](pid, index, self._theme, width, height)
                 
             if item[VALUES]:
                 min_value, max_value, idle_value = item[VALUES]
@@ -155,7 +229,6 @@ class DashBoard (gtk.VBox, Plugin):
             gauge.show_all()
             
             gauge.unit_standard = self._unit_standard
-            gauge.needle_color = self._needle_color
             
             gauge.connect('active-changed', self._gauge_active_changed_cb)
             
@@ -164,9 +237,9 @@ class DashBoard (gtk.VBox, Plugin):
                          
     
     def _set_gauges_background(self):
-        color = gtk.gdk.color_parse(self._background)
+        logger.debug('in _set_gauges_background')
         for item in self.layout.get_children():
-            item.modify_bg(gtk.STATE_NORMAL, color)
+            item.modify_bg(gtk.STATE_NORMAL, self._background)
        
       
     def _obd_connected_cb(self, obd, connected=False):
@@ -218,7 +291,7 @@ class DashBoard (gtk.VBox, Plugin):
                 gauge.active = True
             else:
                 gauge.supported = False
-              
+
                              
     def start(self):
         if not self.status == STATUS_WORKING:
@@ -258,7 +331,7 @@ class DashBoard (gtk.VBox, Plugin):
 
 class Gauge (gtk.EventBox, StateMixin, UnitMixin,
                               PropertyObject):
-    __gtype_name__="Gauge"
+    __gtype_name__="GaugeCairo"
          
     def prop_get_value (self):
         return self._value
@@ -272,46 +345,34 @@ class Gauge (gtk.EventBox, StateMixin, UnitMixin,
     gproperty('max-value', float)
     gproperty('idle-value', float)
     gproperty('value', float, flags=gobject.PARAM_READABLE)
-    gproperty('needle-color', str, '#FDC62D')
-    gproperty('needle-length', int)
-    gproperty('needle-width', int)
-    gproperty('metric-overlay', object)
-    gproperty('imperial-overlay', object)
     
     
-    def __init__ (self, pid, metric, imperial=None, index=0):
-        if not imperial:
-            imperial=metric
+    def __init__ (self, pid, index, theme, width=200, height=200):
         gtk.EventBox.__init__(self)
-        PropertyObject.__init__(self, command=pid, index=index, 
-                                      metric_overlay=metric,
-                                      imperial_overlay=imperial)
+        PropertyObject.__init__(self, command=pid, index=index)
+        
+        logger.info('Loading Gauge for pid: %s' %pid)
+        
         self.sensor = Sensor(pid, index)
+         
+        self.set_size_request(width, height)   
         
-        width = self.metric_overlay.get_width()
-        height = self.metric_overlay.get_height()    
-        self.set_size_request(width, height)    
-        
-        self._needle_gc = None
-        
+        self._width = width
+        self._height = height
+                
+        self._theme = theme
         self._set_default_values()
         
         self._value = self.idle_value
-        self._pixmap = None
-        self._area = gtk.DrawingArea()
-        self.add(self._area)
+        self._draw_area = gtk.DrawingArea()
+        self.add(self._draw_area)
 
         self.connect('button-press-event', self._button_press_cb)
-        self._area.connect("expose_event", self._expose_event)
-        self._area.connect("configure_event", self._configure_event)
+        self._draw_area.connect("expose_event", self._expose_event)
+        self._draw_area.connect("configure_event", self._configure_event)
 
     
     def __post_init__(self):
-        self.connect('notify::needle-length', self._notify_must_redraw)
-        self.connect('notify::metric-overlay', self._notify_must_redraw)
-        self.connect('notify::imperial-overlay', self._notify_must_redraw)
-        self.connect('notify::needle-color', self._notify_needle_cb)
-        self.connect('notify::needle-width', self._notify_needle_cb)
         self.connect('notify::supported', self._notify_supported_cb)
         self.connect('notify::active', self._notify_active_cb)
         self.sensor.connect('data-changed', self._sensor_data_changed_cb)
@@ -320,25 +381,18 @@ class Gauge (gtk.EventBox, StateMixin, UnitMixin,
     def _notify_must_redraw(self, o, pspec):
         self._draw()
         
-   
-    def _notify_needle_cb(self, o, pspec):
-        if pspec.name == 'needle-color':
-            if self._needle_gc:
-                self._needle_gc.set_rgb_fg_color(gtk.gdk.color_parse(self.needle_color))
-        if pspec.name == 'needle-width':    
-            self._needle_gc.line_width = width
-        self._draw()
 
-
-    def  _notify_supported_cb(self, o, pspec):
+    def _notify_supported_cb(self, o, pspec):
         self.set_sensitive(self.supported)
         if not self.supported:
             self.active = False
 
 
     def _notify_active_cb(self, o, pspec):
-        self._area.set_sensitive(self.active)
-        self._draw()
+        logger.debug('in _notify_active_cb: %s' % self.sensor.command)
+        self._draw_area.set_sensitive(self.active)
+        #if self.active:
+        #    self._draw()
         self.emit('active-changed', self.active)
 
     
@@ -348,15 +402,175 @@ class Gauge (gtk.EventBox, StateMixin, UnitMixin,
 
 
     def _sensor_data_changed_cb(self, sensor, data):
+        logger.debug('in _sensor_data_changed: %s' % self.sensor.command)
         self._value = eval(self.sensor.metric_value)
-        self._draw()
+        window = self._draw_area.window
+        window.invalidate_rect(self._draw_area.allocation, False)
            
                
     def _set_default_values(self):
         raise NotImplementedError, 'Use one of the subclasses please'
         
         
-    def _construct_needle (self) :
+    def _draw (self) :
+        logger.debug('in _draw: %s' % self.sensor.command)
+        
+        self._main_context.set_operator(OPERATOR_SOURCE)
+        self._main_context.set_source_surface(self._underlay_surface, 0.0, 0.0)
+        self._main_context.paint()
+        
+        self._main_context.set_operator(OPERATOR_OVER)
+
+        if self.active:
+            self._draw_needle()
+        
+        self._main_context.set_source_surface(self._overlay_surface, 0.0, 0.0)
+        self._main_context.paint()
+               
+        
+    def _expose_event (self, widget, event):
+        logger.debug('in expose event: %s' % self.sensor.command)
+        
+        x , y, width, height = event.area
+        #FIXME: need size of widget, not of event.area???
+        
+        self._main_context = self._draw_area.window.cairo_create()
+        self._main_context.set_operator(OPERATOR_SOURCE)
+        if self._surfaces_need_update:
+            self._update_surfaces()
+
+        self._draw()
+
+        return False
+
+
+    def _configure_event (self, widget, event):
+        logger.debug('in _configure_event: %s' % self.sensor.command)
+        self._surfaces_need_update = True
+        self.idle()
+
+
+    def _update_surfaces(self):
+        logger.debug('in _update_surfaces: %s' % self.sensor.command)
+        
+        for item in ('over', 'under'):
+            target = self._main_context.get_target()
+            surface = target.create_similar(CONTENT_COLOR_ALPHA, 
+                                            self._width, 
+                                            self._height)
+
+            context = cairo.Context(surface)
+            context.scale(1.0 * self._width / self._theme.width, 
+                          1.0 * self._height / self._theme.height)
+                          
+            if item is 'over':
+                context.set_source_rgba(self._theme.background.red_float,
+                                        self._theme.background.green_float,
+                                        self._theme.background.blue_float,
+                                        0.0)
+            else: 
+                context.set_source_rgba(self._theme.background.red_float,
+                                        self._theme.background.green_float,
+                                        self._theme.background.blue_float,
+                                        1.0)
+                                        
+            context.set_operator(OPERATOR_OVER)
+            context.paint()
+            
+            if item == 'over':
+                self._theme.glass.render_cairo(context)
+                self._theme.rim.render_cairo(context)
+                self._overlay_surface = surface
+            else:
+                self._theme.backplate_shadow.render_cairo(context)
+                self._theme.backplate.render_cairo(context)
+                self._underlay_surface = surface
+            
+        self._surfaces_need_update = False
+
+
+    def update_theme (self, theme):
+        logger.debug('in update_theme: %s' % self.sensor.command)
+        self._theme = theme
+        self._surfaces_need_update = True
+        window = self._draw_area.window
+        window.invalidate_rect(self._draw_area.allocation, False)
+        
+
+    def idle (self) :
+        """Set value to the defined idle value""" 
+        logger.debug('setting gauge idle')
+        self._value = self.idle_value
+
+        
+
+class ExCentricGauge (Gauge) :
+    __gtype_name__="ExCentricGaugeCairo"
+    def _set_default_values(self):
+    
+        self._needle_x = self._theme.width / 2.0
+        self._needle_y = self._theme.height * 4 / 5
+        self._needle_scale = 1.2
+        
+        self.max_value = 250.0
+        self.min_value = 0.0
+        self.idle_value = 0.0
+        self.max_angle = 300.0
+        self.min_angle = 240.0
+        
+        
+    def _draw_needle(self):
+        logger.debug('in _draw_needle: %s' % self.sensor.command)
+        
+        angle_range = self.max_angle - self.min_angle
+        value_range = self.max_value - self.min_value
+        value = float(self._value)
+        if value < self.min_value:
+            value = self.min_value
+        if value > self.max_value:
+            value = self.max_value
+        angle = (value - self.min_value) / value_range * angle_range + self.min_angle
+        rad = math.radians(angle)
+        logger.debug('drawing needle for value: %s ; Angle: %s(%s)' % (value, angle, rad))
+    
+        self._main_context.save()
+        self._main_context.scale(1.0 * self._width / self._theme.width, 
+                                 1.0 * self._height / self._theme.height)
+        self._main_context.translate(self._needle_x, self._needle_y)
+        
+        self._main_context.rotate(rad) 
+        self._theme.excentric_needle.render_cairo(self._main_context)
+        
+        self._main_context.restore()
+        
+
+ 
+class LowGauge (Gauge):
+    __gtype_name__="LowGaugeCairo"
+    
+    def _set_default_values(self):
+        pass
+   
+
+    
+class CentricGauge (Gauge) :
+    __gtype_name__="CentricGaugeCairo"
+    def _set_default_values(self):
+        
+        self._needle_x = self._theme.width / 2.0
+        self._needle_y =  self._theme.height / 2.0
+        self._needle_scale = 1.0
+        
+        self.max_value = 250.0
+        self.min_value = 0.0
+        self.idle_value = 0.0
+        self.max_angle = 50.0
+        self.min_angle = -230.0
+        
+        
+    def _draw_needle(self):
+        logger.debug('in _draw_needle: %s' % self.sensor.command)
+        
         angle_range = self.max_angle - self.min_angle
         value_range = self.max_value - self.min_value
         value = self._value
@@ -365,127 +579,27 @@ class Gauge (gtk.EventBox, StateMixin, UnitMixin,
         if value > self.max_value:
             value = self.max_value
         angle = (value - self.min_value) / value_range * angle_range + self.min_angle
+        rad = math.radians(angle)
+        logger.debug('drawing needle for value: %s ; Angle: %s(%s)' % (value, angle, rad))
         
-        point_x = int(self._needle_origin_x + self.needle_length * math.cos((angle + 180) * math.pi / 180))
-        point_y = int(self._needle_origin_y + self.needle_length * math.sin((angle + 180) * math.pi / 180))
+        self._main_context.save()
+        self._main_context.scale(1.0 * self._width / self._theme.width, 
+                                 1.0 * self._height / self._theme.height)
+        self._main_context.translate(self._needle_x, self._needle_y)
         
-        side1_x = int(self._needle_origin_x + self.needle_width * math.cos((angle + 270) * math.pi / 180))
-        side1_y = int(self._needle_origin_y + self.needle_width * math.sin((angle + 270) * math.pi / 180))
+        self._main_context.rotate(rad) 
+        self._theme.centric_needle.render_cairo(self._main_context)
         
-        side2_x = int(self._needle_origin_x + self.needle_width * math.cos((angle + 90) * math.pi / 180))
-        side2_y = int(self._needle_origin_y + self.needle_width * math.sin((angle + 90) * math.pi / 180))
-        
-        return [(self._needle_origin_x, self._needle_origin_y),
-                    (side1_x, side1_y),
-                    (point_x, point_y),
-                    (side2_x, side2_y)]
+        self._main_context.restore()
         
         
-    def _draw (self) :
-        if self._pixmap is None :
-            return
-        x, y, width, height = self.get_allocation()
-        bg_gc = self.get_style().bg_gc[gtk.STATE_NORMAL]
-        self._pixmap.draw_rectangle(bg_gc, True, 0, 0, width, height)
-        
-        if self.unit_standard == 'Imperial':
-            overlay = self.imperial_overlay
-        else:
-            overlay = self.metric_overlay
-        self._pixmap.draw_pixbuf(gtk.gdk.GC(self.window), overlay, 0, 0, 0, 0)
-        
-        needle = self._construct_needle()
-        if self.active:
-            self._pixmap.draw_polygon(self._needle_gc, True, needle)
-        
-        fg_gc = self.get_style().fg_gc[gtk.STATE_NORMAL]
-        fg_gc.set_foreground(gtk.gdk.color_parse('#000000'))
-        self._pixmap.draw_arc(fg_gc, True, 
-                                     self._needle_origin_x - self._circle_radius, 
-                                     self._needle_origin_y - self._circle_radius, 
-                                     self._circle_radius * 2, self._circle_radius * 2, 0, 360 * 64)
-                                         
-        self._area.queue_draw()
-
-        
-    def _expose_event (self, widget, event):
-        x , y, width, height = event.area
-        widget.window.draw_drawable(widget.get_style().bg_gc[gtk.STATE_NORMAL], self._pixmap, x, y, x, y, width, height)
-        return False
-
-
-    def _configure_event (self, widget, event):
-        x, y, width, height = widget.get_allocation()
-        self._pixmap = gtk.gdk.Pixmap(widget.window, width, height)
-        self._needle_gc = gtk.gdk.GC(widget.window)
-        self._needle_gc.set_rgb_fg_color(gtk.gdk.color_parse(self.needle_color))
-        self._needle_gc.line_width = self.needle_width
-        self.idle()
-        
-        
-    def idle (self) :
-        """Set value to the defined idle value""" 
-        self._value = self.idle_value
-        self._draw()
-
-        
-
-class ExCentricGauge (Gauge) :
-    __gtype_name__="ExCentricGauge"
-    def _set_default_values(self):
     
-        width = self.metric_overlay.get_width()
-        height = self.metric_overlay.get_height()
-        self._needle_origin_x = width / 2
-        self._needle_origin_y = height * 4 / 5
-        self.needle_length = height * 3 / 5
-        self.needle_width = self.needle_length / 18
-        if self.needle_width < 4: 
-            self.needle_width = 4
-        self._circle_radius = self.needle_width * 2
-        
-        self.max_value = 250.0
-        self.min_value = 0.0
-        self.idle_value = 0.0
-        self.max_angle = 120.0
-        self.min_angle = 60.0
-        
-
- 
-class LowGauge (Gauge):
-    __gtype_name__="LowGauge"
-    
-    def _set_default_values(self):
-        pass
-   
-
-    
-class CentricGauge (Gauge) :
-    __gtype_name__="CentricGauge"
-    def _set_default_values(self):
-        
-        width = self.metric_overlay.get_width()
-        height = self.metric_overlay.get_height()
-        self._needle_origin_x = width / 2
-        self._needle_origin_y =  height / 2
-        self.needle_length = height * 2 / 5
-        self.needle_width = self.needle_length / 18
-        if self.needle_width < 4: 
-            self.needle_width = 4
-        self._circle_radius = self.needle_width * 2
-        
-        self.max_value = 250.0
-        self.min_value = 0.0
-        self.idle_value = 0.0
-        self.max_angle = 230.0
-        self.min_angle = -50.0
-    
-(PID, INDEX, POSITION, METRIC, IMPERIAL, VALUES, ANGLES, TYPE) = range(8)   
+(PID, INDEX, POSITION, SIZE, METRIC, IMPERIAL, VALUES, ANGLES, TYPE) = range(9)   
     
 GAUGES = [
-    ('010D', 0, (0,0), 'speed_metric.svg', None, (0, 250, 0), None, CentricGauge),
-    ('010C', 0, (400,0), 'rpm.svg', None, (0, 8000, 0), None, CentricGauge),
-    ('0105', 0, (270,0), 'temp_metric.svg', None, (60, 120, 60), None, ExCentricGauge),
-    ('0104', 0, (270,145), 'load.svg', None, (0, 100, 0), None, CentricGauge),
+    ('010D', 0, (0,0), (300, 300), 'speed_metric.svg', None, (0, 250, 0), None, CentricGauge),
+    ('010C', 0, (450,0), (300, 300), 'rpm.svg', None, (0, 8000, 0), None, CentricGauge),
+    ('0105', 0, (300,0), (150, 150), 'temp_metric.svg', None, (60, 120, 60), None, ExCentricGauge),
+    ('0104', 0, (300,150), (150, 150), 'load.svg', None, (0, 100, 0), None, CentricGauge),
     
 ]
