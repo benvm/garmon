@@ -1,6 +1,6 @@
 dashboarddir = $(PLUGINDIR)/dashboard
 
-dashboardcairo_PYTHON = \
+dashboard_PYTHON = \
 	dashboard.ui\
 	dashboard.py
 
