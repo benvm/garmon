@@ -27,7 +27,7 @@ DEFAULT_PORT = '/dev/ttyUSB1'
 
 commands = {'ATZ' : 'ELM327 v1.2',
             'ATE0' : 'OK',
-            'ATRV' : '12.4V',
+            'ATRV' : '14.4V',
             'ATDP' : 'Some Protocol',
             'ATH0' : 'OK',
             'ATH1' : 'OK',
@@ -158,7 +158,7 @@ class ElmSimulator(object):
                          stopbits=serial.STOPBITS_ONE ):
         
         try:
-        
+            print 'Opening serial port'
             self.port = serial.Serial(port, 
                                         baudrate, 
                                         size,
@@ -180,7 +180,7 @@ class ElmSimulator(object):
         if not self.port:
             print 'No serial port open'
             return
-            
+        print 'Start listening'
         while True:
             buf = ""
             while True:
@@ -228,5 +228,4 @@ if __name__ == "__main__":
     except:
         sys.exit(2)
     sim.start()
-    
-    
+
