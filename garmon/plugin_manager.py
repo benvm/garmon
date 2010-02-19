@@ -31,7 +31,7 @@ import gtk
 
 import garmon
 
-from garmon import logger
+from garmon.logger import log
 from garmon.plugin import Plugin
 from garmon.property_object import PropertyObject, gproperty, gsignal
 
@@ -188,8 +188,8 @@ class PluginManager(gtk.Dialog, PropertyObject):
                                 COLUMN_CLASS, getattr(module,'__class'))
                                             
         except ImportError, e:
-            logger.error('failed to load plugin: ' + plugin)
-            logger.error(e)
+            log.error('failed to load plugin: ' + plugin)
+            log.error(e)
         finally:
             if module_info[0]:
                 module_info[0].close()
@@ -204,7 +204,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
             attr = getattr(module, cls)
             instance = attr(self.app)
         except:
-            logger.error('Failed to activate plugin %s' % plugin)
+            log.error('Failed to activate plugin %s' % plugin)
             if instance:
                 instance = None
             raise
@@ -213,7 +213,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
         if isinstance(instance, Plugin):
             self._active_plugins.append((plugin, instance))
         else:
-            logger.error('%s does not seem to be a valid Plugin' % instance)
+            log.error('%s does not seem to be a valid Plugin' % instance)
             instance = None
             return None
 
@@ -227,8 +227,8 @@ class PluginManager(gtk.Dialog, PropertyObject):
         if hasattr(instance, 'load'):                    
             instance.load()
 
-        logger.info('Plugin activated: %s' % plugin)
-        logger.debug(instance)
+        log.info('Plugin activated: %s' % plugin)
+        log.debug(instance)
         return instance
             
             
@@ -250,8 +250,8 @@ class PluginManager(gtk.Dialog, PropertyObject):
             if string ==  plugin:
                 self._active_plugins.remove(item)
                     
-        logger.info('Plugin deactivated: %s' % plugin)
-        logger.debug('Plugin deactivated: %s' % istr)
+        log.info('Plugin deactivated: %s' % plugin)
+        log.debug('Plugin deactivated: %s' % istr)
         
         
     def _activate_saved_plugins_cb(self, model, path, iter, plugins):
@@ -263,8 +263,8 @@ class PluginManager(gtk.Dialog, PropertyObject):
         
     def _load_available_plugins(self):
         
-        for dname in os.listdir(garmon.PLUGIN_DIR):
-            path = os.path.join(garmon.PLUGIN_DIR, dname)
+        for dname in os.listdir(garmon.dirs.PLUGINS):
+            path = os.path.join(garmon.dirs.PLUGINS, dname)
             fname = dname + '.py'
             if os.path.isdir(path):
                 if os.path.exists(os.path.join(path, fname)):

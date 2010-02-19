@@ -1,8 +1,10 @@
 #!/usr/bin/python
 #
-# garmon.py
+# application.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2010 <me@benvm.be>
+#
+# This file is part of Garmon
 
 gpl = """
                       GNU General Public License
@@ -31,6 +33,7 @@ import gtk
 import locale
 import gettext
 import os
+from optparse import OptionParser
 
 # set up gettext for translations
 locale.setlocale(locale.LC_ALL, '')
@@ -38,12 +41,11 @@ from gettext import gettext as _
 gettext.textdomain('garmon')
 
 import garmon
-from garmon import UI_DIR, GARMON_VERSION, PIXMAP_DIR, logger
+import garmon.logger
 
-import garmon.plugin_manager as plugin_manager
-
-from garmon.prefs import PreferenceManager
-from garmon.obd_device import ELMDevice, OBDError, OBDDataError, OBDPortError
+from garmon import plugin_manager
+from garmon.preferences import PreferenceManager
+from garmon.device import ELMDevice, OBDError, OBDDataError, OBDPortError
 from garmon.scheduler import Scheduler, SchedulerTimer
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.backdoor import BackDoor
@@ -120,7 +122,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         #Create the toplevel window
         gtk.Window.__init__(self)
         
-        icon = gtk.gdk.pixbuf_new_from_file(os.path.join(PIXMAP_DIR, 
+        icon = gtk.gdk.pixbuf_new_from_file(os.path.join(garmon.dirs.PIXMAPS, 
                                                          'garmon.svg'))
         gtk.window_set_default_icon_list(icon)
         
@@ -207,12 +209,12 @@ class GarmonApp(gtk.Window, PropertyObject):
         self._prefs.register('plugins.start', True)
         self._prefs.register('plugins.saved', 'Live Data,DTC Reader,DTC Clearer')
         
-        fname = os.path.join(UI_DIR, 'general_prefs.ui')
+        fname = os.path.join(garmon.dirs.UI, 'general_prefs.ui')
         self._builder.add_from_file(fname)
         
         self._prefs.add_dialog_page(self._builder, 'general_prefs_vbox', _('General'))
         
-        fname = os.path.join(UI_DIR, 'device_prefs.ui')
+        fname = os.path.join(garmon.dirs.UI, 'device_prefs.ui')
         self._builder.add_from_file(fname)
         
         combo = self._builder.get_object('preference;combo;int;device.baudrate')
@@ -384,13 +386,25 @@ class GarmonApp(gtk.Window, PropertyObject):
 
         
 def main():
+    usage = "usage: %prog [options]"
+    parser = OptionParser(usage)
+    parser.set_defaults(debug_level='INFO')
+    parser.add_option('-d', '--debug-level', dest='debug_level',
+	    				help='The treshold for messages that are printed to the\
+		    			      screen: should be one of: %s  default is INFO' %  
+			    		      ', '.join(garmon.logger.LEVELS))
+					
+    (options, args) = parser.parse_args()
+    if len(args) != 0:
+	    parser.error('incorrect number of arguments')
+	
+    level = options.debug_level.upper()
+    if not level in garmon.logger.LEVELS:
+        parser.error('debug-level should be one of %s' % ','.join(garmon.logger.LEVELS))
+
+    garmon.logger.set_level(level)
+
     GarmonApp()
     gtk.main()
 
-
-if __name__ == '__main__':
-    global PLUGIN_DIR
-    directory = os.path.dirname(__file__)
-    PLUGIN_DIR = os.path.join(directory, '../plugins')
-    main()
 

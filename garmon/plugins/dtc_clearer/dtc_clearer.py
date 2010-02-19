@@ -30,8 +30,8 @@ import gtk
 
 import garmon
 from garmon.plugin import Plugin
-import garmon.obd_device
-from garmon.obd_device import OBDPortError
+import garmon.device
+from garmon.device import OBDPortError
 
 __name = _('DTC Clearer')
 __version = '0.2'

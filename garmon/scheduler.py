@@ -31,7 +31,7 @@ import datetime
 
 
 import garmon
-from garmon.obd_device import OBDDevice
+from garmon.device import OBDDevice
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.sensor import Command
 
@@ -54,34 +54,34 @@ class Scheduler (GObject, PropertyObject):
     gsignal('command-executed')
     
     gproperty('working', bool, False)
-    gproperty('obd-device', object)
+    gproperty('device', object)
 
-    def prop_set_obd_device(self, device):
+    def prop_set_device(self, device):
         if device and not isinstance(device, OBDDevice):
             raise TypeError, 'obd should be an instance of OBDDevice'
         return device
     
     def prop_set_working(self, working):
         if working:
-            if self.obd_device and self.obd_device.connected:
+            if self.device and self.device.connected:
                 return working
             else:
                 working = False
         return working
         
                
-    def __init__(self, obd_device):
-        """ @param obd_device: the OBDDevice to send commands
+    def __init__(self, device):
+        """ @param device: the OBDDevice to send commands
             @param timeout: the time between two commands
         """
         GObject.__init__(self)
-        PropertyObject.__init__(self, obd_device=obd_device)
+        PropertyObject.__init__(self, device=device)
         self._queue = []
         self._os_queue = []
      
     def __post_init__(self):
         self.connect('notify::working', self._notify_working_cb)
-        self.obd_device.connect('connected', self._obd_device_connected_cb)
+        self.device.connect('connected', self._device_connected_cb)
     
     
     def _notify_working_cb(self, o, pspec):
@@ -116,13 +116,13 @@ class Scheduler (GObject, PropertyObject):
             self.working = False
             return
             
-        self.obd_device.read_command(queue_item, 
-                                          self._command_success_cb,
-                                          self._command_error_cb)
+        self.device.read_command(queue_item, 
+                                 self._command_success_cb,
+                                 self._command_error_cb)
 
     
     
-    def _obd_device_connected_cb(self, obd_device, connected):
+    def _device_connected_cb(self, device, connected):
         if not connected:
             self.working = False
             

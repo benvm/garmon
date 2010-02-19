@@ -3,6 +3,7 @@
 *.autosave
 *.bak
 *~
+*.swp
 *.gladep
 *.la
 *.lo

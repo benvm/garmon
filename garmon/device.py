@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 #
-# obd_device.py
+# device.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2010 <me@benvm.be>
 # 
 # This file is part of Garmon 
 # 

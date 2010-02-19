@@ -1,0 +1,16 @@
+#!/usr/bin/python
+
+import sys, os
+
+#See if we are running uninstalled
+dir = os.path.dirname(__file__)
+if dir == 'scripts':
+    print 'Running uninstalled'
+    sys.path.insert(0, os.path.join(os.path.abspath(dir), '..'))
+
+import garmon.application
+
+
+garmon.application.main()
+
+

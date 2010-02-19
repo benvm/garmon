@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 #
-# prefs.py
+# preferences.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2010 <me@benvm.be>
 #
 # This file is part of Garmon 
 # 
@@ -37,7 +37,7 @@ from xdg.BaseDirectory import save_config_path
 from ConfigParser import RawConfigParser as ConfigParser
 
 import garmon
-from garmon import UI_DIR, logger
+from garmon import logger
 
 class _PrefsDialog (gtk.Dialog):
 
