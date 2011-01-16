@@ -45,7 +45,7 @@ from garmon.widgets import SensorView, SensorProgressView
 
 
 __name = _('Freeze Frame Data')
-__version = '0.3'
+__version = garmon.GARMON_VERSION
 __author = 'Ben Van Mechelen'
 __description = _('View Freeze Frame data associated with a certain dtc\n\nEXPERIMENTAL')
 __class = 'FreezeFramePlugin'

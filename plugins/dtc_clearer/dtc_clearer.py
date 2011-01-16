@@ -34,7 +34,7 @@ import garmon.obd_device
 from garmon.obd_device import OBDPortError
 
 __name = _('DTC Clearer')
-__version = '0.2'
+__version = garmon.GARMON_VERSION
 __author = 'Ben Van Mechelen'
 __description = _('Clears the stored trouble codes in the vehicle')
 __class = 'DTCClearer'
