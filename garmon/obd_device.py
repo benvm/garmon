@@ -316,7 +316,7 @@ class ELMDevice(OBDDevice, PropertyObject):
 
   
     
-    def _read_supported_pids(self, freeze_frame=False):
+    def _read_supported_pids(self):
         #FIXME: merge these 3 in a single function
         def zero_success_cb(cmd, data, args):
             self._supported_pids += decode_pids_from_bitstring(data)
@@ -364,12 +364,8 @@ class ELMDevice(OBDDevice, PropertyObject):
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))        
         
-        if freeze_frame:
-            if self._connected:
-                self._send_command('0200', ff_success_cb, error_cb)        
-        else:
-            self._supported_pids = []
-            self._send_command('0100', zero_success_cb, error_cb)
+        self._supported_pids = []
+        self._send_command('0100', zero_success_cb, error_cb)
         
       
         
@@ -484,7 +480,6 @@ class ELMDevice(OBDDevice, PropertyObject):
             self._send_command(command, brd_support_success_cb, error_cb)
             
     
-    
     def read_pid_data(self, pid, ret_cb, err_cb, *args):
         if not pid in self._supported_pids and \
            not pid in self._supported_freeze_frame_pids:
@@ -497,9 +492,9 @@ class ELMDevice(OBDDevice, PropertyObject):
         if self._port and self._port.isOpen():
             self._send_command(pid, success_cb, err_cb, args)
         else:
-            raise OBDPortError('PortNotOpen', _('The port is not open'))        
-    
-    
+            raise OBDPortError('PortNotOpen', _('The port is not open'))
+
+	    
     def read_device_data(self, command, ret_cb, err_cb, *args):
         if not command in self._special_commands.keys():
             raise ValueError, 'command %s is not supported' % command

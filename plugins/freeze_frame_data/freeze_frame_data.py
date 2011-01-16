@@ -45,53 +45,37 @@ from garmon.widgets import SensorView, SensorProgressView
 
 
 __name = _('Freeze Frame Data')
-__version = '0.2'
+__version = '0.3'
 __author = 'Ben Van Mechelen'
 __description = _('View Freeze Frame data associated with a certain dtc\n\nEXPERIMENTAL')
-__class = 'FreezeFrameData'
+__class = 'FreezeFramePlugin'
 
 
-class FreezeFrameData (gtk.VBox, Plugin):
-    __gtype_name__='FreezeFrameData'
-    def __init__ (self, app):
-        gtk.VBox.__init__(self)
-        Plugin.__init__(self)
 
-        self.app = app
-        
+class FreezeFrame (GObject):
+    __gtype_name__ = 'FreezeFrame'
+    def __init__(self, plugin, frame):
+        GObject.__init__(self)
+
+        self.plugin = plugin 
+        self._frame = frame
+		
         self._pref_cbs = []
         self._app_cbs = []
         self._notebook_cbs = []
         self._scheduler_cbs = []
         self._obd_cbs = []
         
-        if app.prefs.get('imperial', False):
+        if plugin.app.prefs.get('imperial', False):
             self._unit_standard = 'Imperial'
         else:
             self._unit_standard = 'Metric'
             
-        cb_id = app.prefs.add_watch('imperial', 
+        cb_id = plugin.app.prefs.add_watch('imperial', 
                                     self._notify_units_cb)
-        self._pref_cbs.append(('imperial', cb_id))
+        self._pref_cbs.append(('imperial', cb_id))			
 
-        self.status = STATUS_STOP
-
-        self.views = []
-
-        self._setup_gui()
-        self._setup_sensors()
-
-        self._obd_cbs.append(app.device.connect('connected', 
-                                             self._device_connected_cb))
-        self._notebook_cbs.append(app.notebook.connect('switch-page', 
-                                                  self._notebook_page_change_cb))
-        
-        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
-                                             self._scheduler_notify_working_cb))
-        
-        self._device_connected_cb(app.device)
-        
-    
+		
     def _setup_gui(self):
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, 'freeze_frame_data.ui')
@@ -99,22 +83,20 @@ class FreezeFrameData (gtk.VBox, Plugin):
         self._builder.set_translation_domain('garmon')
         self._builder.add_from_file(filename)
         
-        main_hbox = self._builder.get_object('main_hbox')
-        self.pack_start(main_hbox)
-        main_hbox.show_all()
-        self.show_all()
+        self._main_hbox = self._builder.get_object('main_hbox')
+        self._main_hbox.show_all()
         
-        button = self._builder.get_object('re-read-button')
-        button.connect('clicked', self._reread_button_clicked)
+        self._reread_button = self._builder.get_object('re-read-button')
+        self._reread_button.connect('clicked', self._reread_button_clicked)
         
         
     def _setup_sensors(self):
 
-        self.views = []
+        self._views = []
 
         for item in SENSORS: 
             label = entry = unit = None
-            pid = item[PID]
+            pid = item[PID] + '%0*d' % (2, self._frame)
             index = item[INDEX]
             if item[LABEL]:
                 label = self._builder.get_object(item[LABEL])
@@ -132,7 +114,7 @@ class FreezeFrameData (gtk.VBox, Plugin):
 
         for item in PROGRESS: 
             label = bar = None
-            pid = item[PID]
+            pid = item[PID] + '%0*d' % (2, self._frame)
             index = item[INDEX]
             if item[LABEL]:
                 label = self._builder.get_object(item[LABEL])
@@ -144,26 +126,17 @@ class FreezeFrameData (gtk.VBox, Plugin):
                        name_widget=label,
                        progress_widget=bar, helper=func)
             
-            self.views.append(view)
+            self.views.append(view)				
 
-
-    def _reread_button_clicked(self, button):
-        self._update_supported_views()
-        self.start()
-
-    
-    def _scheduler_notify_working_cb(self, scheduler, pspec):
-        pass
-                       
-    
-    def _update_supported_views(self):
+			
+    def update_supported_views(self):
         logger.debug('in update_supported_views')
-        if self.app.device.supported_freeze_frame_pids == None:
+        if self.plugin.app.device.supported_freeze_frame_pids == None:
             logger.debug('supported_freeze_frame_pids not yet read')
             return
         for view in self.views:
-            if self.app.device:
-                if view.command.command in self.app.device.supported_freeze_frame_pids:
+            if self.plugin.app.device:
+                if view.command.command in self.plugin.app.device.supported_freeze_frame_pids:
                     view.supported=True
                     view.active=True
                 else:
@@ -171,9 +144,72 @@ class FreezeFrameData (gtk.VBox, Plugin):
                     view.active=False
             else:
                 view.supported=False
-                view.active=False
-   
+                view.active=False			
+
+                
+    def _notify_units_cb(self, pname, pvalue, args):
+        if pname == 'imperial' and pvalue:
+            self._unit_standard = 'Imperial'
+        else:
+            self._unit_standard = 'Metric'
+        
+        for view in self.views:
+            view.unit_standard = self._unit_standard
+
             
+	def unload(self):
+		self.app.notebook.remove(self)
+        for name, cb_id in self._pref_cbs:
+            self.app.prefs.remove_watch(name, cb_id)
+        for cb_id in self._app_cbs:
+            self.app.disconnect(cb_id)
+        for cb_id in self._notebook_cbs:
+            self.app.notebook.disconnect(cb_id)
+        for cb_id in self._scheduler_cbs:
+            self.app.scheduler.disconnect(cb_id)
+        for cb_id in self._obd_cbs:
+            self.app.device.disconnect(cb_id)			
+
+
+		
+class FreezeFramePlugin (Plugin):
+    __gtype_name__ = 'FreezeFramePlugin'
+    def __init__(self, app):
+        Plugin.__init__(self)
+
+        self.app = app
+	
+        self._pref_cbs = []
+        self._app_cbs = []
+        self._notebook_cbs = []
+        self._scheduler_cbs = []
+        self._obd_cbs = []
+        
+        self.status = STATUS_STOP
+
+        self._frames = []
+
+        self._setup_gui()
+		
+        self._obd_cbs.append(app.device.connect('connected', 
+                                             self._device_connected_cb))
+        self._notebook_cbs.append(app.notebook.connect('switch-page', 
+                                                  self._notebook_page_change_cb))
+        
+        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
+                                             self._scheduler_notify_working_cb))
+        
+        self._device_connected_cb(app.device)
+
+		
+
+    def _setup_gui (self):
+        self._main_box = gtk.HBox()
+        self._frames_notebook = gtk.Notebook()
+        self._main_box.pack_start(self._frames_notebook)
+        self._main_box.show_all()
+
+
     def start(self):
         for view in self.views:
             if view.supported:
@@ -188,21 +224,14 @@ class FreezeFrameData (gtk.VBox, Plugin):
     def _device_connected_cb(self, device, connected=False):
         page = self.app.notebook.get_current_page()
         visible = self.app.notebook.get_nth_page(page) is self
-        self._update_supported_views()
-        if visible:
-            self.app.device.read_supported_freeze_frame_pids()
+        for frame in self._frames:
+            self.update_supported_views()
 
 
-    def _notify_units_cb(self, pname, pvalue, args):
-        if pname == 'imperial' and pvalue:
-            self._unit_standard = 'Imperial'
-        else:
-            self._unit_standard = 'Metric'
-        
-        for view in self.views:
-            view.unit_standard = self._unit_standard
-            
-            
+    def _scheduler_notify_working_cb(self, scheduler, pspec):
+        pass
+
+    
     def _notebook_page_change_cb (self, notebook, no_use, page):
         plugin = notebook.get_nth_page(page)
         if plugin is self:
@@ -210,10 +239,13 @@ class FreezeFrameData (gtk.VBox, Plugin):
 
             
     def load(self):
-        self.app.notebook.append_page(self, gtk.Label(_('Freeze Frame Data')))            
-            
+        self.app.notebook.append_page(self._main_box, gtk.Label(_('Freeze Frame Data')))            
+
+		
     def unload(self):
         self.app.notebook.remove(self)
+        for frame in self._frames:
+            frame.unload()
         for name, cb_id in self._pref_cbs:
             self.app.prefs.remove_watch(name, cb_id)
         for cb_id in self._app_cbs:
@@ -224,6 +256,7 @@ class FreezeFrameData (gtk.VBox, Plugin):
             self.app.scheduler.disconnect(cb_id)
         for cb_id in self._obd_cbs:
             self.app.device.disconnect(cb_id)
+
 
 
 def _dtc_code_helper(view):
