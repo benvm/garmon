@@ -213,11 +213,14 @@ class PreferenceManager(GObject):
         top.cb_ids = []
         self._dialog.notebook.append_page(top, gtk.Label(name))
         objects = builder.get_objects()
-        for item in objects:
-            if isinstance(item, gtk.Widget):
-                widget = item
-                if widget.name[:len('preference')] == 'preference': 
-                    name = widget.name[len('preference;'):]
+        for widget in objects:
+            if isinstance(widget, gtk.Widget):
+                if gtk.ver < (2,20,0):
+                    name = widget.name
+                else:
+                    name = gtk.Buildable.get_name(widget) 
+                if name[:len('preference')] == 'preference': 
+                    name = name[len('preference;'):]
                     wtype, ptype, pname = string.split(name, ';')
                     if wtype == 'toggle':
                         widget.connect('toggled', self._toggle_widget_cb, pname)
