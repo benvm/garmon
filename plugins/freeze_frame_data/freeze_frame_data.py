@@ -52,10 +52,18 @@ __class = 'FreezeFramePlugin'
 
 
 
-class FreezeFrame (GObject):
+class FreezeFrame (GObject, PropertyObject):
     __gtype_name__ = 'FreezeFrame'
+
+    gproperty('widget', object, flags=gobject.PARAM_READABLE)
+
+    def prop_get_widget(self):
+        return self._main_hbox
+    
+        
     def __init__(self, plugin, frame):
         GObject.__init__(self)
+        PropertyObject.__init__(self)
 
         self.plugin = plugin 
         self._frame = frame
@@ -189,6 +197,9 @@ class FreezeFramePlugin (Plugin):
 
         self._frames = []
 
+        self._command = Command('0901')
+        self._command.connect('data-changed', self._command_data_changed)
+
         self._setup_gui()
 		
         self._obd_cbs.append(app.device.connect('connected', 
@@ -211,14 +222,20 @@ class FreezeFramePlugin (Plugin):
 
 
     def start(self):
-        for view in self.views:
-            if view.supported:
-                self.app.scheduler.add(view.command, True)
+        if self._command.command in self.app.device.supported_pids:
+            self.app.scheduler.add(self._command)
         self.app.scheduler.working = True
         
             
     def stop(self):
         pass
+
+
+    def _command_data_changed(self, command, data):
+        if int(data) > len(self._frames):
+            frame = FreezeFrame(data)
+            self._frames_notebook.add(frame.widget)
+            self._frames.append(frame)
         
         
     def _device_connected_cb(self, device, connected=False):
