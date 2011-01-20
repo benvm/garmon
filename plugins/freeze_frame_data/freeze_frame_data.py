@@ -233,6 +233,7 @@ class FreezeFramePlugin (Plugin):
 
     def _command_data_changed(self, command, data):
         if int(data) > len(self._frames):
+            self.app.device.read_supported_freeze_frame_pids(data)
             frame = FreezeFrame(data)
             self._frames_notebook.add(frame.widget)
             self._frames.append(frame)
