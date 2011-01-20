@@ -316,56 +316,42 @@ class ELMDevice(OBDDevice, PropertyObject):
 
   
     
-    def _read_supported_pids(self):
+    def _read_supported_pids(self, mode='01', suffix=''):
         #FIXME: merge these 3 in a single function
         def zero_success_cb(cmd, data, args):
-            self._supported_pids += decode_pids_from_bitstring(data)
-            if '0120' in self._supported_pids:
-                self._send_command('0120', twenty_success_cb, error_cb)
+            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix)
+            if mode + '20' in self._supported_pids:
+                self._send_command(mode + '20', twenty_success_cb, error_cb)
             else:
                 self._connected = True
                 logger.info('supported pids: %s\n' % self._supported_pids)
                 self.emit('connected', True)
 
         def twenty_success_cb(cmd, data, args):
-            self._supported_pids += decode_pids_from_bitstring(data, 32)
-            if '0140' in self._supported_pids:
-                self._send_command('0140', forty_success_cb, error_cb)
+            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix 32)
+            if mode + '40' in self._supported_pids:
+                self._send_command(mode + '40', forty_success_cb, error_cb)
             else:
                 self._connected = True
                 logger.info('supported pids: %s\n' % self._supported_pids)
                 self.emit('connected', True)
-                
+
         def forty_success_cb(cmd, data, args):
-            self._supported_pids += decode_pids_from_bitstring(data, 64)
+            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix, 64)
             self._connected = True
             logger.info('supported pids: %s\n' % self._supported_pids)
-            self.emit('connected', True)
+            if mode == '01':
+                self.emit('connected', True)
                                 
-        def ff_success_cb(cmd, data, args):
-            self._supported_freeze_frame_pids = []
-            data = decode_result(data)
-            for item in data:
-                bitstr = sensor.hex_to_bitstr(item)
-                for i, bit in enumerate(bitstr):
-                    if bit == "1":
-                        pid = i + 1
-                        if pid < 16: 
-                            pid_str = '020' + hex(pid)[2:]                    
-                        else:
-                            pid_str = '02' + hex(pid)[2:]
-                        self._supported_freeze_frame_pids.append(pid_str.upper())  
-                        
-            logger.info('supported freeze frame pids: %s\n' % 
-                                            self._supported_freeze_frame_pids)
 
         def error_cb(cmd, msg, args):
             logger.error('error reading supported pids, msg is: %s' % msg)
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))        
-        
-        self._supported_pids = []
-        self._send_command('0100', zero_success_cb, error_cb)
+
+        if mode = '01':                       
+            self._supported_pids = []
+        self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
         
       
         
@@ -584,8 +570,8 @@ class ELMDevice(OBDDevice, PropertyObject):
                 
                 
                 
-    def read_supported_freeze_frame_pids(self):
-        self._read_supported_pids(True)       
+    def read_supported_freeze_frame_pids(self, frame):
+        self._read_supported_pids('02', frame)
 
 
 
@@ -638,7 +624,7 @@ def decode_result(result):
     return ret
     
     
-def decode_pids_from_bitstring(data, offset=0):
+def decode_pids_from_bitstring(data, mode, suffix, offset=0):
     pids = []
     data = decode_result(data)
     for item in data:
@@ -646,9 +632,9 @@ def decode_pids_from_bitstring(data, offset=0):
         for i, bit in enumerate(bitstr):
             if bit == "1":
                 pid = i + 1 + offset
-                if pid < 16: 
-                    pid_str = '010' + hex(pid)[2:]                    
-                else:
-                    pid_str = '01' + hex(pid)[2:]
+                pid_str = mode + '%0*d' % (2, hex(pid)[2:]) + suffix
                 pids.append(pid_str.upper())
     return pids
+
+
+
