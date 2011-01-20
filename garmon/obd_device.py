@@ -60,7 +60,6 @@ class OBDDevice(GObject, PropertyObject):
     
     _special_commands = {}
     _supported_pids = []
-    _supported_freeze_frame_pids = None
     _connected = False 
     
     gsignal('connected', bool)
@@ -70,7 +69,6 @@ class OBDDevice(GObject, PropertyObject):
     gproperty('baudrate', int, 9600)
     gproperty('connected', bool, False, flags=gobject.PARAM_READABLE)
     gproperty('supported_pids', object, flags=gobject.PARAM_READABLE)
-    gproperty('supported_freeze_frame_pids', object, flags=gobject.PARAM_READABLE)
     gproperty('special_commands', object, flags=gobject.PARAM_READABLE)
     gproperty('supported_commands', object, flags=gobject.PARAM_READABLE)
     
@@ -80,14 +78,7 @@ class OBDDevice(GObject, PropertyObject):
 
     def prop_get_supported_pids(self):
         return self._supported_pids
-
-    def prop_get_supported_freeze_frame_pids(self):
-        if self._supported_freeze_frame_pids == None:
-            self.read_supported_freeze_frame_pids()
-            return None
-        else:
-            return self._supported_freeze_frame_pids
-        
+       
     def prop_get_special_commands(self):
         return self._special_commands
         
@@ -328,7 +319,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 self.emit('connected', True)
 
         def twenty_success_cb(cmd, data, args):
-            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix 32)
+            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix, 32)
             if mode + '40' in self._supported_pids:
                 self._send_command(mode + '40', forty_success_cb, error_cb)
             else:
@@ -349,7 +340,7 @@ class ELMDevice(OBDDevice, PropertyObject):
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))        
 
-        if mode = '01':                       
+        if mode == '01':                       
             self._supported_pids = []
         self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
         
