@@ -309,41 +309,58 @@ class ELMDevice(OBDDevice, PropertyObject):
 
   
     
-    def _read_supported_pids(self, mode='01', suffix=''):
+    def _read_supported_pids(self, modes=['09','01'], suffix=''):
         #FIXME: merge these 3 in a single function
         def zero_success_cb(cmd, data, args):
+            logger.debug('entering zero_success_cb')
+            mode = cmd[:2]
             self._supported_pids += decode_pids_from_bitstring(data, mode, suffix)
             if mode + '20' in self._supported_pids:
                 self._send_command(mode + '20', twenty_success_cb, error_cb)
             else:
-                self._connected = True
-                logger.info('supported pids: %s\n' % self._supported_pids)
-                self.emit('connected', True)
-
+                if len(modes):
+                    mode = modes.pop()
+                    self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
+                else:
+                    self._connected = True
+                    logger.info('supported pids: %s\n' % self._supported_pids)
+                    self.emit('connected', True)
+                    
         def twenty_success_cb(cmd, data, args):
+            logger.debug('entering twenty_success_cb')
+            mode = cmd[:2]
             self._supported_pids += decode_pids_from_bitstring(data, mode, suffix, 32)
             if mode + '40' in self._supported_pids:
                 self._send_command(mode + '40', forty_success_cb, error_cb)
             else:
+                if len(modes):
+                    mode = modes.pop()
+                    self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
+                else:
+                    self._connected = True
+                    logger.info('supported pids: %s\n' % self._supported_pids)
+                    self.emit('connected', True)
+                    
+        def forty_success_cb(cmd, data, args):
+            logger.debug('entering forty_success_cb')
+            mode = cmd[:2]
+            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix, 64)
+            if len(modes):
+                mode = modes.pop()
+                self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
+            else:
                 self._connected = True
                 logger.info('supported pids: %s\n' % self._supported_pids)
                 self.emit('connected', True)
-
-        def forty_success_cb(cmd, data, args):
-            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix, 64)
-            self._connected = True
-            logger.info('supported pids: %s\n' % self._supported_pids)
-            if mode == '01':
-                self.emit('connected', True)
-                                
 
         def error_cb(cmd, msg, args):
             logger.error('error reading supported pids, msg is: %s' % msg)
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))        
 
-        if mode == '01':                       
+        if '01' in modes:                       
             self._supported_pids = []
+        mode = modes.pop()
         self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
         
       
@@ -564,7 +581,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 
                 
     def read_supported_freeze_frame_pids(self, frame):
-        self._read_supported_pids('02', frame)
+        self._read_supported_pids(['02'], frame)
 
 
 
@@ -627,9 +644,9 @@ def decode_pids_from_bitstring(data, mode, suffix, offset=0):
             if bit == "1":
                 pid = i + 1 + offset
                 if pid < 16: 
-                    pid_str = '010' + hex(pid)[2:] + suffix
+                    pid_str = mode + '0' + hex(pid)[2:] + suffix
                 else:
-                    pid_str = '01' + hex(pid)[2:] + suffix
+                    pid_str = mode + hex(pid)[2:] + suffix
                 pids.append(pid_str.upper())
     return pids
 
