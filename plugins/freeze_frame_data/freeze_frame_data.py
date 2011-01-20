@@ -261,7 +261,7 @@ class FreezeFramePlugin (Plugin):
 
 		
     def unload(self):
-        self.app.notebook.remove(self)
+        self.app.notebook.remove(self._main_box)
         for frame in self._frames:
             frame.unload()
         for name, cb_id in self._pref_cbs:
