@@ -165,7 +165,7 @@ class ELMDevice(OBDDevice, PropertyObject):
 
 
     def _send_command(self, command, ret, err, cleanup=True, *args):
-        logger.debug('in _send_command; command is %s' % command)
+        logger.debug('entering ELMDevice._send_command: %s' % command)
         if not self._port.isOpen():
             raise OBDPortError('PortNotOpen', _('The port is not open'))
 
@@ -190,6 +190,7 @@ class ELMDevice(OBDDevice, PropertyObject):
             
 
     def _read_result(self):
+        logger.debug('entering ELMDevice._read_result')
         timeout_count = 0
         try:
             buf = ''
@@ -216,6 +217,7 @@ class ELMDevice(OBDDevice, PropertyObject):
          
       
     def _parse_result(self, data):
+        logger.debug('entering ELMDevice._parse_result')
         error = False
         success = False
         res = None
@@ -276,7 +278,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 
 
     def _port_io_watch_cb(self, fd, condition, data=None):
-        logger.debug('in _port_io_watch_cb')
+        logger.debug('entering ELMDevice._port_io_watch_cb')
         if condition & gobject.IO_HUP:
             logger.debug('received HUP signal')
             self._sent_command = None
@@ -616,14 +618,18 @@ def decode_result(result):
     
     
 def decode_pids_from_bitstring(data, mode, suffix, offset=0):
+    logger.debug('entering decode_pids_from_bitstring')
     pids = []
-    data = decode_result(data)
-    for item in data:
+    decoded = decode_result(data)
+    for item in decoded:
         bitstr = sensor.hex_to_bitstr(item)
         for i, bit in enumerate(bitstr):
             if bit == "1":
                 pid = i + 1 + offset
-                pid_str = mode + '%0*d' % (2, hex(pid)[2:]) + suffix
+                if pid < 16: 
+                    pid_str = '010' + hex(pid)[2:] + suffix
+                else:
+                    pid_str = '01' + hex(pid)[2:] + suffix
                 pids.append(pid_str.upper())
     return pids
 
