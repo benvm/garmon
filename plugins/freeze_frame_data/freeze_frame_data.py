@@ -264,7 +264,7 @@ class FreezeFramePlugin (Plugin, PropertyObject):
         self.app.scheduler.remove(self._command)
         if int(data) > len(self._frames):
             frame = FreezeFrame(self, data)
-            self._frames_notebook.add(frame.widget)
+            self._frames_notebook.append_page(frame.widget, gtk.Label(_('Frame %s') % data))
             self._frames.append(frame)
             self.app.device.read_supported_freeze_frame_pids(data)
                     
