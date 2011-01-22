@@ -74,7 +74,7 @@ class DTCClearer (Plugin):
         self.app.ui.get_widget('/MenuBar/DeviceMenu/DeviceMenuItems/ClearDTC').set_sensitive(sensitive)
         
 
-    def _scheduler_notify_working_cb(self, scheduler, monitoring):
+    def _scheduler_state_changed_cb(self, scheduler, working):
         self._sensitize_action()
         
         
@@ -147,7 +147,7 @@ The ignition must be turned on but the engine should not be running"""))
                 
     def load(self):
         self._sensitize_action()
-        self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
+        self.app.scheduler.connect('state-changed', self._scheduler_state_changed_cb)
         self.app.device.connect('connected', self._obd_connected_cb)
                 
                 

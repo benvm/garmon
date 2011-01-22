@@ -85,8 +85,8 @@ class LiveData (gtk.VBox, Plugin):
         self._notebook_cbs.append(app.notebook.connect('switch-page', 
                                                   self._notebook_page_change_cb))
         
-        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
-                                             self._scheduler_notify_working_cb))
+        self._scheduler_cbs.append(self.app.scheduler.connect('state-changed',
+                                             self._scheduler_state_changed_cb))
         
         self._device_connected_cb(app.device)
         
@@ -193,7 +193,7 @@ class LiveData (gtk.VBox, Plugin):
                 self.views.append(view)
                     
     
-    def _scheduler_notify_working_cb(self, scheduler, pspec):
+    def _scheduler_state_changed_cb(self, scheduler, working):
         if not scheduler.working:
             for views in (self.views, self.os_views):
                 for view in views:

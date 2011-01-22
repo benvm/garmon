@@ -155,9 +155,9 @@ class DTCReader (gtk.VBox, Plugin):
         def error_cb(cmd, error, args):
             self._display_port_error_dialog(error)             
 
-        self.app.scheduler.working = False
+        self.app.scheduler.stop()
         try:
-            self.app.device.read_dtc(success_cb, error_cb)          
+            self.app.device.read_dtc(success_cb, error_cb)
         except OBDPortError, e:
             self._display_port_error_dialog(e)
             

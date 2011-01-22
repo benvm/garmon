@@ -171,7 +171,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.device.baudrate = int(self.prefs.get('device.baudrate'))
         
         self.scheduler = Scheduler(self.device)
-        self.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
+        self.scheduler.connect('state_changed', self._scheduler_state_changed_cb)
         
         self._statusbar = gtk.Statusbar()    
         self.main_vbox.pack_end(self._statusbar, False, False)    
@@ -328,11 +328,15 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog.destroy()
 
     def _activate_monitor(self, action):
-        self.scheduler.working = action.get_active()
+        if action.get_active(): 
+            if not self.scheduler.working:
+                self.scheduler.start()
+        elif self.scheduler.working :
+            self.scheduler.stop()
     
-    def _scheduler_notify_working_cb(self, scheduler, pspec):
-        self.ui.get_widget('/ToolBar/Monitor').set_active(scheduler.working)
-        self.ui.get_widget('/MenuBar/DeviceMenu/Monitor').set_active(scheduler.working)
+    def _scheduler_state_changed_cb(self, scheduler, working):
+        self.ui.get_widget('/ToolBar/Monitor').set_active(working)
+        self.ui.get_widget('/MenuBar/DeviceMenu/Monitor').set_active(working)
             
             
     def _toggle_fullscreen(self, action):
