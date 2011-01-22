@@ -81,7 +81,11 @@ class FreezeFrame (GObject, PropertyObject):
             
         cb_id = plugin.app.prefs.add_watch('imperial', 
                                     self._notify_units_cb)
-        self._pref_cbs.append(('imperial', cb_id))			
+        self._pref_cbs.append(('imperial', cb_id))
+        self._obd_cbs.append(plugin.app.device.connect('supported-pids-changed', 
+                                             self._supported_pids_changed))
+        self._setup_gui()
+        self._setup_sensors()
 
 		
     def _setup_gui(self):
@@ -104,7 +108,7 @@ class FreezeFrame (GObject, PropertyObject):
 
         for item in SENSORS: 
             label = entry = unit = None
-            pid = item[PID] + '%0*d' % (2, self._frame)
+            pid = item[PID] + '%0*d' % (2, int(self._frame))
             index = item[INDEX]
             if item[LABEL]:
                 label = self._builder.get_object(item[LABEL])
@@ -118,11 +122,11 @@ class FreezeFrame (GObject, PropertyObject):
                        name_widget=label, value_widget=entry, 
                        units_widget=unit, helper=func)
             
-            self.views.append(view)
+            self._views.append(view)
 
         for item in PROGRESS: 
             label = bar = None
-            pid = item[PID] + '%0*d' % (2, self._frame)
+            pid = item[PID] + '%0*d' % (2, int(self._frame))
             index = item[INDEX]
             if item[LABEL]:
                 label = self._builder.get_object(item[LABEL])
@@ -134,17 +138,24 @@ class FreezeFrame (GObject, PropertyObject):
                        name_widget=label,
                        progress_widget=bar, helper=func)
             
-            self.views.append(view)				
+            self._views.append(view)				
 
-			
+
+    def _supported_pids_changed(self, device):
+        logger.debug('entering FreezeFrame._supported_pids_changed')
+        page = self.plugin.app.notebook.get_current_page()
+        if self.plugin.app.notebook.get_nth_page(page) is self.plugin.widget:
+            self.update_supported_views()
+            frame_page = self.plugin._frames_notebook.get_current_page()
+            if self.widget is self.plugin._frames_notebook.get_nth_page(frame_page):
+                self.update()
+
+           
     def update_supported_views(self):
         logger.debug('in update_supported_views')
-        if self.plugin.app.device.supported_freeze_frame_pids == None:
-            logger.debug('supported_freeze_frame_pids not yet read')
-            return
-        for view in self.views:
+        for view in self._views:
             if self.plugin.app.device:
-                if view.command.command in self.plugin.app.device.supported_freeze_frame_pids:
+                if view.command.command in self.plugin.app.device.supported_pids:
                     view.supported=True
                     view.active=True
                 else:
@@ -165,25 +176,47 @@ class FreezeFrame (GObject, PropertyObject):
             view.unit_standard = self._unit_standard
 
             
+    def _reread_button_clicked(self, button):
+        self.update()
+
+
+    def update(self):
+        logger.debug('entering FreezeFrame.update')
+        for view in self._views:
+            if view.supported:
+                self.plugin.app.scheduler.add(view.command, True)
+        print 'will start'
+        self.plugin.app.scheduler.start()
+
+    
 	def unload(self):
 		self.app.notebook.remove(self)
         for name, cb_id in self._pref_cbs:
-            self.app.prefs.remove_watch(name, cb_id)
+            self.plugin.app.prefs.remove_watch(name, cb_id)
         for cb_id in self._app_cbs:
-            self.app.disconnect(cb_id)
+            self.plugin.app.disconnect(cb_id)
         for cb_id in self._notebook_cbs:
-            self.app.notebook.disconnect(cb_id)
+            self.plugin.app.notebook.disconnect(cb_id)
         for cb_id in self._scheduler_cbs:
-            self.app.scheduler.disconnect(cb_id)
+            self.plugin.app.scheduler.disconnect(cb_id)
         for cb_id in self._obd_cbs:
-            self.app.device.disconnect(cb_id)			
+            self.plugin.app.device.disconnect(cb_id)			
 
 
 		
-class FreezeFramePlugin (Plugin):
+class FreezeFramePlugin (Plugin, PropertyObject):
     __gtype_name__ = 'FreezeFramePlugin'
+
+
+    gproperty('widget', object, flags=gobject.PARAM_READABLE)
+
+    def prop_get_widget(self):
+        return self._main_box
+
+    
     def __init__(self, app):
         Plugin.__init__(self)
+        PropertyObject.__init__(self)
 
         self.app = app
 	
@@ -192,13 +225,13 @@ class FreezeFramePlugin (Plugin):
         self._notebook_cbs = []
         self._scheduler_cbs = []
         self._obd_cbs = []
+
+        self._command = Command('0901')
+        self._command.connect('data-changed', self._command_data_changed)
         
         self.status = STATUS_STOP
 
         self._frames = []
-
-        self._command = Command('0901')
-        self._command.connect('data-changed', self._command_data_changed)
 
         self._setup_gui()
 		
@@ -206,14 +239,8 @@ class FreezeFramePlugin (Plugin):
                                              self._device_connected_cb))
         self._notebook_cbs.append(app.notebook.connect('switch-page', 
                                                   self._notebook_page_change_cb))
-        
-        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
-                                             self._scheduler_notify_working_cb))
-        
-        self._device_connected_cb(app.device)
 
-		
-
+                                                  
     def _setup_gui (self):
         self._main_box = gtk.HBox()
         self._frames_notebook = gtk.Notebook()
@@ -222,9 +249,10 @@ class FreezeFramePlugin (Plugin):
 
 
     def start(self):
+        logger.debug('entering FreezeFramePlugin.start')
         if self._command.command in self.app.device.supported_pids:
             self.app.scheduler.add(self._command)
-        self.app.scheduler.working = True
+        self.app.scheduler.start()
         
             
     def stop(self):
@@ -232,27 +260,25 @@ class FreezeFramePlugin (Plugin):
 
 
     def _command_data_changed(self, command, data):
+        logger.debug('entering FreezeFramePlugin._command_data_changed')
+        self.app.scheduler.remove(self._command)
         if int(data) > len(self._frames):
-            self.app.device.read_supported_freeze_frame_pids(data)
-            frame = FreezeFrame(data)
+            frame = FreezeFrame(self, data)
             self._frames_notebook.add(frame.widget)
             self._frames.append(frame)
-        
-        
-    def _device_connected_cb(self, device, connected=False):
+            self.app.device.read_supported_freeze_frame_pids(data)
+                    
+
+    def _device_connected_cb(self, device, connected):
+        logger.debug('entering FreezeFramePlugin._device_connected_cb')
         page = self.app.notebook.get_current_page()
-        visible = self.app.notebook.get_nth_page(page) is self
-        for frame in self._frames:
-            self.update_supported_views()
-
-
-    def _scheduler_notify_working_cb(self, scheduler, pspec):
-        pass
+        if self.app.notebook.get_nth_page(page) is self._main_box:
+            self.start()
 
     
     def _notebook_page_change_cb (self, notebook, no_use, page):
-        plugin = notebook.get_nth_page(page)
-        if plugin is self:
+        widget = notebook.get_nth_page(page)
+        if widget is self._main_box:
             self.start()
 
             

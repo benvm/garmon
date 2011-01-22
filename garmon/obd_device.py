@@ -63,6 +63,7 @@ class OBDDevice(GObject, PropertyObject):
     _connected = False 
     
     gsignal('connected', bool)
+    gsignal('supported-pids-changed')
     
     gproperty('portname', str)
     #gproperty('initial-baudrate', int, 38400)
@@ -227,7 +228,7 @@ class ELMDevice(OBDDevice, PropertyObject):
         err_cb = self._err_cb
         ret_cb = self._ret_cb
         args = self._cb_args
-     
+        
         if self._sent_command:
             if data[0] == '>':
                 logger.debug('command sent, received >')
@@ -322,9 +323,11 @@ class ELMDevice(OBDDevice, PropertyObject):
                     mode = modes.pop()
                     self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
                 else:
-                    self._connected = True
                     logger.info('supported pids: %s\n' % self._supported_pids)
-                    self.emit('connected', True)
+                    if not self._connected:
+                        self._connected = True
+                        self.emit('connected', True)
+                    self.emit('supported-pids-changed')
                     
         def twenty_success_cb(cmd, data, args):
             logger.debug('entering twenty_success_cb')
@@ -337,9 +340,11 @@ class ELMDevice(OBDDevice, PropertyObject):
                     mode = modes.pop()
                     self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
                 else:
-                    self._connected = True
                     logger.info('supported pids: %s\n' % self._supported_pids)
-                    self.emit('connected', True)
+                    if not self._connected:
+                        self._connected = True
+                        self.emit('connected', True)
+                    self.emit('supported-pids-changed')
                     
         def forty_success_cb(cmd, data, args):
             logger.debug('entering forty_success_cb')
@@ -349,9 +354,11 @@ class ELMDevice(OBDDevice, PropertyObject):
                 mode = modes.pop()
                 self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
             else:
-                self._connected = True
                 logger.info('supported pids: %s\n' % self._supported_pids)
-                self.emit('connected', True)
+                if not self._connected:
+                    self._connected = True
+                    self.emit('connected', True)
+                self.emit('supported-pids-changed')
 
         def error_cb(cmd, msg, args):
             logger.error('error reading supported pids, msg is: %s' % msg)
@@ -477,13 +484,12 @@ class ELMDevice(OBDDevice, PropertyObject):
             
     
     def read_pid_data(self, pid, ret_cb, err_cb, *args):
-        if not pid in self._supported_pids and \
-           not pid in self._supported_freeze_frame_pids:
+        if not pid in self._supported_pids:
             raise ValueError, 'pid %s is not supported' % pid
         
-        def success_cb(cmd, res, args):
-            res = decode_result(res)
-            ret_cb(cmd, res, args)
+        def success_cb(cmd, data, args):
+            ret = decode_result(data)
+            ret_cb(cmd, ret, args)
 
         if self._port and self._port.isOpen():
             self._send_command(pid, success_cb, err_cb, args)
@@ -514,12 +520,9 @@ class ELMDevice(OBDDevice, PropertyObject):
           
         if command in self._special_commands.keys():
             self.read_device_data(command, ret_cb, err_cb, args)
-        elif command[:2] == '01' and command in self._supported_pids:
-            self.read_pid_data(command, ret_cb, err_cb, args)
-        elif command[:2] == '02' and command in self._supported_freeze_frame_pids:
-            self.read_pid_data(command, ret_cb, err_cb, args)
         else:
-            raise NotImplementedError, 'This command is currently not supported'
+            self.read_pid_data(command, ret_cb, err_cb, args)
+
     
     
     def get_dtc_num(self, ret_cb, err_cb, *args):
@@ -580,7 +583,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 
                 
                 
-    def read_supported_freeze_frame_pids(self, frame):
+    def read_supported_freeze_frame_pids(self, frame, ret_cb=None, err_cb=None):
         self._read_supported_pids(['02'], frame)
 
 

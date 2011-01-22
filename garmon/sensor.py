@@ -99,7 +99,7 @@ class Sensor (Command, PropertyObject):
 
 
     def __init__(self, command, index=0, units='Metric'):
-        self._indices = len(SENSORS[command[2:]])
+        self._indices = len(SENSORS[command[2:4]])
         self._imperial_units = None
         self._metric_units = None
         self._decoder = None
@@ -112,10 +112,10 @@ class Sensor (Command, PropertyObject):
         self._update_info()
       
     def _update_info(self):
-        self._name = SENSORS[self.command[2:]][self.index][NAME]
-        self._metric_units = SENSORS[self.command[2:]][self.index][METRIC]
-        self._imperial_units = SENSORS[self.command[2:]][self.index][IMPERIAL]       
-        self._decoder = SENSORS[self.command[2:]][self.index][FUNC]
+        self._name = SENSORS[self.command[2:4]][self.index][NAME]
+        self._metric_units = SENSORS[self.command[2:4]][self.index][METRIC]
+        self._imperial_units = SENSORS[self.command[2:4]][self.index][IMPERIAL]       
+        self._decoder = SENSORS[self.command[2:4]][self.index][FUNC]
         
     def _index_changed_cb(self, o, pspec):
         self._clear_data()
