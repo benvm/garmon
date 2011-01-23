@@ -232,7 +232,8 @@ class PreferenceManager(GObject):
                     elif wtype == 'combo':
                         widget.connect('changed', self._combo_widget_cb, pname)
                     else:
-                        #FIXME: should not reach here
+                        #TODO: should not reach here
+                        #raise exception
                         pass
                         
                     cb_id = self.add_watch(pname, 

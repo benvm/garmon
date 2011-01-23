@@ -415,11 +415,11 @@ class ELMDevice(OBDDevice, PropertyObject):
         
                     
     def request_baudrate(self, baudrate=None):
-        """FIXME: Ignore this for the moment.
+        """TODO: Ignore this for the moment.
            Setting the baudrate with AT BRD xx needs more investigation"""
         raise NotImplementedError
         if not baudrate:
-            #FIXME: implement this
+            #TODO: implement this
             #self._request_highest_baudrate()
             pass
         else:
