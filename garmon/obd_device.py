@@ -310,65 +310,36 @@ class ELMDevice(OBDDevice, PropertyObject):
 
   
     
-    def _read_supported_pids(self, modes=['09','01'], suffix=''):
-        #FIXME: merge these 3 in a single function
-        def zero_success_cb(cmd, data, args):
+    def _read_supported_pids(self, modes=['09','01']):
+
+        def success_cb(cmd, data, args):
             logger.debug('entering zero_success_cb')
             mode = cmd[:2]
-            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix)
-            if mode + '20' in self._supported_pids:
-                self._send_command(mode + '20', twenty_success_cb, error_cb)
+            offset = int(cmd[2:4])
+            self._supported_pids += decode_pids_from_bitstring(data, mode, offset)
+            next = '%d' % (offset + 20)
+            if mode + next in self._supported_pids:
+                self._send_command(mode + next, success_cb, error_cb)
             else:
                 if len(modes):
                     mode = modes.pop()
-                    self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
+                    self._send_command(mode + '00', success_cb, error_cb)
                 else:
                     logger.info('supported pids: %s\n' % self._supported_pids)
                     if not self._connected:
                         self._connected = True
                         self.emit('connected', True)
                     self.emit('supported-pids-changed')
-                    
-        def twenty_success_cb(cmd, data, args):
-            logger.debug('entering twenty_success_cb')
-            mode = cmd[:2]
-            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix, 32)
-            if mode + '40' in self._supported_pids:
-                self._send_command(mode + '40', forty_success_cb, error_cb)
-            else:
-                if len(modes):
-                    mode = modes.pop()
-                    self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
-                else:
-                    logger.info('supported pids: %s\n' % self._supported_pids)
-                    if not self._connected:
-                        self._connected = True
-                        self.emit('connected', True)
-                    self.emit('supported-pids-changed')
-                    
-        def forty_success_cb(cmd, data, args):
-            logger.debug('entering forty_success_cb')
-            mode = cmd[:2]
-            self._supported_pids += decode_pids_from_bitstring(data, mode, suffix, 64)
-            if len(modes):
-                mode = modes.pop()
-                self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
-            else:
-                logger.info('supported pids: %s\n' % self._supported_pids)
-                if not self._connected:
-                    self._connected = True
-                    self.emit('connected', True)
-                self.emit('supported-pids-changed')
 
         def error_cb(cmd, msg, args):
             logger.error('error reading supported pids, msg is: %s' % msg)
             raise OBDPortError('OpenPortFailed', 
-                               _('could not read supported pids\n\n' + msg))        
+                               _('could not read supported pids\n\n' + msg))
 
-        if '01' in modes:                       
+        if '01' in modes:
             self._supported_pids = []
         mode = modes.pop()
-        self._send_command(mode + '00' + suffix, zero_success_cb, error_cb)
+        self._send_command(mode + '00', success_cb, error_cb)
         
       
         
@@ -380,7 +351,7 @@ class ELMDevice(OBDDevice, PropertyObject):
                 atz_error_cb(cmd, res, None)
             else:
                 logger.debug('received answer valid')
-                self._send_command('ate0', ate_success_cb, ate_error_cb) 
+                self._send_command('ate0', ate_success_cb, ate_error_cb)
             
         def atz_error_cb(cmd, msg, args):
             logger.debug('in atz_error_cb')
@@ -582,11 +553,6 @@ class ELMDevice(OBDDevice, PropertyObject):
             raise OBDPortError('PortNotOpen', _('The port is not open'))                
                 
                 
-                
-    def read_supported_freeze_frame_pids(self, frame, ret_cb=None, err_cb=None):
-        self._read_supported_pids(['02'], frame)
-
-
 
 def decode_dtc_result(result):
     if not result:
@@ -637,7 +603,7 @@ def decode_result(result):
     return ret
     
     
-def decode_pids_from_bitstring(data, mode, suffix, offset=0):
+def decode_pids_from_bitstring(data, mode, offset, suffix=''):
     logger.debug('entering decode_pids_from_bitstring')
     pids = []
     decoded = decode_result(data)
