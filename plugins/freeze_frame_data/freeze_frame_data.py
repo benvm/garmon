@@ -261,17 +261,6 @@ class FreezeFramePlugin (Plugin, PropertyObject):
         self._main_box.show_all()
 
 
-    def start(self):
-        logger.debug('entering FreezeFramePlugin.start')
-        if self._command.command in self.app.device.supported_pids:
-            self.app.scheduler.add(self._command)
-        self.app.scheduler.start()
-        
-            
-    def stop(self):
-        pass
-
-
     def _command_data_changed(self, command, pspec):
         logger.debug('entering FreezeFramePlugin._command_data_changed')
         self.app.scheduler.remove(self._command)
@@ -286,13 +275,16 @@ class FreezeFramePlugin (Plugin, PropertyObject):
         logger.debug('entering FreezeFramePlugin._supported_pids_changed_cb')
         page = self.app.notebook.get_current_page()
         if self.app.notebook.get_nth_page(page) is self._main_box:
-            self.start()
+            if self._command.command in self.app.device.supported_pids:
+                self.app.scheduler.add(self._command)
+            self.app.scheduler.start()
 
     
     def _notebook_page_change_cb (self, notebook, no_use, page):
         widget = notebook.get_nth_page(page)
         if widget is self._main_box:
-            self.start()
+            if self._command.command in self.app.device.supported_pids:
+                self.app.scheduler.add(self._command)
 
             
     def load(self):
