@@ -32,7 +32,7 @@ import gtk
 
 import garmon
 import garmon.plugin
-import garmon.sensor
+import garmon.sensor as sensor
 
 from garmon import logger
 from garmon.property_object import PropertyObject, gproperty, gsignal
@@ -56,9 +56,13 @@ class FreezeFrame (GObject, PropertyObject):
     __gtype_name__ = 'FreezeFrame'
 
     gproperty('widget', object, flags=gobject.PARAM_READABLE)
+    gproperty('frame', str, flags=gobject.PARAM_READABLE)
 
     def prop_get_widget(self):
         return self._main_hbox
+
+    def prop_get_frame(self):
+        return self._frame
     
         
     def __init__(self, plugin, frame):
@@ -82,10 +86,10 @@ class FreezeFrame (GObject, PropertyObject):
         cb_id = plugin.app.prefs.add_watch('imperial', 
                                     self._notify_units_cb)
         self._pref_cbs.append(('imperial', cb_id))
-        self._obd_cbs.append(plugin.app.device.connect('supported-pids-changed', 
-                                             self._supported_pids_changed))
+        
         self._setup_gui()
         self._setup_sensors()
+        self._get_supported_pids()
 
 		
     def _setup_gui(self):
@@ -98,8 +102,8 @@ class FreezeFrame (GObject, PropertyObject):
         self._main_hbox = self._builder.get_object('main_hbox')
         self._main_hbox.show_all()
         
-        self._reread_button = self._builder.get_object('re-read-button')
-        self._reread_button.connect('clicked', self._reread_button_clicked)
+        self._read_button = self._builder.get_object('read-button')
+        self._read_button.connect('clicked', self._read_button_clicked)
         
         
     def _setup_sensors(self):
@@ -141,29 +145,39 @@ class FreezeFrame (GObject, PropertyObject):
             self._views.append(view)				
 
 
-    def _supported_pids_changed(self, device):
-        logger.debug('entering FreezeFrame._supported_pids_changed')
-        page = self.plugin.app.notebook.get_current_page()
-        if self.plugin.app.notebook.get_nth_page(page) is self.plugin.widget:
-            self.update_supported_views()
-            frame_page = self.plugin._frames_notebook.get_current_page()
-            if self.widget is self.plugin._frames_notebook.get_nth_page(frame_page):
-                self.update()
+    def _get_supported_pids(self):
+
+        def data_changed_cb(cmd, pspec):
+            offset = int(cmd.command[2:4])
+            self._supported_pids += decode_pids_from_bitstring(cmd.data, offset, self._frame)
+            next = '%d' % (offset + 20)
+            if '02' + next in self._supported_pids:
+                command = Command('02' + next + self._frame)
+                command.connect('notify::data', data_changed_cb)
+                self.plugin.app.scheduler.add(command, True)
+            else:
+                self._update_supported_views()
+
+        def error_cb(cmd, msg, args):
+            logger.error('error reading supported pids, msg is: %s' % msg)
+            raise OBDPortError('OpenPortFailed', 
+                               _('could not read supported pids\n\n' + msg))
+
+        self._supported_pids = []
+        command = Command('0200' + self._frame)
+        command.connect('notify::data', data_changed_cb)
+        self.plugin.app.scheduler.add(command, True)
 
            
-    def update_supported_views(self):
+    def _update_supported_views(self):
         logger.debug('in update_supported_views')
         for view in self._views:
-            if self.plugin.app.device:
-                if view.command.command in self.plugin.app.device.supported_pids:
-                    view.supported=True
-                    view.active=True
-                else:
-                    view.supported=False
-                    view.active=False
+            if view.command.command in self._supported_pids:
+                view.supported=True
+                view.active=True
             else:
                 view.supported=False
-                view.active=False			
+                view.active=False
 
                 
     def _notify_units_cb(self, pname, pvalue, args):
@@ -176,7 +190,7 @@ class FreezeFrame (GObject, PropertyObject):
             view.unit_standard = self._unit_standard
 
             
-    def _reread_button_clicked(self, button):
+    def _read_button_clicked(self, button):
         self.update()
 
 
@@ -185,7 +199,6 @@ class FreezeFrame (GObject, PropertyObject):
         for view in self._views:
             if view.supported:
                 self.plugin.app.scheduler.add(view.command, True)
-        print 'will start'
         self.plugin.app.scheduler.start()
 
     
@@ -235,8 +248,8 @@ class FreezeFramePlugin (Plugin, PropertyObject):
 
         self._setup_gui()
 		
-        self._obd_cbs.append(app.device.connect('connected', 
-                                             self._device_connected_cb))
+        self._obd_cbs.append(app.device.connect('supported-pids-changed', 
+                                             self._supported_pids_changed_cb))
         self._notebook_cbs.append(app.notebook.connect('switch-page', 
                                                   self._notebook_page_change_cb))
 
@@ -262,15 +275,15 @@ class FreezeFramePlugin (Plugin, PropertyObject):
     def _command_data_changed(self, command, data):
         logger.debug('entering FreezeFramePlugin._command_data_changed')
         self.app.scheduler.remove(self._command)
-        if int(data) > len(self._frames):
-            frame = FreezeFrame(self, data)
-            self._frames_notebook.append_page(frame.widget, gtk.Label(_('Frame %s') % data))
+        for item in range(len(self._frames) + 1, int(data) + 1):
+            frame = FreezeFrame(self, '%0*d' % (2, item))
+            self._frames_notebook.append_page(frame.widget, 
+                                        gtk.Label(_('Frame %s') % frame.frame))
             self._frames.append(frame)
-            self.app.device.read_supported_freeze_frame_pids(data)
-                    
 
-    def _device_connected_cb(self, device, connected):
-        logger.debug('entering FreezeFramePlugin._device_connected_cb')
+
+    def _supported_pids_changed_cb(self, device):
+        logger.debug('entering FreezeFramePlugin._supported_pids_changed_cb')
         page = self.app.notebook.get_current_page()
         if self.app.notebook.get_nth_page(page) is self._main_box:
             self.start()
@@ -308,6 +321,23 @@ def _dtc_code_helper(view):
     if not dtc:
         dtc = ''
     view.value_widget.set_text(dtc)
+
+
+
+def decode_pids_from_bitstring(data, offset, suffix):
+    logger.debug('entering decode_pids_from_bitstring')
+    pids = []
+    for item in data:
+        bitstr = sensor.hex_to_bitstr(item)
+        for i, bit in enumerate(bitstr):
+            if bit == "1":
+                pid = i + 1 + offset
+                if pid < 16: 
+                    pid_str = '020' + hex(pid)[2:] + suffix
+                else:
+                    pid_str = '02' + hex(pid)[2:] + suffix
+                pids.append(pid_str.upper())
+    return pids
 
         
 (COMMAND, NAME) = range(2)

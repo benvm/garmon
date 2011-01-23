@@ -455,9 +455,6 @@ class ELMDevice(OBDDevice, PropertyObject):
             
     
     def read_pid_data(self, pid, ret_cb, err_cb, *args):
-        if not pid in self._supported_pids:
-            raise ValueError, 'pid %s is not supported' % pid
-        
         def success_cb(cmd, data, args):
             ret = decode_result(data)
             ret_cb(cmd, ret, args)
