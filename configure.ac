@@ -2,8 +2,8 @@ dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
 m4_define(garmon_major_version,  0)
-m4_define(garmon_minor_version, 3)
-m4_define(garmon_micro_version,  1)
+m4_define(garmon_minor_version, 4)
+m4_define(garmon_micro_version,  0)
 m4_define(garmon_version, garmon_major_version.garmon_minor_version.garmon_micro_version)
 
 AC_INIT(garmon, garmon_version)
