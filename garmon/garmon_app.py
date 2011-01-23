@@ -2,7 +2,7 @@
 #
 # garmon.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2011 <me@benvm.be>
 
 gpl = """
                       GNU General Public License
@@ -298,7 +298,7 @@ class GarmonApp(gtk.Window, PropertyObject):
 
         dialog = gtk.AboutDialog()
         dialog.set_name("Garmon")
-        dialog.set_copyright("Copyright \302\251 2007 Ben Van Mechelen")
+        dialog.set_copyright("Copyright \302\251 2007-2011 Ben Van Mechelen")
         dialog.set_website("http://garmon.sourceforge.net")
         dialog.set_version(GARMON_VERSION)
         dialog.set_comments(_("Gtk OBD Car Monitor"))

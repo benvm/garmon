@@ -2,7 +2,7 @@
 #
 # scheduler.py
 #
-# Copyright (C) Ben Van Mechelen 2008-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2008-2011 <me@benvm.be>
 # 
 # This file is part of Garmon 
 # 
