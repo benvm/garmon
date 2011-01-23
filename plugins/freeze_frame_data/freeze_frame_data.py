@@ -240,7 +240,7 @@ class FreezeFramePlugin (Plugin, PropertyObject):
         self._obd_cbs = []
 
         self._command = Command('0901')
-        self._command.connect('data-changed', self._command_data_changed)
+        self._command.connect('notify::data', self._command_data_changed)
         
         self.status = STATUS_STOP
 
@@ -272,10 +272,10 @@ class FreezeFramePlugin (Plugin, PropertyObject):
         pass
 
 
-    def _command_data_changed(self, command, data):
+    def _command_data_changed(self, command, pspec):
         logger.debug('entering FreezeFramePlugin._command_data_changed')
         self.app.scheduler.remove(self._command)
-        for item in range(len(self._frames) + 1, int(data) + 1):
+        for item in range(len(self._frames) + 1, int(command.data) + 1):
             frame = FreezeFrame(self, '%0*d' % (2, item))
             self._frames_notebook.append_page(frame.widget, 
                                         gtk.Label(_('Frame %s') % frame.frame))

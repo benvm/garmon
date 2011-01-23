@@ -39,19 +39,11 @@ class Command (GObject, PropertyObject):
     
     gproperty('command', str, flags=gobject.PARAM_READABLE)
     gproperty('data', object)
-
-    gsignal('data-changed', object)
     
     def __init__(self, command):
         GObject.__init__(self)
         PropertyObject.__init__(self, command=command)
-    
-    def __post_init__(self):
-        self.connect('notify::data', self._notify_data_cb)
-        
-    def _notify_data_cb(self, o, pspec):
-        self.emit('data-changed', self.data)
-        
+               
     def clear(self):
         self.data = None
 
