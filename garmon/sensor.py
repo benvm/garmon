@@ -487,12 +487,12 @@ B6 is Engine Stop Request*
 
    
 if __name__ == '__main__':
-    print 'testing OBDData'
+    print ('testing OBDData')
     s = OBDSensor('0114')
-    print s.pid
-    print s.index
-    print s.data
+    print (s.pid)
+    print (s.index)
+    print (s.data)
     s.data = '78'
-    print s.value
+    print (s.value)
 
     

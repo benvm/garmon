@@ -30,7 +30,7 @@ from optparse import OptionParser
 
 _dirname = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if os.path.exists(os.path.join(_dirname,"ChangeLog")):
-    print 'Running uninstalled'
+    print ('Running uninstalled')
 else:
     _dirname = '@PYTHONDIR@'
 sys.path.insert(0, _dirname)

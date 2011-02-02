@@ -28,7 +28,7 @@ from gettext import gettext as _
 import os
 import random
 import string
-
+import collections
 import gtk
 import gobject
 from gobject import GObject
@@ -135,7 +135,7 @@ class PreferenceManager(GObject):
 
 
     def add_watch(self, name, cb, *args):
-        if not callable(cb):
+        if not isinstance(cb, collections.Callable):
             raise AttributeError, 'cb is not callable'
         watch = None
         for item in self._watches:
