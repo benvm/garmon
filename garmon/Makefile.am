@@ -14,7 +14,7 @@ garmon_PYTHON = \
 	backdoor.py \
 	sensor.py \
 	property_object.py \
-	scheduler.py \
+	command_queue.py \
 	widgets.py \
 	obd_device.py \
 	__init__.py \

@@ -44,7 +44,7 @@ import garmon.plugin_manager as plugin_manager
 
 from garmon.prefs import PreferenceManager
 from garmon.obd_device import ELMDevice, OBDError, OBDDataError, OBDPortError
-from garmon.scheduler import Scheduler, SchedulerTimer
+from garmon.command_queue import CommandQueue, QueueTimer
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.backdoor import BackDoor
 
@@ -170,12 +170,12 @@ class GarmonApp(gtk.Window, PropertyObject):
         self.device = ELMDevice()
         self.device.baudrate = int(self.prefs.get('device.baudrate'))
         
-        self.scheduler = Scheduler(self.device)
-        self.scheduler.connect('state_changed', self._scheduler_state_changed_cb)
+        self.queue = CommandQueue(self.device)
+        self.queue.connect('state_changed', self._queue_state_changed_cb)
         
         self._statusbar = gtk.Statusbar()    
         self.main_vbox.pack_end(self._statusbar, False, False)    
-        timer = SchedulerTimer(self.scheduler)
+        timer = QueueTimer(self.queue)
         self._statusbar.pack_start(timer)
         
         self._plugman = plugin_manager.PluginManager(self)
@@ -329,12 +329,12 @@ class GarmonApp(gtk.Window, PropertyObject):
 
     def _activate_monitor(self, action):
         if action.get_active(): 
-            if not self.scheduler.working:
-                self.scheduler.start()
-        elif self.scheduler.working :
-            self.scheduler.stop()
+            if not self.queue.working:
+                self.queue.start()
+        elif self.queue.working :
+            self.queue.stop()
     
-    def _scheduler_state_changed_cb(self, scheduler, working):
+    def _queue_state_changed_cb(self, queue, working):
         self.ui.get_widget('/ToolBar/Monitor').set_active(working)
         self.ui.get_widget('/MenuBar/DeviceMenu/Monitor').set_active(working)
             

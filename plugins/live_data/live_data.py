@@ -60,7 +60,7 @@ class LiveData (gtk.VBox, Plugin):
         self._pref_cbs = []
         self._app_cbs = []
         self._notebook_cbs = []
-        self._scheduler_cbs = []
+        self._queue_cbs = []
         self._obd_cbs = []
         
         if app.prefs.get('imperial', False):
@@ -85,8 +85,8 @@ class LiveData (gtk.VBox, Plugin):
         self._notebook_cbs.append(app.notebook.connect('switch-page', 
                                                   self._notebook_page_change_cb))
         
-        self._scheduler_cbs.append(self.app.scheduler.connect('state-changed',
-                                             self._scheduler_state_changed_cb))
+        self._queue_cbs.append(self.app.queue.connect('state-changed',
+                                             self._queue_state_changed_cb))
         
         self._device_connected_cb(app.device)
         
@@ -193,23 +193,23 @@ class LiveData (gtk.VBox, Plugin):
                 self.views.append(view)
                     
     
-    def _scheduler_state_changed_cb(self, scheduler, working):
-        if not scheduler.working:
+    def _queue_state_changed_cb(self, queue, working):
+        if not queue.working:
             for views in (self.views, self.os_views):
                 for view in views:
                     view.command.clear()
         else:
             for view in self.os_views:
                 if view.active:
-                    self.app.scheduler.add(view.command, True)
+                    self.app.queue.add(view.command, True)
                     
             
     def _view_active_changed_cb(self, view, active):
         if active:
             if self.status == STATUS_WORKING:
-                self.app.scheduler.add(view.command)
+                self.app.queue.add(view.command)
         else:
-            self.app.scheduler.remove(view.command)
+            self.app.queue.remove(view.command)
     
     
     def _deactivate_clicked_cb(self, button):
@@ -238,10 +238,10 @@ class LiveData (gtk.VBox, Plugin):
             return
         for view in self.views:
             if view.active:
-                self.app.scheduler.add(view.command, False)
+                self.app.queue.add(view.command, False)
         for view in self.os_views:
             if view.active:
-                self.app.scheduler.add(view.command, True)
+                self.app.queue.add(view.command, True)
         self.status = STATUS_WORKING
         
             
@@ -250,7 +250,7 @@ class LiveData (gtk.VBox, Plugin):
             return
         for views in (self.views, self.os_views):
             for view in views:
-                self.app.scheduler.remove(view.command)
+                self.app.queue.remove(view.command)
                 view.command.clear()
         self.status = STATUS_STOP
         
@@ -293,8 +293,8 @@ class LiveData (gtk.VBox, Plugin):
             self.app.disconnect(cb_id)
         for cb_id in self._notebook_cbs:
             self.app.notebook.disconnect(cb_id)
-        for cb_id in self._scheduler_cbs:
-            self.app.scheduler.disconnect(cb_id)
+        for cb_id in self._queue_cbs:
+            self.app.queue.disconnect(cb_id)
         for cb_id in self._obd_cbs:
             self.app.device.disconnect(cb_id)
 

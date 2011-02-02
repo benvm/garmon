@@ -277,11 +277,11 @@ msgstr "<b>Descripcion: </b>"
 msgid "Garmon Preferences"
 msgstr "Preferencias Garmon"
 
-#: ../garmon/scheduler.py:178 ../garmon/scheduler.py:185
+#: ../garmon/command_queue.py:178 ../garmon/command_queue.py:185
 msgid "refresh rate: N/A"
 msgstr ""
 
-#: ../garmon/scheduler.py:207
+#: ../garmon/command_queue.py:207
 #, python-format
 msgid "refresh rate: %s Hz"
 msgstr ""

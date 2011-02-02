@@ -5,6 +5,7 @@ data/garmon.desktop.in.in
 [type: gettext/glade]data/device_prefs.ui
 [type: gettext/glade]data/general_prefs.ui
 garmon/backdoor.py
+garmon/command_queue.py
 garmon/garmon
 garmon/garmon_app.py
 garmon/obd_device.py
@@ -12,12 +13,9 @@ garmon/plugin.py
 garmon/plugin_manager.py
 garmon/prefs.py
 garmon/property_object.py
-garmon/scheduler.py
 garmon/sensor.py
 garmon/trouble_codes.py
 garmon/widgets.py
-plugins/dashboard/dashboard.py
-[type: gettext/glade]plugins/dashboard/dashboard.ui
 plugins/dtc_clearer/dtc_clearer.py
 plugins/dtc_reader/dtc_reader.py
 [type: gettext/glade]plugins/dtc_reader/dtc_reader.ui

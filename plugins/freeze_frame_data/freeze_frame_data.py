@@ -75,7 +75,7 @@ class FreezeFrame (GObject, PropertyObject):
         self._pref_cbs = []
         self._app_cbs = []
         self._notebook_cbs = []
-        self._scheduler_cbs = []
+        self._queue_cbs = []
         self._obd_cbs = []
         
         if plugin.app.prefs.get('imperial', False):
@@ -154,7 +154,7 @@ class FreezeFrame (GObject, PropertyObject):
             if '02' + next in self._supported_pids:
                 command = Command('02' + next + self._frame)
                 command.connect('notify::data', data_changed_cb)
-                self.plugin.app.scheduler.add(command, True)
+                self.plugin.app.queue.add(command, True)
             else:
                 self._update_supported_views()
 
@@ -166,7 +166,7 @@ class FreezeFrame (GObject, PropertyObject):
         self._supported_pids = []
         command = Command('0200' + self._frame)
         command.connect('notify::data', data_changed_cb)
-        self.plugin.app.scheduler.add(command, True)
+        self.plugin.app.queue.add(command, True)
 
            
     def _update_supported_views(self):
@@ -198,8 +198,8 @@ class FreezeFrame (GObject, PropertyObject):
         logger.debug('entering FreezeFrame.update')
         for view in self._views:
             if view.supported:
-                self.plugin.app.scheduler.add(view.command, True)
-        self.plugin.app.scheduler.start()
+                self.plugin.app.queue.add(view.command, True)
+        self.plugin.app.queue.start()
 
     
 	def unload(self):
@@ -210,8 +210,8 @@ class FreezeFrame (GObject, PropertyObject):
             self.plugin.app.disconnect(cb_id)
         for cb_id in self._notebook_cbs:
             self.plugin.app.notebook.disconnect(cb_id)
-        for cb_id in self._scheduler_cbs:
-            self.plugin.app.scheduler.disconnect(cb_id)
+        for cb_id in self._queue_cbs:
+            self.plugin.app.queue.disconnect(cb_id)
         for cb_id in self._obd_cbs:
             self.plugin.app.device.disconnect(cb_id)			
 
@@ -236,7 +236,7 @@ class FreezeFramePlugin (Plugin, PropertyObject):
         self._pref_cbs = []
         self._app_cbs = []
         self._notebook_cbs = []
-        self._scheduler_cbs = []
+        self._queue_cbs = []
         self._obd_cbs = []
 
         self._command = Command('0901')
@@ -263,7 +263,7 @@ class FreezeFramePlugin (Plugin, PropertyObject):
 
     def _command_data_changed(self, command, pspec):
         logger.debug('entering FreezeFramePlugin._command_data_changed')
-        self.app.scheduler.remove(self._command)
+        self.app.queue.remove(self._command)
         for item in range(len(self._frames) + 1, int(command.data) + 1):
             frame = FreezeFrame(self, '%0*d' % (2, item))
             self._frames_notebook.append_page(frame.widget, 
@@ -276,15 +276,15 @@ class FreezeFramePlugin (Plugin, PropertyObject):
         page = self.app.notebook.get_current_page()
         if self.app.notebook.get_nth_page(page) is self._main_box:
             if self._command.command in self.app.device.supported_pids:
-                self.app.scheduler.add(self._command)
-            self.app.scheduler.start()
+                self.app.queue.add(self._command)
+            self.app.queue.start()
 
     
     def _notebook_page_change_cb (self, notebook, no_use, page):
         widget = notebook.get_nth_page(page)
         if widget is self._main_box:
             if self._command.command in self.app.device.supported_pids:
-                self.app.scheduler.add(self._command)
+                self.app.queue.add(self._command)
 
             
     def load(self):
@@ -301,8 +301,8 @@ class FreezeFramePlugin (Plugin, PropertyObject):
             self.app.disconnect(cb_id)
         for cb_id in self._notebook_cbs:
             self.app.notebook.disconnect(cb_id)
-        for cb_id in self._scheduler_cbs:
-            self.app.scheduler.disconnect(cb_id)
+        for cb_id in self._queue_cbs:
+            self.app.queue.disconnect(cb_id)
         for cb_id in self._obd_cbs:
             self.app.device.disconnect(cb_id)
 

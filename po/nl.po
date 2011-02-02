@@ -1,5 +1,5 @@
 # Dutch translation of garmon.
-# Copyright (C) 2009-2010 Ben Van Mechelen
+# Copyright (C) 2009-2011 Ben Van Mechelen
 # This file is distributed under the same license as the garmon package.
 # , fuzzy
 # Ben Van Mechelen <me@benvm.be>, 2009, 2010.
@@ -276,11 +276,11 @@ msgstr "<b>Omschrijving: </b>"
 msgid "Garmon Preferences"
 msgstr "Garmon Voorkeuren"
 
-#: ../garmon/scheduler.py:178 ../garmon/scheduler.py:185
+#: ../garmon/command_queue.py:178 ../garmon/command_queue.py:185
 msgid "refresh rate: N/A"
 msgstr "verversingssnelheid: NVT"
 
-#: ../garmon/scheduler.py:207
+#: ../garmon/command_queue.py:207
 #, python-format
 msgid "refresh rate: %s Hz"
 msgstr "verversingssnelheid: %s Hz"
