@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# scheduler.py
+# command_queue.py
 #
 # Copyright (C) Ben Van Mechelen 2008-2011 <me@benvm.be>
 # 
@@ -46,11 +46,11 @@ class QueueItem(str):
 
         
 
-class Scheduler (GObject, PropertyObject):
-    """ This class receives OBDData objects, puts them in a queue
+class CommandQueue (GObject, PropertyObject):
+    """ This class receives Command objects, puts them in a queue
         and sends them to the OBDDevice
     """
-    __gtype_name__ = "Scheduler"
+    __gtype_name__ = "CommandQueue"
     
     ################# Properties and signals ###############    
     gsignal('command-executed')
@@ -82,14 +82,14 @@ class Scheduler (GObject, PropertyObject):
         self.obd_device.connect('connected', self._obd_device_connected_cb)
     
     def start(self):
-        logger.debug('Scheduler.start')
+        logger.debug('CommandQueue.start')
         if not self._working:
             self._working = True
             self.emit('state-changed', self._working)
         self._execute_next_command()
 
     def stop(self):
-        logger.debug('Scheduler.stop')
+        logger.debug('CommandQueue.stop')
         if self._working:
             self._working = False
             self.emit('state-changed', self._working)
@@ -102,7 +102,7 @@ class Scheduler (GObject, PropertyObject):
     
     
     def _command_success_cb(self, cmd, result, args):
-        logger.debug('entering Scheduler._command_success_cb: %s' % cmd)
+        logger.debug('entering CommandQueue._command_success_cb: %s' % cmd)
         # We only care about the first result
         result = result[0]
         for item in cmd.list:
@@ -110,25 +110,25 @@ class Scheduler (GObject, PropertyObject):
         self._execute_next_command()
             
     def _command_error_cb(self, cmd, msg, args):
-        logger.debug('Scheduler._command_error_cb: command was: %s' % cmd)
-        logger.debug('Scheduler._command_error_cb: msg is %s' % msg)
+        logger.debug('CommandQueue._command_error_cb: command was: %s' % cmd)
+        logger.debug('CommandQueue._command_error_cb: msg is %s' % msg)
         if self._working:
             self._execute_next_command()
     
     
     def _execute_next_command(self):
-        logger.debug('entering Scheduler._execute_next_command')
+        logger.debug('entering CommandQueue._execute_next_command')
         if self._working:
             if len(self._queue):
                 queue_item = self._queue.pop(0)
                 if not queue_item.oneshot:
                     self._queue.append(queue_item)
             else:
-                logger.debug('Scheduler: nothing in queue')
+                logger.debug('CommandQueue: nothing in queue')
                 self.stop()
                 return
         
-            logger.debug('Scheduler: executing next command: %s' % queue_item  ) 
+            logger.debug('CommandQueue: executing next command: %s' % queue_item  ) 
             self.obd_device.read_command(queue_item, 
                                               self._command_success_cb,
                                               self._command_error_cb)
@@ -174,26 +174,26 @@ class Scheduler (GObject, PropertyObject):
                     self._queue.remove(queue_item)
     
     
-class SchedulerTimer(gtk.Label, PropertyObject):
+class QueueTimer(gtk.Label, PropertyObject):
     
     gproperty('active', bool, False)
 
-    def __init__(self, scheduler):
+    def __init__(self, queue):
         GObject.__init__(self)
         PropertyObject.__init__(self)
         
         self._rate = 0
         self._samples = []
-        self.set_text(_('refresh rate: N/A'))
+        self.set_text(_('command rate: N/A'))
         
-        scheduler.connect('command_executed', self._scheduler_command_executed_cb)
-        scheduler.connect('notify::working', self._scheduler_notify_working_cb)
+        queue.connect('command_executed', self._queue_command_executed_cb)
+        queue.connect('notify::working', self._queue_notify_working_cb)
                     
-    def _scheduler_notify_working_cb(self, scheduler, working):
+    def _queue_notify_working_cb(self, queue, working):
         if not working:
-            self.set_text(_('refresh rate: N/A'))
+            self.set_text(_('command rate: N/A'))
     
-    def _scheduler_command_executed_cb(self, scheduler):
+    def _queue_command_executed_cb(self, queue):
         now = datetime.datetime.now()
         if len(self._samples) == 0:
             self._samples.append((now, datetime.timedelta(0,0,0)))
@@ -213,7 +213,7 @@ class SchedulerTimer(gtk.Label, PropertyObject):
                 
             rate = round(count / total, 1)
             
-            self.set_text(_('refresh rate: %s Hz') % rate)
+            self.set_text(_('command rate: %s Hz') % rate)
         
         
         
