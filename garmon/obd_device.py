@@ -218,7 +218,7 @@ class ELMDevice(OBDDevice, PropertyObject):
          
       
     def _parse_result(self, data):
-        logger.debug('entering ELMDevice._parse_result')
+        logger.debug('entering ELMDevice._parse_result: %s' % data)
         error = False
         success = False
         res = None
@@ -238,9 +238,18 @@ class ELMDevice(OBDDevice, PropertyObject):
                 logger.debug('command sent, received ?')
                 error = True
                 msg = '?'
+
+            elif 'ERROR' in data:
+                logger.info('received ERROR')
+                error = True
+                msg = data
                 
             elif 'SEARCHING' in data:
                 logger.info('received SEARCHING: resending command')
+                self._send_command(cmd, ret_cb, err_cb, args)
+
+            elif 'BUS INIT' in data:
+                logger.info('received BUS INIT: resending command')
                 self._send_command(cmd, ret_cb, err_cb, args)
                 
             elif 'UNABLE TO CONNECT' in data:
