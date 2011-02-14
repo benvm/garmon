@@ -27,6 +27,7 @@ along with this program.  If not, write to:
 """
 
 import gobject
+from gobject import GObject
 import gtk
 import locale
 import gettext
@@ -94,31 +95,21 @@ ui_info = \
 </ui>'''
 
 
-(   PAGE_SENSORS,
-    PAGE_DTC
-) = range(2)
 
-    
-class GarmonApp(gtk.Window, PropertyObject):
-    """This class is the main window of the application
-       It contains a notebook to which plugins can be added."""
+class GarmonApp(gobject.GObject, PropertyObject):
+    """This class is the main class of the application."""
 
     __gtype_name__ = "GarmonApp"
     
     ################# Properties and signals ###############
     gsignal('reset')
     
-    gproperty('prefs', object, flags=gobject.PARAM_READABLE)
-        
-    def prop_get_prefs(self):
-        return self._prefs
-
-
-    def __init__(self, parent=None):
+    def __init__(self):
+        gobject.GObject.__init__(self)
         PropertyObject.__init__(self)
         
         #Create the toplevel window
-        gtk.Window.__init__(self)
+        self.window = gtk.Window()
         
         icon = gtk.gdk.pixbuf_new_from_file(os.path.join(PIXMAP_DIR, 
                                                          'garmon.svg'))
@@ -130,17 +121,14 @@ class GarmonApp(gtk.Window, PropertyObject):
         
         self._backdoor = None
         
-        try:
-            self.set_screen(parent.get_screen())
-        except AttributeError:
-            self.connect('destroy', lambda *w: gtk.main_quit())
+        self.window.connect('delete-event', self._window_delete_event_cb)
         
-        self.set_title("Garmon")
-        self.set_default_size(880, 900)
+        self.window.set_title("Garmon")
+        self.window.set_default_size(880, 900)
         
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(self._create_action_group(), 0)
-        self.add_accel_group(self.ui.get_accel_group())
+        self.window.add_accel_group(self.ui.get_accel_group())
         
         try:
             mergeid = self.ui.add_ui_from_string(ui_info)
@@ -151,7 +139,7 @@ class GarmonApp(gtk.Window, PropertyObject):
         
         self.main_vbox = gtk.VBox(4)
         self.main_vbox.set_homogeneous(False)
-        self.add(self.main_vbox)
+        self.window.add(self.main_vbox)
         
         self.main_vbox.pack_start(menubar, False, False)
         
@@ -179,11 +167,11 @@ class GarmonApp(gtk.Window, PropertyObject):
         self._statusbar.pack_start(timer)
         
         self._plugman = plugin_manager.PluginManager(self)
-        if self._prefs.get('plugins.start'):
+        if self.prefs.get('plugins.start'):
             self._plugman.activate_saved_plugins()
         
         
-        self.show_all()
+        self.window.show_all()
 
 
     def _setup_prefs(self):
@@ -191,26 +179,26 @@ class GarmonApp(gtk.Window, PropertyObject):
         baudrates = (9600, 38400, 57600, 115200)
         higher_rates = (57600, 115200)
     
-        self._prefs = PreferenceManager()
+        self.prefs = PreferenceManager()
         self._pref_cbs = []
 
-        self._prefs.register('mil.on-color', '#F7D30D')
-        self._prefs.register('mil.off-color', '#AAAAAA')
-        self._prefs.register('device.portname', '/dev/ttyUSB0')
-        self._prefs.register('device.baudrate', 38400)
-        self._prefs.register('device.initial-baudrate', 38400)
-        self._prefs.register('device.increase-baudrate', False)
-        self._prefs.register('device.higher-baudrate', 115200)
-        self._prefs.register('metric', True)
-        self._prefs.register('imperial', False)
-        self._prefs.register('plugins.save', True)
-        self._prefs.register('plugins.start', True)
-        self._prefs.register('plugins.saved', 'Live Data,DTC Reader,DTC Clearer')
+        self.prefs.register('mil.on-color', '#F7D30D')
+        self.prefs.register('mil.off-color', '#AAAAAA')
+        self.prefs.register('device.portname', '/dev/ttyUSB0')
+        self.prefs.register('device.baudrate', 38400)
+        self.prefs.register('device.initial-baudrate', 38400)
+        self.prefs.register('device.increase-baudrate', False)
+        self.prefs.register('device.higher-baudrate', 115200)
+        self.prefs.register('metric', True)
+        self.prefs.register('imperial', False)
+        self.prefs.register('plugins.save', True)
+        self.prefs.register('plugins.start', True)
+        self.prefs.register('plugins.saved', 'Live Data,DTC Reader,DTC Clearer')
         
         fname = os.path.join(UI_DIR, 'general_prefs.ui')
         self._builder.add_from_file(fname)
         
-        self._prefs.add_dialog_page(self._builder, 'general_prefs_vbox', _('General'))
+        self.prefs.add_dialog_page(self._builder, 'general_prefs_vbox', _('General'))
         
         fname = os.path.join(UI_DIR, 'device_prefs.ui')
         self._builder.add_from_file(fname)
@@ -221,9 +209,9 @@ class GarmonApp(gtk.Window, PropertyObject):
         combo.add_attribute(cell, 'text', 0)
         model = self._builder.get_object('baudrate_store')
         
-        self._prefs.add_dialog_page(self._builder, 'device_prefs_vbox', _('Device'))
-        cb_id = self._prefs.add_watch('device.portname', self._notify_port_cb)
-        cb_id = self._prefs.add_watch('device.baudrate', self._notify_port_cb)
+        self.prefs.add_dialog_page(self._builder, 'device_prefs_vbox', _('Device'))
+        cb_id = self.prefs.add_watch('device.portname', self._notify_port_cb)
+        cb_id = self.prefs.add_watch('device.baudrate', self._notify_port_cb)
         
                 
 
@@ -311,19 +299,19 @@ class GarmonApp(gtk.Window, PropertyObject):
         dialog.show()
         
 
-    def _activate_quit(self, action):
+    def _activate_quit(self, action=None):
 
-        dialog = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
+        dialog = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT,
             gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL,
             _("Do You Really want to quit?"))
             
         dialog.show()
         res = dialog.run()
         if res == gtk.RESPONSE_OK:
-            if self._prefs.get('plugins.save'):
+            if self.prefs.get('plugins.save'):
                 self._plugman.save_active_plugins()
             #TODO: Clean things up
-            self._prefs.save()
+            self.prefs.save()
             gtk.main_quit()
         dialog.destroy()
 
@@ -337,6 +325,10 @@ class GarmonApp(gtk.Window, PropertyObject):
     def _queue_state_changed_cb(self, queue, working):
         self.ui.get_widget('/ToolBar/Monitor').set_active(working)
         self.ui.get_widget('/MenuBar/DeviceMenu/Monitor').set_active(working)
+
+    def _window_delete_event_cb(self, window, event):
+        self._activate_quit()
+        return True
             
             
     def _toggle_fullscreen(self, action):
@@ -375,7 +367,7 @@ class GarmonApp(gtk.Window, PropertyObject):
             self.device.open(self.prefs.get('device.portname'))
         except OBDPortError, e:
             err, msg = e
-            dialog = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
+            dialog = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT,
                                              gtk.MESSAGE_WARNING, gtk.BUTTONS_OK,
                                              err + '\n\n' + msg + '\n\n' + 
                                              _("Please make sure the device is connected and your settings are correct"))

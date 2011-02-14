@@ -100,8 +100,9 @@ class DTCClearer (Plugin):
                 self.app.reset()
         
         def err_cb(cmd, err, args):
-            dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
-                gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, 
+            dialog = gtk.MessageDialog(self.app.window, 
+                                       gtk.DIALOG_DESTROY_WITH_PARENT,
+                                       gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, 
                 _("""An error occurred while trying to reset the dtc.\n
 Please make sure your device is connected.
 The ignition must be turned on but the engine should not be running"""))
@@ -110,8 +111,10 @@ The ignition must be turned on but the engine should not be running"""))
             dialog.destroy()                    
 
 
-        dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
-                 gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL,
+        dialog = gtk.MessageDialog(self.app.window, 
+                                   gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   gtk.MESSAGE_QUESTION, 
+                                   gtk.BUTTONS_OK_CANCEL,
                  _("""Are You Sure You want to clear the trouble codes?
                 
     This will reset the Malfunction Indicator Light.
@@ -137,9 +140,11 @@ The ignition must be turned on but the engine should not be running"""))
                 #MOVE THIS 
             except OBDPortError, e:
                 err, msg = e
-                dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
-                    gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, 
-                    err + '\n\n' + msg)
+                dialog = gtk.MessageDialog(self.app.window, 
+                                           gtk.DIALOG_DESTROY_WITH_PARENT,
+                                           gtk.MESSAGE_ERROR, 
+                                           gtk.BUTTONS_OK, 
+                                           err + '\n\n' + msg)
                 dialog.run()
                 dialog.destroy()
                 raise

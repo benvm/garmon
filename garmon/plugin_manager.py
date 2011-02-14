@@ -67,7 +67,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
         """ @param app: GarmonApp
         """
         gtk.Dialog.__init__(self, _("Garmon Plugin Manager"),
-                                  app, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                  app.window, gtk.DIALOG_DESTROY_WITH_PARENT,
                                   (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE,))
         PropertyObject.__init__(self)
                                   

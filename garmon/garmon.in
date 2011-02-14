@@ -58,7 +58,6 @@ if not level in DEBUG_LEVELS:
 DEBUG_LEVEL = getattr(logging, level)
 garmon.logger.setLevel(DEBUG_LEVEL)
 
-
 garmon.garmon_app.main()
 
 
