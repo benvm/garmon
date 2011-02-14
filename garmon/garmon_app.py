@@ -115,8 +115,8 @@ class GarmonApp(gobject.GObject, PropertyObject):
                                                          'garmon.svg'))
         gtk.window_set_default_icon_list(icon)
         
-        self._builder = gtk.Builder()
-        self._builder.set_translation_domain('garmon')
+        self.builder = gtk.Builder()
+        self.builder.set_translation_domain('garmon')
         self._setup_prefs()
         
         self._backdoor = None
@@ -155,8 +155,7 @@ class GarmonApp(gobject.GObject, PropertyObject):
         
         self.main_vbox.pack_start(self.notebook)
         
-        self.device = ELMDevice()
-        self.device.baudrate = int(self.prefs.get('device.baudrate'))
+        self.device = ELMDevice(self)
         
         self.queue = CommandQueue(self.device)
         self.queue.connect('state_changed', self._queue_state_changed_cb)
@@ -179,16 +178,11 @@ class GarmonApp(gobject.GObject, PropertyObject):
         baudrates = (9600, 38400, 57600, 115200)
         higher_rates = (57600, 115200)
     
-        self.prefs = PreferenceManager()
+        self.prefs = PreferenceManager(self)
         self._pref_cbs = []
 
         self.prefs.register('mil.on-color', '#F7D30D')
         self.prefs.register('mil.off-color', '#AAAAAA')
-        self.prefs.register('device.portname', '/dev/ttyUSB0')
-        self.prefs.register('device.baudrate', 38400)
-        self.prefs.register('device.initial-baudrate', 38400)
-        self.prefs.register('device.increase-baudrate', False)
-        self.prefs.register('device.higher-baudrate', 115200)
         self.prefs.register('metric', True)
         self.prefs.register('imperial', False)
         self.prefs.register('plugins.save', True)
@@ -196,24 +190,11 @@ class GarmonApp(gobject.GObject, PropertyObject):
         self.prefs.register('plugins.saved', 'Live Data,DTC Reader,DTC Clearer')
         
         fname = os.path.join(UI_DIR, 'general_prefs.ui')
-        self._builder.add_from_file(fname)
+        self.builder.add_from_file(fname)
         
-        self.prefs.add_dialog_page(self._builder, 'general_prefs_vbox', _('General'))
+        self.prefs.add_dialog_page('general_prefs_vbox', _('General'))
         
-        fname = os.path.join(UI_DIR, 'device_prefs.ui')
-        self._builder.add_from_file(fname)
-        
-        combo = self._builder.get_object('preference;combo;int;device.baudrate')
-        cell = gtk.CellRendererText()
-        combo.pack_start(cell, True)
-        combo.add_attribute(cell, 'text', 0)
-        model = self._builder.get_object('baudrate_store')
-        
-        self.prefs.add_dialog_page(self._builder, 'device_prefs_vbox', _('Device'))
-        cb_id = self.prefs.add_watch('device.portname', self._notify_port_cb)
-        cb_id = self.prefs.add_watch('device.baudrate', self._notify_port_cb)
-        
-                
+               
 
     def _create_action_group(self):
         # GtkActionEntry
@@ -364,7 +345,7 @@ class GarmonApp(gobject.GObject, PropertyObject):
             self.device.close()
 
         try:
-            self.device.open(self.prefs.get('device.portname'))
+            self.device.open()
         except OBDPortError, e:
             err, msg = e
             dialog = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT,

@@ -70,9 +70,10 @@ class _Watch(object):
 class PreferenceManager(GObject):
     __gtype_name__ ='PreferenceManager'
     
-    def __init__(self):
+    def __init__(self, app):
         GObject.__init__(self)
-        
+
+        self.app = app
         self._config = ConfigParser()
         self._filename = os.path.join(save_config_path("garmon"), "config")
         self._config.read(self._filename)
@@ -208,11 +209,11 @@ class PreferenceManager(GObject):
         self._dialog.hide()
         
         
-    def add_dialog_page(self, builder, widget, name):
-        top = builder.get_object(widget)
+    def add_dialog_page(self, widget, name):
+        top = self.app.builder.get_object(widget)
         top.cb_ids = []
         self._dialog.notebook.append_page(top, gtk.Label(name))
-        objects = builder.get_objects()
+        objects = self.app.builder.get_objects()
         for widget in objects:
             if isinstance(widget, gtk.Widget):
                 if gtk.ver < (2,20,0):
