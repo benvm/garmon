@@ -39,9 +39,9 @@ import garmon
 import garmon.sensor as sensor
 from garmon.sensor import SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
 from garmon.sensor import dtc_decode_num, dtc_decode_mil
-from garmon.prefs import PreferenceManager
+from garmon.preferences import PreferenceManager
 
-from garmon import logger, UI_DIR
+from garmon import logger
 
 import datetime
 
@@ -168,7 +168,7 @@ class ELMDevice(OBDDevice, PropertyObject):
         self.app.prefs.register('device.baudrate', 38400)
         self.app.prefs.register('device.ignore-keywords', False)
 
-        fname = os.path.join(UI_DIR, 'device_prefs.ui')
+        fname = os.path.join(garmon.dirs.UI, 'device_prefs.ui')
         self.app.builder.add_from_file(fname)
         
         combo = self.app.builder.get_object('preference;combo;int;device.baudrate')

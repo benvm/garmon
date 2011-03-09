@@ -39,7 +39,7 @@ from garmon.trouble_codes import DTC_CODES, DTC_CODE_CLASSES
 from garmon.sensor import decode_dtc_code
 
 __name = _('DTC Reader')
-__version = garmon.GARMON_VERSION
+__version = garmon.version
 __author = 'Ben Van Mechelen'
 __description = _('Reads the stored trouble codes from the vehicle')
 __class = 'DTCReader'

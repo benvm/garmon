@@ -56,7 +56,7 @@ class CommandQueue (GObject, PropertyObject):
     gsignal('command-executed')
     gsignal('state-changed', bool)
     
-    gproperty('obd-device', object)
+    gproperty('device', object)
     gproperty('working', bool, False)
 
     def prop_set_device(self, device):
@@ -79,7 +79,7 @@ class CommandQueue (GObject, PropertyObject):
         self._working = False
      
     def __post_init__(self):
-        self.obd_device.connect('connected', self._obd_device_connected_cb)
+        self.device.connect('connected', self._device_connected_cb)
     
     def start(self):
         logger.debug('CommandQueue.start')

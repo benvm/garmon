@@ -42,8 +42,9 @@ gettext.textdomain('garmon')
 import garmon
 import garmon.logger
 
-from garmon.prefs import PreferenceManager
-from garmon.obd_device import ELMDevice, OBDError, OBDDataError, OBDPortError
+from garmon.preferences import PreferenceManager
+from garmon.plugin_manager import PluginManager
+from garmon.device import ELMDevice, OBDError, OBDDataError, OBDPortError
 from garmon.command_queue import CommandQueue, QueueTimer
 from garmon.property_object import PropertyObject, gproperty, gsignal
 from garmon.backdoor import BackDoor
@@ -164,7 +165,7 @@ class GarmonApp(gobject.GObject, PropertyObject):
         timer = QueueTimer(self.queue)
         self._statusbar.pack_start(timer)
         
-        self._plugman = plugin_manager.PluginManager(self)
+        self._plugman = PluginManager(self)
         if self.prefs.get('plugins.start'):
             self._plugman.activate_saved_plugins()
         
@@ -188,7 +189,7 @@ class GarmonApp(gobject.GObject, PropertyObject):
         self.prefs.register('plugins.start', True)
         self.prefs.register('plugins.saved', 'Live Data,DTC Reader,DTC Clearer')
         
-        fname = os.path.join(UI_DIR, 'general_prefs.ui')
+        fname = os.path.join(garmon.dirs.UI, 'general_prefs.ui')
         self.builder.add_from_file(fname)
         
         self.prefs.add_dialog_page('general_prefs_vbox', _('General'))
