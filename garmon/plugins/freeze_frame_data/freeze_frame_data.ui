@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <interface>
+  <!-- interface-requires gtk+ 2.12 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkHBox" id="main_hbox">
     <property name="visible">True</property>
@@ -583,7 +584,7 @@
                         <property name="visible">True</property>
                         <property name="layout_style">center</property>
                         <child>
-                          <object class="GtkButton" id="re-read-button">
+                          <object class="GtkButton" id="read-button">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -602,7 +603,7 @@
                                 <child>
                                   <object class="GtkLabel" id="label4">
                                     <property name="visible">True</property>
-                                    <property name="label" translatable="yes">Re-read</property>
+                                    <property name="label" translatable="yes">Read</property>
                                   </object>
                                   <packing>
                                     <property name="position">1</property>

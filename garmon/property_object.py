@@ -28,7 +28,7 @@
 import os
 import struct
 import sys
-
+import collections
 import gobject
 
 import garmon
@@ -221,13 +221,13 @@ class PropertyObject(object):
 
     def _set(self, name, value):
         func = getattr(self, 'prop_set_%s' % name, None)
-        if callable(func) and func:
+        if isinstance(func, collections.Callable) and func:
             value = func(value)
         self._attributes[name] = value
 
     def _get(self, name):
         func = getattr(self, 'prop_get_%s' % name, None)
-        if callable(func) and func:
+        if isinstance(func, collections.Callable) and func:
             return func()
         return self._attributes[name]
 

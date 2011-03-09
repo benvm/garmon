@@ -2,7 +2,7 @@
 #
 # widgets.py
 #
-# Copyright (C) Ben Van Mechelen 2008-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2008-2011 <me@benvm.be>
 # 
 # This file is part of Garmon 
 # 
@@ -68,7 +68,7 @@ class MILWidget(gtk.Entry,
         self.connect('notify::on-color', self._notify_cb)
         self.connect('notify::off-color', self._notify_cb)
         self.notify('on')
-        self.command.connect('data-changed', self._data_changed_cb)
+        self.command.connect('notify::data', self._data_changed_cb)
         
     def _notify_cb(self, o, pspec):
         if self.on:
@@ -84,7 +84,7 @@ class MILWidget(gtk.Entry,
             self.off_color = pvalue
     
     
-    def _data_changed_cb(self, command, data):
+    def _data_changed_cb(self, command, pspec):
         on = self.command.metric_value == 'On'
         self.on = on
                                   
@@ -159,7 +159,7 @@ class BaseView(GObject, StateMixin, PropertyObject):
         self._do_sensitize_widgets()
             
             
-    def _data_changed_cb(self, command, data):
+    def _data_changed_cb(self, command, pspec):
         self._update_view()
        
        
@@ -180,7 +180,7 @@ class CommandView(BaseView):
                        units_widget=None, helper=None):
                        
         self.command = Command(command)
-        self.command.connect('data-changed', self._data_changed_cb)
+        self.command.connect('notify::data', self._data_changed_cb)
         
         BaseView.__init__(self, active_widget, name_widget,
                                 value_widget, helper)
@@ -209,7 +209,7 @@ class SensorView(BaseView, UnitMixin, PropertyObject):
                        helper=None):
         
         self.command = Sensor(pid, index)
-        self.command.connect('data-changed', self._data_changed_cb)
+        self.command.connect('notify::data', self._data_changed_cb)
         
         BaseView.__init__(self, active_widget, name_widget,
                                 value_widget, helper)
@@ -269,7 +269,7 @@ class SensorProgressView(BaseView, PropertyObject):
                        helper=None, progress_widget=None):
         
         self.command = Sensor(pid, index)
-        self.command.connect('data-changed', self._data_changed_cb)
+        self.command.connect('notify::data', self._data_changed_cb)
         
         BaseView.__init__(self, active_widget, name_widget,
                                   value_widget, helper)

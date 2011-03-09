@@ -2,7 +2,7 @@
 #
 # freeze_frame_data.p
 #
-# Copyright (C) Ben Van Mechelen 2008-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2008-2011 <me@benvm.be>
 # 
 # This file is part of Garmon 
 # 
@@ -32,7 +32,7 @@ import gtk
 
 import garmon
 import garmon.plugin
-import garmon.sensor
+import garmon.sensor as sensor
 
 from garmon.logger import log
 from garmon.property_object import PropertyObject, gproperty, gsignal
@@ -45,53 +45,53 @@ from garmon.widgets import SensorView, SensorProgressView
 
 
 __name = _('Freeze Frame Data')
-__version = '0.2'
+__version = garmon.GARMON_VERSION
 __author = 'Ben Van Mechelen'
 __description = _('View Freeze Frame data associated with a certain dtc\n\nEXPERIMENTAL')
-__class = 'FreezeFrameData'
+__class = 'FreezeFramePlugin'
 
 
-class FreezeFrameData (gtk.VBox, Plugin):
-    __gtype_name__='FreezeFrameData'
-    def __init__ (self, app):
-        gtk.VBox.__init__(self)
-        Plugin.__init__(self)
 
-        self.app = app
+class FreezeFrame (GObject, PropertyObject):
+    __gtype_name__ = 'FreezeFrame'
+
+    gproperty('widget', object, flags=gobject.PARAM_READABLE)
+    gproperty('frame', str, flags=gobject.PARAM_READABLE)
+
+    def prop_get_widget(self):
+        return self._main_hbox
+
+    def prop_get_frame(self):
+        return self._frame
+    
         
+    def __init__(self, plugin, frame):
+        GObject.__init__(self)
+        PropertyObject.__init__(self)
+
+        self.plugin = plugin 
+        self._frame = frame
+		
         self._pref_cbs = []
         self._app_cbs = []
         self._notebook_cbs = []
-        self._scheduler_cbs = []
+        self._queue_cbs = []
         self._obd_cbs = []
         
-        if app.prefs.get('imperial', False):
+        if plugin.app.prefs.get('imperial', False):
             self._unit_standard = 'Imperial'
         else:
             self._unit_standard = 'Metric'
             
-        cb_id = app.prefs.add_watch('imperial', 
+        cb_id = plugin.app.prefs.add_watch('imperial', 
                                     self._notify_units_cb)
         self._pref_cbs.append(('imperial', cb_id))
-
-        self.status = STATUS_STOP
-
-        self.views = []
-
+        
         self._setup_gui()
         self._setup_sensors()
+        self._get_supported_pids()
 
-        self._obd_cbs.append(app.device.connect('connected', 
-                                             self._device_connected_cb))
-        self._notebook_cbs.append(app.notebook.connect('switch-page', 
-                                                  self._notebook_page_change_cb))
-        
-        self._scheduler_cbs.append(self.app.scheduler.connect('notify::working',
-                                             self._scheduler_notify_working_cb))
-        
-        self._device_connected_cb(app.device)
-        
-    
+		
     def _setup_gui(self):
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, 'freeze_frame_data.ui')
@@ -99,22 +99,20 @@ class FreezeFrameData (gtk.VBox, Plugin):
         self._builder.set_translation_domain('garmon')
         self._builder.add_from_file(filename)
         
-        main_hbox = self._builder.get_object('main_hbox')
-        self.pack_start(main_hbox)
-        main_hbox.show_all()
-        self.show_all()
+        self._main_hbox = self._builder.get_object('main_hbox')
+        self._main_hbox.show_all()
         
-        button = self._builder.get_object('re-read-button')
-        button.connect('clicked', self._reread_button_clicked)
+        self._read_button = self._builder.get_object('read-button')
+        self._read_button.connect('clicked', self._read_button_clicked)
         
         
     def _setup_sensors(self):
 
-        self.views = []
+        self._views = []
 
         for item in SENSORS: 
             label = entry = unit = None
-            pid = item[PID]
+            pid = item[PID] + '%0*d' % (2, int(self._frame))
             index = item[INDEX]
             if item[LABEL]:
                 label = self._builder.get_object(item[LABEL])
@@ -128,11 +126,11 @@ class FreezeFrameData (gtk.VBox, Plugin):
                        name_widget=label, value_widget=entry, 
                        units_widget=unit, helper=func)
             
-            self.views.append(view)
+            self._views.append(view)
 
         for item in PROGRESS: 
             label = bar = None
-            pid = item[PID]
+            pid = item[PID] + '%0*d' % (2, int(self._frame))
             index = item[INDEX]
             if item[LABEL]:
                 label = self._builder.get_object(item[LABEL])
@@ -144,55 +142,44 @@ class FreezeFrameData (gtk.VBox, Plugin):
                        name_widget=label,
                        progress_widget=bar, helper=func)
             
-            self.views.append(view)
+            self._views.append(view)				
 
 
-    def _reread_button_clicked(self, button):
-        self._update_supported_views()
-        self.start()
+    def _get_supported_pids(self):
 
-    
-    def _scheduler_notify_working_cb(self, scheduler, pspec):
-        pass
-                       
-    
+        def data_changed_cb(cmd, pspec):
+            offset = int(cmd.command[2:4])
+            self._supported_pids += decode_pids_from_bitstring(cmd.data, offset, self._frame)
+            next = '%d' % (offset + 20)
+            if '02' + next in self._supported_pids:
+                command = Command('02' + next + self._frame)
+                command.connect('notify::data', data_changed_cb)
+                self.plugin.app.queue.add(command, True)
+            else:
+                self._update_supported_views()
+
+        def error_cb(cmd, msg, args):
+            logger.error('error reading supported pids, msg is: %s' % msg)
+            raise OBDPortError('OpenPortFailed', 
+                               _('could not read supported pids\n\n' + msg))
+
+        self._supported_pids = []
+        command = Command('0200' + self._frame)
+        command.connect('notify::data', data_changed_cb)
+        self.plugin.app.queue.add(command, True)
+
+           
     def _update_supported_views(self):
-        log.debug('in update_supported_views')
-        if self.app.device.supported_freeze_frame_pids == None:
-            log.debug('supported_freeze_frame_pids not yet read')
-            return
-        for view in self.views:
-            if self.app.device:
-                if view.command.command in self.app.device.supported_freeze_frame_pids:
-                    view.supported=True
-                    view.active=True
-                else:
-                    view.supported=False
-                    view.active=False
+        logger.debug('in update_supported_views')
+        for view in self._views:
+            if view.command.command in self._supported_pids:
+                view.supported=True
+                view.active=True
             else:
                 view.supported=False
                 view.active=False
-   
-            
-    def start(self):
-        for view in self.views:
-            if view.supported:
-                self.app.scheduler.add(view.command, True)
-        self.app.scheduler.working = True
-        
-            
-    def stop(self):
-        pass
-        
-        
-    def _device_connected_cb(self, device, connected=False):
-        page = self.app.notebook.get_current_page()
-        visible = self.app.notebook.get_nth_page(page) is self
-        self._update_supported_views()
-        if visible:
-            self.app.device.read_supported_freeze_frame_pids()
 
-
+                
     def _notify_units_cb(self, pname, pvalue, args):
         if pname == 'imperial' and pvalue:
             self._unit_standard = 'Imperial'
@@ -201,29 +188,124 @@ class FreezeFrameData (gtk.VBox, Plugin):
         
         for view in self.views:
             view.unit_standard = self._unit_standard
+
             
-            
+    def _read_button_clicked(self, button):
+        self.update()
+
+
+    def update(self):
+        logger.debug('entering FreezeFrame.update')
+        for view in self._views:
+            if view.supported:
+                self.plugin.app.queue.add(view.command, True)
+        self.plugin.app.queue.start()
+
+    
+	def unload(self):
+		self.app.notebook.remove(self)
+        for name, cb_id in self._pref_cbs:
+            self.plugin.app.prefs.remove_watch(name, cb_id)
+        for cb_id in self._app_cbs:
+            self.plugin.app.disconnect(cb_id)
+        for cb_id in self._notebook_cbs:
+            self.plugin.app.notebook.disconnect(cb_id)
+        for cb_id in self._queue_cbs:
+            self.plugin.app.queue.disconnect(cb_id)
+        for cb_id in self._obd_cbs:
+            self.plugin.app.device.disconnect(cb_id)			
+
+
+		
+class FreezeFramePlugin (Plugin, PropertyObject):
+    __gtype_name__ = 'FreezeFramePlugin'
+
+
+    gproperty('widget', object, flags=gobject.PARAM_READABLE)
+
+    def prop_get_widget(self):
+        return self._main_box
+
+    
+    def __init__(self, app):
+        Plugin.__init__(self)
+        PropertyObject.__init__(self)
+
+        self.app = app
+	
+        self._pref_cbs = []
+        self._app_cbs = []
+        self._notebook_cbs = []
+        self._queue_cbs = []
+        self._obd_cbs = []
+
+        self._command = Command('0901')
+        self._command.connect('notify::data', self._command_data_changed)
+        
+        self.status = STATUS_STOP
+
+        self._frames = []
+
+        self._setup_gui()
+		
+        self._obd_cbs.append(app.device.connect('supported-pids-changed', 
+                                             self._supported_pids_changed_cb))
+        self._notebook_cbs.append(app.notebook.connect('switch-page', 
+                                                  self._notebook_page_change_cb))
+
+                                                  
+    def _setup_gui (self):
+        self._main_box = gtk.HBox()
+        self._frames_notebook = gtk.Notebook()
+        self._main_box.pack_start(self._frames_notebook)
+        self._main_box.show_all()
+
+
+    def _command_data_changed(self, command, pspec):
+        logger.debug('entering FreezeFramePlugin._command_data_changed')
+        self.app.queue.remove(self._command)
+        for item in range(len(self._frames) + 1, int(command.data) + 1):
+            frame = FreezeFrame(self, '%0*d' % (2, item))
+            self._frames_notebook.append_page(frame.widget, 
+                                        gtk.Label(_('Frame %s') % frame.frame))
+            self._frames.append(frame)
+
+
+    def _supported_pids_changed_cb(self, device):
+        logger.debug('entering FreezeFramePlugin._supported_pids_changed_cb')
+        page = self.app.notebook.get_current_page()
+        if self.app.notebook.get_nth_page(page) is self._main_box:
+            if self._command.command in self.app.device.supported_pids:
+                self.app.queue.add(self._command)
+            self.app.queue.start()
+
+    
     def _notebook_page_change_cb (self, notebook, no_use, page):
-        plugin = notebook.get_nth_page(page)
-        if plugin is self:
-            self.start()
+        widget = notebook.get_nth_page(page)
+        if widget is self._main_box:
+            if self._command.command in self.app.device.supported_pids:
+                self.app.queue.add(self._command)
 
             
     def load(self):
-        self.app.notebook.append_page(self, gtk.Label(_('Freeze Frame Data')))            
-            
+        self.app.notebook.append_page(self._main_box, gtk.Label(_('Freeze Frame Data')))            
+
+		
     def unload(self):
-        self.app.notebook.remove(self)
+        self.app.notebook.remove(self._main_box)
+        for frame in self._frames:
+            frame.unload()
         for name, cb_id in self._pref_cbs:
             self.app.prefs.remove_watch(name, cb_id)
         for cb_id in self._app_cbs:
             self.app.disconnect(cb_id)
         for cb_id in self._notebook_cbs:
             self.app.notebook.disconnect(cb_id)
-        for cb_id in self._scheduler_cbs:
-            self.app.scheduler.disconnect(cb_id)
+        for cb_id in self._queue_cbs:
+            self.app.queue.disconnect(cb_id)
         for cb_id in self._obd_cbs:
             self.app.device.disconnect(cb_id)
+
 
 
 def _dtc_code_helper(view):
@@ -231,6 +313,23 @@ def _dtc_code_helper(view):
     if not dtc:
         dtc = ''
     view.value_widget.set_text(dtc)
+
+
+
+def decode_pids_from_bitstring(data, offset, suffix):
+    logger.debug('entering decode_pids_from_bitstring')
+    pids = []
+    for item in data:
+        bitstr = sensor.hex_to_bitstr(item)
+        for i, bit in enumerate(bitstr):
+            if bit == "1":
+                pid = i + 1 + offset
+                if pid < 16: 
+                    pid_str = '020' + hex(pid)[2:] + suffix
+                else:
+                    pid_str = '02' + hex(pid)[2:] + suffix
+                pids.append(pid_str.upper())
+    return pids
 
         
 (COMMAND, NAME) = range(2)

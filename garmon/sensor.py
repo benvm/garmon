@@ -3,7 +3,7 @@
 #
 # sensor.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2011 <me@benvm.be>
 # 
 # This file is part of Garmon 
 # 
@@ -39,19 +39,11 @@ class Command (GObject, PropertyObject):
     
     gproperty('command', str, flags=gobject.PARAM_READABLE)
     gproperty('data', object)
-
-    gsignal('data-changed', object)
     
     def __init__(self, command):
         GObject.__init__(self)
         PropertyObject.__init__(self, command=command)
-    
-    def __post_init__(self):
-        self.connect('notify::data', self._notify_data_cb)
-        
-    def _notify_data_cb(self, o, pspec):
-        self.emit('data-changed', self.data)
-        
+               
     def clear(self):
         self.data = None
 
@@ -99,7 +91,7 @@ class Sensor (Command, PropertyObject):
 
 
     def __init__(self, command, index=0, units='Metric'):
-        self._indices = len(SENSORS[command[2:]])
+        self._indices = len(SENSORS[command[2:4]])
         self._imperial_units = None
         self._metric_units = None
         self._decoder = None
@@ -112,10 +104,10 @@ class Sensor (Command, PropertyObject):
         self._update_info()
       
     def _update_info(self):
-        self._name = SENSORS[self.command[2:]][self.index][NAME]
-        self._metric_units = SENSORS[self.command[2:]][self.index][METRIC]
-        self._imperial_units = SENSORS[self.command[2:]][self.index][IMPERIAL]       
-        self._decoder = SENSORS[self.command[2:]][self.index][FUNC]
+        self._name = SENSORS[self.command[2:4]][self.index][NAME]
+        self._metric_units = SENSORS[self.command[2:4]][self.index][METRIC]
+        self._imperial_units = SENSORS[self.command[2:4]][self.index][IMPERIAL]       
+        self._decoder = SENSORS[self.command[2:4]][self.index][FUNC]
         
     def _index_changed_cb(self, o, pspec):
         self._clear_data()
@@ -495,12 +487,12 @@ B6 is Engine Stop Request*
 
    
 if __name__ == '__main__':
-    print 'testing OBDData'
+    print ('testing OBDData')
     s = OBDSensor('0114')
-    print s.pid
-    print s.index
-    print s.data
+    print (s.pid)
+    print (s.index)
+    print (s.data)
     s.data = '78'
-    print s.value
+    print (s.value)
 
     

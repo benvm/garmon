@@ -2,7 +2,7 @@
 #
 # dtc_clearer.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2011 <me@benvm.be>
 # 
 # This file is part of Garmon 
 # 
@@ -34,7 +34,7 @@ import garmon.device
 from garmon.device import OBDPortError
 
 __name = _('DTC Clearer')
-__version = '0.2'
+__version = garmon.GARMON_VERSION
 __author = 'Ben Van Mechelen'
 __description = _('Clears the stored trouble codes in the vehicle')
 __class = 'DTCClearer'
@@ -69,12 +69,12 @@ class DTCClearer (Plugin):
         
 
     def _sensitize_action(self):
-        sensitive = self.app.device.connected and not self.app.scheduler.working
+        sensitive = self.app.device.connected and not self.app.queue.working
         self.app.ui.get_widget('/ToolBar/DeviceToolItems/ClearDTC').set_sensitive(sensitive)
         self.app.ui.get_widget('/MenuBar/DeviceMenu/DeviceMenuItems/ClearDTC').set_sensitive(sensitive)
         
 
-    def _scheduler_notify_working_cb(self, scheduler, monitoring):
+    def _queue_state_changed_cb(self, queue, working):
         self._sensitize_action()
         
         
@@ -100,8 +100,9 @@ class DTCClearer (Plugin):
                 self.app.reset()
         
         def err_cb(cmd, err, args):
-            dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
-                gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, 
+            dialog = gtk.MessageDialog(self.app.window, 
+                                       gtk.DIALOG_DESTROY_WITH_PARENT,
+                                       gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, 
                 _("""An error occurred while trying to reset the dtc.\n
 Please make sure your device is connected.
 The ignition must be turned on but the engine should not be running"""))
@@ -110,8 +111,10 @@ The ignition must be turned on but the engine should not be running"""))
             dialog.destroy()                    
 
 
-        dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
-                 gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL,
+        dialog = gtk.MessageDialog(self.app.window, 
+                                   gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   gtk.MESSAGE_QUESTION, 
+                                   gtk.BUTTONS_OK_CANCEL,
                  _("""Are You Sure You want to clear the trouble codes?
                 
     This will reset the Malfunction Indicator Light.
@@ -137,9 +140,11 @@ The ignition must be turned on but the engine should not be running"""))
                 #MOVE THIS 
             except OBDPortError, e:
                 err, msg = e
-                dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
-                    gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, 
-                    err + '\n\n' + msg)
+                dialog = gtk.MessageDialog(self.app.window, 
+                                           gtk.DIALOG_DESTROY_WITH_PARENT,
+                                           gtk.MESSAGE_ERROR, 
+                                           gtk.BUTTONS_OK, 
+                                           err + '\n\n' + msg)
                 dialog.run()
                 dialog.destroy()
                 raise
@@ -147,7 +152,7 @@ The ignition must be turned on but the engine should not be running"""))
                 
     def load(self):
         self._sensitize_action()
-        self.app.scheduler.connect('notify::working', self._scheduler_notify_working_cb)
+        self.app.queue.connect('state-changed', self._queue_state_changed_cb)
         self.app.device.connect('connected', self._obd_connected_cb)
                 
                 

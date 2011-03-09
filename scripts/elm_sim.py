@@ -21,6 +21,7 @@
 
 import sys
 import serial
+import time
 
 DEFAULT_PORT = '/dev/ttyUSB1'
 
@@ -102,7 +103,25 @@ commands = {'ATZ' : 'ELM327 v1.2',
             '021D' : '42 1D 45',
             '021E' : '42 1E 80',
             '021F' : '42 1F 45 78',
-                        
+            '0900' : '49 00 C000000',
+            '0901' : '49 01 02',
+            '020001' : '42 00 7F000000',
+            '020201' : '42 02 01 67',            
+            '020301' : '42 03 02 04',
+            '020401' : '42 04 99',
+            '020501' : '42 05 88',
+            '020601' : '42 06 99',
+            '020701' : '42 07 88',
+            '020801' : '42 08 AA',
+            '020002' : '42 00 7F000000',
+            '020202' : '42 02 01 66',            
+            '020302' : '42 03 02 03',
+            '020402' : '42 04 98',
+            '020502' : '42 05 87',
+            '020602' : '42 06 98',
+            '020702' : '42 07 87',
+            '020802' : '42 08 AA',
+
                      }
                       
 alternate_commands = {'ATZ' : 'ELM327 v1.2',
@@ -148,7 +167,25 @@ alternate_commands = {'ATZ' : 'ELM327 v1.2',
             '012D' : '41 2C BB',
             '03' : '43 05 35 03 23 03 34',
             '04' : '44',
-                        
+            '0900' : '49 00 C0000000',
+            '0901' : '49 01 02',
+            '020001' : '42 00 7F000000',
+            '020201' : '42 02 01 67',            
+            '020301' : '42 03 02 04',
+            '020401' : '42 04 99',
+            '020501' : '42 05 88',
+            '020601' : '42 06 99',
+            '020701' : '42 07 88',
+            '020801' : '42 08 AA',
+            '020002' : '42 00 7F000000',
+            '020202' : '42 02 01 66',            
+            '020302' : '42 03 02 03',
+            '020402' : '42 04 98',
+            '020502' : '42 05 87',
+            '020602' : '42 06 98',
+            '020702' : '42 07 87',
+            '020802' : '42 08 AA',
+            
                      }                  
 
 class ElmSimulator(object):
@@ -168,9 +205,7 @@ class ElmSimulator(object):
                                                 
         
         except serial.SerialException, e:
-            print 'Failed to open serial port: %s' % port
-            raise
-            
+            print 'Failed to open serial port: %s: %s' % (port, e) 
             
             
     def start(self):
@@ -191,11 +226,13 @@ class ElmSimulator(object):
                     buf = buf + ch
                         
             print 'received %s' % buf
+            #buf = buf[:4].upper()
             buf = buf.upper()
             
             self.port.flushOutput()
             self.port.flushInput()
-            
+
+            time.sleep(0.1)
             if commands.has_key(buf):
                 if buf[:2] == '02':
                     ret = commands[buf]

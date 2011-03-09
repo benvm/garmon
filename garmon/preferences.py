@@ -3,7 +3,7 @@
 #
 # preferences.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2010 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2011 <me@benvm.be>
 #
 # This file is part of Garmon 
 # 
@@ -28,7 +28,7 @@ from gettext import gettext as _
 import os
 import random
 import string
-
+import collections
 import gtk
 import gobject
 from gobject import GObject
@@ -70,9 +70,10 @@ class _Watch(object):
 class PreferenceManager(GObject):
     __gtype_name__ ='PreferenceManager'
     
-    def __init__(self):
+    def __init__(self, app):
         GObject.__init__(self)
-        
+
+        self.app = app
         self._config = ConfigParser()
         self._filename = os.path.join(save_config_path("garmon"), "config")
         self._config.read(self._filename)
@@ -135,7 +136,7 @@ class PreferenceManager(GObject):
 
 
     def add_watch(self, name, cb, *args):
-        if not callable(cb):
+        if not isinstance(cb, collections.Callable):
             raise AttributeError, 'cb is not callable'
         watch = None
         for item in self._watches:
@@ -208,16 +209,19 @@ class PreferenceManager(GObject):
         self._dialog.hide()
         
         
-    def add_dialog_page(self, builder, widget, name):
-        top = builder.get_object(widget)
+    def add_dialog_page(self, widget, name):
+        top = self.app.builder.get_object(widget)
         top.cb_ids = []
         self._dialog.notebook.append_page(top, gtk.Label(name))
-        objects = builder.get_objects()
-        for item in objects:
-            if isinstance(item, gtk.Widget):
-                widget = item
-                if widget.name[:len('preference')] == 'preference': 
-                    name = widget.name[len('preference;'):]
+        objects = self.app.builder.get_objects()
+        for widget in objects:
+            if isinstance(widget, gtk.Widget):
+                if gtk.ver < (2,20,0):
+                    name = widget.name
+                else:
+                    name = gtk.Buildable.get_name(widget) 
+                if name[:len('preference')] == 'preference': 
+                    name = name[len('preference;'):]
                     wtype, ptype, pname = string.split(name, ';')
                     if wtype == 'toggle':
                         widget.connect('toggled', self._toggle_widget_cb, pname)
@@ -229,7 +233,8 @@ class PreferenceManager(GObject):
                     elif wtype == 'combo':
                         widget.connect('changed', self._combo_widget_cb, pname)
                     else:
-                        #FIXME: should not reach here
+                        #TODO: should not reach here
+                        #raise exception
                         pass
                         
                     cb_id = self.add_watch(pname, 

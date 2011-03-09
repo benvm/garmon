@@ -2,7 +2,7 @@
 #
 # plugin.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2011 <me@benvm.be>
 # 
 # This file is part of Garmon 
 # 
@@ -46,7 +46,7 @@ class Plugin(GObject):
     def _display_port_error_dialog(self, error):
             err, msg = error
             self.stop()
-            dialog = gtk.MessageDialog(self.app, gtk.DIALOG_DESTROY_WITH_PARENT,
+            dialog = gtk.MessageDialog(self.app.window, gtk.DIALOG_DESTROY_WITH_PARENT,
                                                     gtk.MESSAGE_WARNING, gtk.BUTTONS_YES_NO,
                                                     err + '\n\n' + msg + '\n\n' + 
                                                     _("Please make sure the device is connected.")

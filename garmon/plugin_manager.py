@@ -2,7 +2,7 @@
 #
 # plugin_manager.py
 #
-# Copyright (C) Ben Van Mechelen 2007-2009 <me@benvm.be>
+# Copyright (C) Ben Van Mechelen 2007-2011 <me@benvm.be>
 # 
 # This file is part of Garmon 
 # 
@@ -67,7 +67,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
         """ @param app: GarmonApp
         """
         gtk.Dialog.__init__(self, _("Garmon Plugin Manager"),
-                                  app, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                  app.window, gtk.DIALOG_DESTROY_WITH_PARENT,
                                   (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE,))
         PropertyObject.__init__(self)
                                   
