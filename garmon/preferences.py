@@ -185,7 +185,8 @@ class PreferenceManager(GObject):
         if not self._config.has_section(section):
             self._config.add_section(section)
         self._config.set(section, option, value)
-                
+        self.notify(name)
+        
     
     def register(self, name, default):
         if not '.' in name:
