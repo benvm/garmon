@@ -33,7 +33,7 @@ import garmon
 
 from garmon.logger import log
 from garmon.plugin import Plugin
-from garmon.property_object import PropertyObject, gproperty, gsignal
+from garmon.utils import PropertyObject, gproperty, gsignal
 
 
 (

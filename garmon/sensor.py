@@ -31,7 +31,7 @@ import gtk
 from gobject import GObject
 
 import garmon
-from garmon.property_object import PropertyObject, gproperty, gsignal
+from garmon.utils import PropertyObject, gproperty, gsignal
 
 
 class Command (GObject, PropertyObject):

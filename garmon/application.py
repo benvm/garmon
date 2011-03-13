@@ -46,7 +46,7 @@ from garmon.preferences import PreferenceManager
 from garmon.plugin_manager import PluginManager
 from garmon.device import ELMDevice, OBDError, OBDDataError, OBDPortError
 from garmon.command_queue import CommandQueue, QueueTimer
-from garmon.property_object import PropertyObject, gproperty, gsignal
+from garmon.utils import PropertyObject, gproperty, gsignal
 from garmon.backdoor import BackDoor
 
 GTK_RECOMMENDED = (2,16,0)

@@ -29,7 +29,7 @@ from gobject import GObject
 import gtk
 
 import garmon
-from garmon.property_object import PropertyObject, gproperty
+from garmon.utils import PropertyObject, gproperty
 from garmon.sensor import Sensor, Command, StateMixin, UnitMixin, dtc_decode_mil
 
 

@@ -33,7 +33,7 @@ import garmon
 import garmon.plugin
 
 from garmon.plugin import Plugin, STATUS_STOP, STATUS_WORKING, STATUS_PAUSE
-from garmon.property_object import PropertyObject, gproperty
+from garmon.utils import PropertyObject, gproperty
 from garmon.device import OBDDataError, OBDPortError
 from garmon.trouble_codes import DTC_CODES, DTC_CODE_CLASSES
 from garmon.sensor import decode_dtc_code

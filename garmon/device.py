@@ -33,13 +33,13 @@ import os
 import gtk
 import gobject
 from gobject import GObject
-from property_object import PropertyObject, gproperty, gsignal
 
 import garmon
 import garmon.sensor as sensor
 from garmon.sensor import SENSORS, OBD_DESIGNATIONS, METRIC, IMPERIAL
 from garmon.sensor import dtc_decode_num, dtc_decode_mil
 from garmon.preferences import PreferenceManager
+from garmon.utils import PropertyObject, gproperty, gsignal
 
 from garmon import logger
 

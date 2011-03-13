@@ -33,7 +33,7 @@ import inspect
 
 import garmon
 from garmon.device import OBDDevice
-from garmon.property_object import PropertyObject, gproperty, gsignal
+from garmon.utils import PropertyObject, gproperty, gsignal
 from garmon.sensor import Command
 from garmon import logger
 
