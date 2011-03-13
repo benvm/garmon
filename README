@@ -1,0 +1,77 @@
+Introduction
+------------
+
+Garmon (Gnome/GTK+ Car Monitor) is a tool that lets you connect to an OBD-II 
+compliant vehicle using an ELM327 based scanning device. It supports monitoring 
+live and freeze frame data as well as reading and clearing DTCs
+
+
+
+License
+-------
+
+                GNU General Public License
+
+Garmon is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Garmon is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with Garmon; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+
+Requirements
+------------
+
+python: 2.6 is recommended, however older 2.x versions might work too.
+        python 3 is currently unsupported.
+pygtk:  recommended version is 2.16, but older might work also
+pyserial
+
+
+
+Installation
+------------
+
+Garmon uses distutils, so installation is pretty straight forward.
+First build the package:
+   $ python setup.py build
+
+Then install (you might need to be root for that)
+   $ python setup.py install
+   
+
+
+Source
+------
+
+Source code is available at http://github.com/benvm/garmon.
+
+To get it:
+    $ git://github.com/benvm/garmon.git
+    
+or if you prefer http:
+    $ git clone https://github.com/benvm/garmon.git
+
+
+
+Issues
+------
+
+Garmon is not considered stable, so lots of bugs will be present. 
+If you spot one please create an issue on github.
+
+
+Ben Van Mechelen
+me (at) benvm (dot) be
+
+
+
+
