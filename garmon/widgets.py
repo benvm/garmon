@@ -65,12 +65,14 @@ class MILWidget(gtk.Entry,
         self._pref_cbs.append(('mil.off-color', cb_id))
                                                      
         self.connect('notify::on', self._notify_cb)
-        self.connect('notify::on-color', self._notify_cb)
-        self.connect('notify::off-color', self._notify_cb)
         self.notify('on')
         self.command.connect('notify::data', self._data_changed_cb)
         
     def _notify_cb(self, o, pspec):
+        if pspec.name == 'on':
+            self._update_color()
+        
+    def _update_color(self):
         if self.on:
             self.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.on_color))
         else:
@@ -82,6 +84,7 @@ class MILWidget(gtk.Entry,
             self.on_color = pvalue
         elif pname == 'mil.off-color':
             self.off_color = pvalue
+        self._update_color()
     
     
     def _data_changed_cb(self, command, pspec):
