@@ -269,7 +269,7 @@ class GarmonApp(gobject.GObject, PropertyObject):
         dialog.set_name("Garmon")
         dialog.set_copyright("Copyright \302\251 2007-2011 Ben Van Mechelen")
         dialog.set_website("http://garmon.sourceforge.net")
-        dialog.set_version(GARMON_VERSION)
+        dialog.set_version(garmon.version)
         dialog.set_comments(_("Gtk OBD Car Monitor"))
         dialog.set_authors(["Ben Van Mechelen <me@benvm.be>"])
         dialog.set_license(gpl)
