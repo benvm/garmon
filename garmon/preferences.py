@@ -242,8 +242,8 @@ class PreferenceManager(GObject):
                                            self._pref_notify_cb, 
                                            widget)
                     top.cb_ids.append(cb_id)
-                    #FIXME: Can not call notify here when no config is present: INVESTIGATE 
-                    #self.notify(pname)
+
+                    self.notify(pname)
 
 
     def save(self):

@@ -21,7 +21,7 @@
               <object class="GtkHBox" id="hbox4">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkEntry" id="preference;text;str;device.portname">
+                  <object class="GtkEntry" id="preference;text;str;device.port">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">&#x25CF;</property>
