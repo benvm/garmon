@@ -37,7 +37,7 @@ from xdg.BaseDirectory import save_config_path
 from ConfigParser import RawConfigParser as ConfigParser
 
 import garmon
-from garmon import logger
+from garmon.logger import log
 
 class _PrefsDialog (gtk.Dialog):
 

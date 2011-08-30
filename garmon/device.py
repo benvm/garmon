@@ -41,7 +41,7 @@ from garmon.sensor import dtc_decode_num, dtc_decode_mil
 from garmon.preferences import PreferenceManager
 from garmon.utils import PropertyObject, gproperty, gsignal
 
-from garmon import logger
+from garmon.logger import log
 
 import datetime
 
@@ -180,7 +180,7 @@ class ELMDevice(OBDDevice, PropertyObject):
     
 
     def _send_command(self, command, ret, err, cleanup=True, *args):
-        logger.debug('entering ELMDevice._send_command: %s' % command)
+        log.debug('entering ELMDevice._send_command: %s' % command)
         if not self._serial.isOpen():
             raise OBDPortError('PortNotOpen', _('The port is not open'))
 
@@ -205,7 +205,7 @@ class ELMDevice(OBDDevice, PropertyObject):
             
 
     def _read_result(self):
-        logger.debug('entering ELMDevice._read_result')
+        log.debug('entering ELMDevice._read_result')
         timeout_count = 0
         try:
             buf = ''
@@ -232,7 +232,7 @@ class ELMDevice(OBDDevice, PropertyObject):
          
       
     def _parse_result(self, data):
-        logger.debug('entering ELMDevice._parse_result: %s' % data)
+        log.debug('entering ELMDevice._parse_result: %s' % data)
         error = False
         success = False
         res = None
@@ -245,34 +245,34 @@ class ELMDevice(OBDDevice, PropertyObject):
         
         if self._sent_command:
             if data[0] == '>':
-                logger.debug('command sent, received >')
+                log.debug('command sent, received >')
                 error = True
                 
             elif data[0] == '?':
-                logger.debug('command sent, received ?')
+                log.debug('command sent, received ?')
                 error = True
                 msg = '?'
 
             elif 'ERROR' in data:
-                logger.info('received ERROR')
+                log.info('received ERROR')
                 error = True
                 msg = data
                 
             elif 'SEARCHING' in data:
-                logger.info('received SEARCHING: resending command')
+                log.info('received SEARCHING: resending command')
                 self._send_command(cmd, ret_cb, err_cb, args)
 
             elif 'BUS INIT' in data:
-                logger.info('received BUS INIT: resending command')
+                log.info('received BUS INIT: resending command')
                 self._send_command(cmd, ret_cb, err_cb, args)
                 
             elif 'UNABLE TO CONNECT' in data:
-                logger.debug('received UNABLE TO CONNECT')
+                log.debug('received UNABLE TO CONNECT')
                 error = True
                 msg = 'UNABLE TO CONNECT'
 
             elif 'NO DATA' in data:
-                logger.debug('received NO DATA')
+                log.debug('received NO DATA')
                 error = True
                 msg = 'NO DATA'
                 
@@ -296,15 +296,15 @@ class ELMDevice(OBDDevice, PropertyObject):
             # no command sent
             # are we interested anyway?
             if '>' in data:
-                logger.debug('received >')
+                log.debug('received >')
             else:
-                logger.debug('no command sent, received %s' % data)
+                log.debug('no command sent, received %s' % data)
                 
 
     def _port_io_watch_cb(self, fd, condition, data=None):
-        logger.debug('entering ELMDevice._port_io_watch_cb')
+        log.debug('entering ELMDevice._port_io_watch_cb')
         if condition & gobject.IO_HUP:
-            logger.debug('received HUP signal')
+            log.debug('received HUP signal')
             self._sent_command = None
             self._ret_cb = None
             self._err_cb = None
@@ -312,7 +312,7 @@ class ELMDevice(OBDDevice, PropertyObject):
             self.close()    
             return False
         elif condition & gobject.IO_ERR:
-            logger.debug('received ERR signal')
+            log.debug('received ERR signal')
             self._sent_command = None
             self._ret_cb = None
             self._err_cb = None
@@ -324,11 +324,11 @@ class ELMDevice(OBDDevice, PropertyObject):
                 result = self._read_result()
                 self._parse_result(result)
             except OBDPortError, e:
-                logger.debug('CONDITION = IO_IN but reading times out. Error: %s' % e[0])
+                log.debug('CONDITION = IO_IN but reading times out. Error: %s' % e[0])
             finally:
                 return True
         else:
-            logger.debug('received an unknown io signal')
+            log.debug('received an unknown io signal')
             return False
 
   
@@ -336,7 +336,7 @@ class ELMDevice(OBDDevice, PropertyObject):
     def _read_supported_pids(self, modes=['09','01']):
 
         def success_cb(cmd, data, args):
-            logger.debug('entering zero_success_cb')
+            log.debug('entering zero_success_cb')
             mode = cmd[:2]
             offset = int(cmd[2:4])
             self._supported_pids += decode_pids_from_bitstring(data, mode, offset)
@@ -348,14 +348,14 @@ class ELMDevice(OBDDevice, PropertyObject):
                     mode = modes.pop()
                     self._send_command(mode + '00', success_cb, error_cb)
                 else:
-                    logger.info('supported pids: %s\n' % self._supported_pids)
+                    log.info('supported pids: %s\n' % self._supported_pids)
                     if not self._connected:
                         self._connected = True
                         self.emit('connected', True)
                     self.emit('supported-pids-changed')
 
         def error_cb(cmd, msg, args):
-            logger.error('error reading supported pids, msg is: %s' % msg)
+            log.error('error reading supported pids, msg is: %s' % msg)
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))
 
@@ -367,23 +367,23 @@ class ELMDevice(OBDDevice, PropertyObject):
       
     def _initialize_device(self):
         def atz_success_cb(cmd, res, args):
-            logger.debug('in atz_success_cb')
+            log.debug('in atz_success_cb')
             if not 'ELM327' in res:
-                logger.debug('invalid response')
+                log.debug('invalid response')
                 atz_error_cb(cmd, res, None)
             else:
-                logger.debug('received answer valid')
+                log.debug('received answer valid')
                 self._send_command('ate0', ate_success_cb, ate_error_cb)
             
         def atz_error_cb(cmd, msg, args):
-            logger.debug('in atz_error_cb')
+            log.debug('in atz_error_cb')
             raise OBDPortError('OpenPortFailed', 
                                _('atz command failed'))
             
         def ate_success_cb(cmd, res, args):
-            logger.debug('in ate_success_cb')
+            log.debug('in ate_success_cb')
             if not 'OK' in res:
-                logger.debug('invalid response')
+                log.debug('invalid response')
                 ate_error_cb(cmd, res, args)
             else:
                 if self.app.get('device.ignore-keywords'):
@@ -392,20 +392,20 @@ class ELMDevice(OBDDevice, PropertyObject):
                     self._read_supported_pids()
             
         def ate_error_cb(cmd, msg, args):
-            logger.debug('in atz_error_cb')
+            log.debug('in atz_error_cb')
             raise OBDPortError('OpenPortFailed', 
                                _('ate0 command failed'))
 
         def atkw_success_cb(cmd, msg, args):
-            logger.debug('in atkw_success_cb')
+            log.debug('in atkw_success_cb')
             if not 'OK' in res:
-                logger.debug('invalid response')
+                log.debug('invalid response')
                 atkw_error_cb(cmd, res, args)
             else:
                 self._read_supported_pids()            
 
         def atkw_error_cb(cmd, msg, args):
-            logger.debug('in atkw_error_cb')
+            log.debug('in atkw_error_cb')
             raise OBDPortError('OpenPortFailed', 
                                _('atkw0 command failed'))
                                
@@ -573,7 +573,7 @@ def decode_dtc_result(result):
                            
                            
 def decode_result(result):
-    logger.debug('entering decode_result')
+    log.debug('entering decode_result')
     if not result:
         raise OBDDataError('Data Read Error',
                            _('No data was received from the device'))
@@ -587,7 +587,7 @@ def decode_result(result):
             data = string.join(data, '')
             
             if data[:2] == '7F':
-                logger.debug('we got back 7F which is an error')
+                log.debug('we got back 7F which is an error')
             else:
                 ret.append(data[4:])
         
@@ -595,7 +595,7 @@ def decode_result(result):
     
     
 def decode_pids_from_bitstring(data, mode, offset, suffix=''):
-    logger.debug('entering decode_pids_from_bitstring')
+    log.debug('entering decode_pids_from_bitstring')
     pids = []
     decoded = decode_result(data)
     for item in decoded:

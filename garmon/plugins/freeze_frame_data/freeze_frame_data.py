@@ -159,7 +159,7 @@ class FreezeFrame (GObject, PropertyObject):
                 self._update_supported_views()
 
         def error_cb(cmd, msg, args):
-            logger.error('error reading supported pids, msg is: %s' % msg)
+            log.error('error reading supported pids, msg is: %s' % msg)
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))
 
@@ -170,7 +170,7 @@ class FreezeFrame (GObject, PropertyObject):
 
            
     def _update_supported_views(self):
-        logger.debug('in update_supported_views')
+        log.debug('in update_supported_views')
         for view in self._views:
             if view.command.command in self._supported_pids:
                 view.supported=True
@@ -195,7 +195,7 @@ class FreezeFrame (GObject, PropertyObject):
 
 
     def update(self):
-        logger.debug('entering FreezeFrame.update')
+        log.debug('entering FreezeFrame.update')
         for view in self._views:
             if view.supported:
                 self.plugin.app.queue.add(view.command, True)
@@ -262,7 +262,7 @@ class FreezeFramePlugin (Plugin, PropertyObject):
 
 
     def _command_data_changed(self, command, pspec):
-        logger.debug('entering FreezeFramePlugin._command_data_changed')
+        log.debug('entering FreezeFramePlugin._command_data_changed')
         self.app.queue.remove(self._command)
         for item in range(len(self._frames) + 1, int(command.data) + 1):
             frame = FreezeFrame(self, '%0*d' % (2, item))
@@ -272,7 +272,7 @@ class FreezeFramePlugin (Plugin, PropertyObject):
 
 
     def _supported_pids_changed_cb(self, device):
-        logger.debug('entering FreezeFramePlugin._supported_pids_changed_cb')
+        log.debug('entering FreezeFramePlugin._supported_pids_changed_cb')
         page = self.app.notebook.get_current_page()
         if self.app.notebook.get_nth_page(page) is self._main_box:
             if self._command.command in self.app.device.supported_pids:
@@ -317,7 +317,7 @@ def _dtc_code_helper(view):
 
 
 def decode_pids_from_bitstring(data, offset, suffix):
-    logger.debug('entering decode_pids_from_bitstring')
+    log.debug('entering decode_pids_from_bitstring')
     pids = []
     for item in data:
         bitstr = sensor.hex_to_bitstr(item)

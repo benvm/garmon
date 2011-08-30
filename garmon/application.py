@@ -40,8 +40,8 @@ from gettext import gettext as _
 gettext.textdomain('garmon')
 
 import garmon
-import garmon.logger
 
+from garmon.logger import log
 from garmon.preferences import PreferenceManager
 from garmon.plugin_manager import PluginManager
 from garmon.device import ELMDevice, OBDError, OBDDataError, OBDPortError
@@ -52,8 +52,8 @@ from garmon.backdoor import BackDoor
 GTK_RECOMMENDED = (2,16,0)
 GTK_VERSION = gtk.ver
 if GTK_VERSION < GTK_RECOMMENDED:
-    logger.warning('Recommended version of pygtk is %s, but found %s' % (GTK_RECOMMENDED, GTK_VERSION))
-    logger.warning('Expect warning messages from UI Builder')
+    log.warning('Recommended version of pygtk is %s, but found %s' % (GTK_RECOMMENDED, GTK_VERSION))
+    log.warning('Expect warning messages from UI Builder')
 
 ui_info = \
 '''<ui>
@@ -133,7 +133,7 @@ class GarmonApp(gobject.GObject, PropertyObject):
         try:
             mergeid = self.ui.add_ui_from_string(ui_info)
         except gobject.GError, msg:
-            logger.error("building menus failed: %s" % msg)
+            log.error("building menus failed: %s" % msg)
         menubar = self.ui.get_widget("/MenuBar")
         menubar.show()
         
@@ -367,17 +367,17 @@ def main():
     parser.add_option('-d', '--debug-level', dest='debug_level',
 	    				help='The treshold for messages that are printed to the\
 		    			      screen: should be one of: %s  default is INFO' %  
-			    		      ', '.join(garmon.logger.LEVELS))
+			    		      ', '.join(garmon.log.LEVELS))
 					
     (options, args) = parser.parse_args()
     if len(args) != 0:
 	    parser.error('incorrect number of arguments')
 	
     level = options.debug_level.upper()
-    if not level in garmon.logger.LEVELS:
-        parser.error('debug-level should be one of %s' % ','.join(garmon.logger.LEVELS))
+    if not level in garmon.log.LEVELS:
+        parser.error('debug-level should be one of %s' % ','.join(garmon.log.LEVELS))
 
-    garmon.logger.set_level(level)
+    garmon.log.set_level(level)
 
     GarmonApp()
     gtk.main()
