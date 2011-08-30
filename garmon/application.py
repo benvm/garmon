@@ -367,17 +367,17 @@ def main():
     parser.add_option('-d', '--debug-level', dest='debug_level',
 	    				help='The treshold for messages that are printed to the\
 		    			      screen: should be one of: %s  default is INFO' %  
-			    		      ', '.join(garmon.log.LEVELS))
+			    		      ', '.join(garmon.logger.LEVELS))
 					
     (options, args) = parser.parse_args()
     if len(args) != 0:
 	    parser.error('incorrect number of arguments')
 	
     level = options.debug_level.upper()
-    if not level in garmon.log.LEVELS:
-        parser.error('debug-level should be one of %s' % ','.join(garmon.log.LEVELS))
+    if not level in garmon.logger.LEVELS:
+        parser.error('debug-level should be one of %s' % ','.join(garmon.logger.LEVELS))
 
-    garmon.log.set_level(level)
+    garmon.logger.set_level(level)
 
     GarmonApp()
     gtk.main()

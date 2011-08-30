@@ -129,7 +129,7 @@ class CommandQueue (GObject, PropertyObject):
                 return
         
             log.debug('CommandQueue: executing next command: %s' % queue_item  ) 
-            self.obd_device.read_command(queue_item, 
+            self.device.read_command(queue_item, 
                                               self._command_success_cb,
                                               self._command_error_cb)
 
