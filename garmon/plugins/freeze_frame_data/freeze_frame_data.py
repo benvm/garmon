@@ -24,7 +24,6 @@
 
 
 import os
-from gettext import gettext as _
 
 import gobject
 from gobject import GObject

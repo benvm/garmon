@@ -30,14 +30,8 @@ import gobject
 from gobject import GObject
 import gtk
 import locale
-import gettext
 import os
 from optparse import OptionParser
-
-# set up gettext for translations
-locale.setlocale(locale.LC_ALL, '')
-from gettext import gettext as _
-gettext.textdomain('garmon')
 
 import garmon
 

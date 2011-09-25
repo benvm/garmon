@@ -44,4 +44,3 @@ po/.intltool-merge-cache
 *.gmo
 *.gmo
 py-compile
-*.pot

@@ -27,7 +27,6 @@ import gobject
 from gobject import GObject
 import gtk
 
-from gettext import gettext as _
 
 (
     STATUS_WORKING,
