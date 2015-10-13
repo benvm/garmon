@@ -77,16 +77,17 @@ class CommandQueue (GObject, PropertyObject):
         self._queue = []
 
         self._working = False
-     
+
     def __post_init__(self):
         self.device.connect('connected', self._device_connected_cb)
-    
+
     def start(self):
         log.debug('CommandQueue.start')
-        if not self._working:
-            self._working = True
-            self.emit('state-changed', self._working)
-        self._execute_next_command()
+        if (self.device.connected):
+            if not self._working:
+                self._working = True
+                self.emit('state-changed', self._working)
+            self._execute_next_command()
 
     def stop(self):
         log.debug('CommandQueue.stop')

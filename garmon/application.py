@@ -156,6 +156,8 @@ class GarmonApp(gobject.GObject, PropertyObject):
         self.main_vbox.pack_start(self.notebook)
         
         self.device = ELMDevice(self)
+        self.device.connect('connected', self._device_connected_cb)
+        self._device_connected_cb (self.device, self.device.connected)
         
         self.queue = CommandQueue(self.device)
         self.queue.connect('state_changed', self._queue_state_changed_cb)
@@ -307,11 +309,14 @@ class GarmonApp(gobject.GObject, PropertyObject):
         self.ui.get_widget('/ToolBar/Monitor').set_active(working)
         self.ui.get_widget('/MenuBar/DeviceMenu/Monitor').set_active(working)
 
+    def _device_connected_cb(self, device, connected):
+        self.ui.get_widget('/ToolBar/Monitor').set_sensitive(connected)
+        self.ui.get_widget('/MenuBar/DeviceMenu/Monitor').set_sensitive(connected)
+
     def _window_delete_event_cb(self, window, event):
         self._activate_quit()
         return True
-            
-            
+
     def _toggle_fullscreen(self, action):
         if action.get_active():
             self.fullscreen()
