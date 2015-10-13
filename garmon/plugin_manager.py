@@ -222,7 +222,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
                 instance.merge_id = self.app.ui.add_ui_from_string(instance.ui_info)
                 self.app.ui.insert_action_group(instance.action_group, 0)
         except gobject.GError, msg:
-                logger.error('building menus failed: %s' % msg)
+                log.error('building menus failed: %s' % msg)
         
         if hasattr(instance, 'load'):                    
             instance.load()
@@ -270,7 +270,7 @@ class PluginManager(gtk.Dialog, PropertyObject):
                 if os.path.exists(os.path.join(path, fname)):
                     self._load_plugin(dname, path)
                 else:
-                    logger.warning('No file %s was found in %s' % (fname, path))
+                    log.warning('No file %s was found in %s' % (fname, path))
              
 
     def _plugin_instance_from_string(self, string):

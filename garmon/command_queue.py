@@ -35,7 +35,7 @@ import garmon
 from garmon.device import OBDDevice
 from garmon.utils import PropertyObject, gproperty, gsignal
 from garmon.sensor import Command
-from garmon import logger
+from garmon.logger import log
 
 
 class QueueItem(str):
@@ -82,14 +82,14 @@ class CommandQueue (GObject, PropertyObject):
         self.device.connect('connected', self._device_connected_cb)
     
     def start(self):
-        logger.debug('CommandQueue.start')
+        log.debug('CommandQueue.start')
         if not self._working:
             self._working = True
             self.emit('state-changed', self._working)
         self._execute_next_command()
 
     def stop(self):
-        logger.debug('CommandQueue.stop')
+        log.debug('CommandQueue.stop')
         if self._working:
             self._working = False
             self.emit('state-changed', self._working)
@@ -102,7 +102,7 @@ class CommandQueue (GObject, PropertyObject):
     
     
     def _command_success_cb(self, cmd, result, args):
-        logger.debug('entering CommandQueue._command_success_cb: %s' % cmd)
+        log.debug('entering CommandQueue._command_success_cb: %s' % cmd)
         # We only care about the first result
         result = result[0]
         for item in cmd.list:
@@ -110,26 +110,26 @@ class CommandQueue (GObject, PropertyObject):
         self._execute_next_command()
             
     def _command_error_cb(self, cmd, msg, args):
-        logger.debug('CommandQueue._command_error_cb: command was: %s' % cmd)
-        logger.debug('CommandQueue._command_error_cb: msg is %s' % msg)
+        log.debug('CommandQueue._command_error_cb: command was: %s' % cmd)
+        log.debug('CommandQueue._command_error_cb: msg is %s' % msg)
         if self._working:
             self._execute_next_command()
     
     
     def _execute_next_command(self):
-        logger.debug('entering CommandQueue._execute_next_command')
+        log.debug('entering CommandQueue._execute_next_command')
         if self._working:
             if len(self._queue):
                 queue_item = self._queue.pop(0)
                 if not queue_item.oneshot:
                     self._queue.append(queue_item)
             else:
-                logger.debug('CommandQueue: nothing in queue')
+                log.debug('CommandQueue: nothing in queue')
                 self.stop()
                 return
         
-            logger.debug('CommandQueue: executing next command: %s' % queue_item  ) 
-            self.obd_device.read_command(queue_item, 
+            log.debug('CommandQueue: executing next command: %s' % queue_item  ) 
+            self.device.read_command(queue_item, 
                                               self._command_success_cb,
                                               self._command_error_cb)
 
