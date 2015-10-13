@@ -37,7 +37,6 @@ pyserial
 pybabel: only required for building and installation
 
 
-
 Installation
 ------------
 
@@ -47,7 +46,9 @@ First build the package:
 
 Then install (you might need to be root for that)
    $ python setup.py install
-   
+
+It is possible to run the app without installation
+   $ python scripts/garmon
 
 
 Source
@@ -66,7 +67,7 @@ or if you prefer http:
 Issues
 ------
 
-Garmon is not considered stable, so lots of bugs will be present. 
+Garmon is not considered stable, so bugs will be present.
 If you spot one please create an issue on github.
 
 
