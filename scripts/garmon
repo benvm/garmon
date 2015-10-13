@@ -8,6 +8,7 @@ if os.path.basename(dname) == 'scripts':
     print 'Running uninstalled'
     sys.path.insert(0, os.path.join(os.path.abspath(dname), '..'))
 
+import garmon
 import garmon.application
 
 

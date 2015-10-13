@@ -25,7 +25,6 @@
 
 import os
 import imp
-from gettext import gettext as _
 import gobject
 import gtk
 

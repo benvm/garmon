@@ -23,7 +23,6 @@
 #   51 Franklin Street, Fifth Floor
 #   Boston, MA  02110-1301, USA.
 
-from gettext import gettext as _
 
 import serial
 import string
@@ -386,10 +385,10 @@ class ELMDevice(OBDDevice, PropertyObject):
                 log.debug('invalid response')
                 ate_error_cb(cmd, res, args)
             else:
-                if self.app.get('device.ignore-keywords'):
-                    self._send_command('atkw0', atkw_success_cb, atkw_error_cb)
-                else:
-                    self._read_supported_pids()
+                #if self.app.get('device.ignore-keywords'):
+                #    self._send_command('atkw0', atkw_success_cb, atkw_error_cb)
+                #else:
+                self._read_supported_pids()
             
         def ate_error_cb(cmd, msg, args):
             log.debug('in atz_error_cb')

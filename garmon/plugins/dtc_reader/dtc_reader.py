@@ -27,7 +27,6 @@ import os
 import gobject
 from gobject import GObject
 import gtk
-from gettext import gettext as _
 
 import garmon
 import garmon.plugin

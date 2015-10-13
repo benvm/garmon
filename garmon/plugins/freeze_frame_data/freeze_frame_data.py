@@ -24,7 +24,6 @@
 
 
 import os
-from gettext import gettext as _
 
 import gobject
 from gobject import GObject
@@ -203,8 +202,8 @@ class FreezeFrame (GObject, PropertyObject):
         self.plugin.app.queue.start()
 
     
-	def unload(self):
-		self.app.notebook.remove(self)
+        def unload(self):
+            self.app.notebook.remove(self)
         for name, cb_id in self._pref_cbs:
             self.plugin.app.prefs.remove_watch(name, cb_id)
         for cb_id in self._app_cbs:
@@ -258,7 +257,7 @@ class FreezeFramePlugin (Plugin, PropertyObject):
             self._frames_notebook.append_page(frame.widget, 
                                         gtk.Label(_('Frame %s') % frame.frame))
             self._frames.append(frame)
-            
+           
         self._main_box.show_all()
 
 			

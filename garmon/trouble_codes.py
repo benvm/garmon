@@ -24,9 +24,6 @@
 #   Boston, MA  02110-1301, USA.
 
 
-from gettext import gettext as _
-
-
 
 DTC_CODES = {
     "P0001": _("Fuel Volume Regulator Control Circuit/Open"),

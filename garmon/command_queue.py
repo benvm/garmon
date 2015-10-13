@@ -26,7 +26,6 @@
 import gobject
 from gobject import GObject
 import gtk
-from gettext import gettext as _
 import datetime
 
 import inspect
@@ -88,6 +87,7 @@ class CommandQueue (GObject, PropertyObject):
                 self._working = True
                 self.emit('state-changed', self._working)
             self._execute_next_command()
+
 
     def stop(self):
         log.debug('CommandQueue.stop')

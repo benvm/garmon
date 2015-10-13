@@ -23,7 +23,6 @@
 #   Boston, MA  02110-1301, USA.
 
 import os
-from gettext import gettext as _
 
 import gobject
 from gobject import GObject

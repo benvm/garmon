@@ -30,18 +30,12 @@ import gobject
 from gobject import GObject
 import gtk
 import locale
-import gettext
 import os
 from optparse import OptionParser
 
-# set up gettext for translations
-locale.setlocale(locale.LC_ALL, '')
-from gettext import gettext as _
-gettext.textdomain('garmon')
-
 import garmon
-from garmon.logger import log
 
+from garmon.logger import log
 from garmon.preferences import PreferenceManager
 from garmon.plugin_manager import PluginManager
 from garmon.device import ELMDevice, OBDError, OBDDataError, OBDPortError
