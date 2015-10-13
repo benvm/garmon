@@ -319,9 +319,9 @@ class GarmonApp(gobject.GObject, PropertyObject):
 
     def _toggle_fullscreen(self, action):
         if action.get_active():
-            self.fullscreen()
+            self.window.fullscreen()
         else:
-            self.unfullscreen()
+            self.window.unfullscreen()
 
 
     def _toggle_python_shell(self, action):
