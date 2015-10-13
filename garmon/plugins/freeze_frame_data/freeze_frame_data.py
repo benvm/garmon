@@ -68,7 +68,8 @@ class FreezeFrame (GObject, PropertyObject):
     def __init__(self, plugin, frame):
         GObject.__init__(self)
         PropertyObject.__init__(self)
-
+        log.debug('Initializing FreezeFrame ' + frame)
+        
         self.plugin = plugin 
         self._frame = frame
 		
@@ -159,7 +160,7 @@ class FreezeFrame (GObject, PropertyObject):
                 self._update_supported_views()
 
         def error_cb(cmd, msg, args):
-            logger.error('error reading supported pids, msg is: %s' % msg)
+            log.error('error reading supported pids, msg is: %s' % msg)
             raise OBDPortError('OpenPortFailed', 
                                _('could not read supported pids\n\n' + msg))
 
@@ -170,7 +171,7 @@ class FreezeFrame (GObject, PropertyObject):
 
            
     def _update_supported_views(self):
-        logger.debug('in update_supported_views')
+        log.debug('in update_supported_views')
         for view in self._views:
             if view.command.command in self._supported_pids:
                 view.supported=True
@@ -186,7 +187,7 @@ class FreezeFrame (GObject, PropertyObject):
         else:
             self._unit_standard = 'Metric'
         
-        for view in self.views:
+        for view in self._views:
             view.unit_standard = self._unit_standard
 
             
@@ -195,7 +196,7 @@ class FreezeFrame (GObject, PropertyObject):
 
 
     def update(self):
-        logger.debug('entering FreezeFrame.update')
+        log.debug('entering FreezeFrame.update')
         for view in self._views:
             if view.supported:
                 self.plugin.app.queue.add(view.command, True)
@@ -239,56 +240,30 @@ class FreezeFramePlugin (Plugin, PropertyObject):
         self._queue_cbs = []
         self._obd_cbs = []
 
-        self._command = Command('0901')
-        self._command.connect('notify::data', self._command_data_changed)
-        
         self.status = STATUS_STOP
 
         self._frames = []
 
         self._setup_gui()
 		
-        self._obd_cbs.append(app.device.connect('supported-pids-changed', 
-                                             self._supported_pids_changed_cb))
-        self._notebook_cbs.append(app.notebook.connect('switch-page', 
-                                                  self._notebook_page_change_cb))
-
                                                   
     def _setup_gui (self):
         self._main_box = gtk.HBox()
         self._frames_notebook = gtk.Notebook()
         self._main_box.pack_start(self._frames_notebook)
-        self._main_box.show_all()
 
-
-    def _command_data_changed(self, command, pspec):
-        logger.debug('entering FreezeFramePlugin._command_data_changed')
-        self.app.queue.remove(self._command)
-        for item in range(len(self._frames) + 1, int(command.data) + 1):
+        #FIXME: Only 1 frame for the moment
+        for item in range(1):
             frame = FreezeFrame(self, '%0*d' % (2, item))
             self._frames_notebook.append_page(frame.widget, 
                                         gtk.Label(_('Frame %s') % frame.frame))
             self._frames.append(frame)
-
-
-    def _supported_pids_changed_cb(self, device):
-        logger.debug('entering FreezeFramePlugin._supported_pids_changed_cb')
-        page = self.app.notebook.get_current_page()
-        if self.app.notebook.get_nth_page(page) is self._main_box:
-            if self._command.command in self.app.device.supported_pids:
-                self.app.queue.add(self._command)
-            self.app.queue.start()
-
-    
-    def _notebook_page_change_cb (self, notebook, no_use, page):
-        widget = notebook.get_nth_page(page)
-        if widget is self._main_box:
-            if self._command.command in self.app.device.supported_pids:
-                self.app.queue.add(self._command)
-
             
+        self._main_box.show_all()
+
+			
     def load(self):
-        self.app.notebook.append_page(self._main_box, gtk.Label(_('Freeze Frame Data')))            
+        self.app.notebook.append_page(self._main_box, gtk.Label(_('Freeze Frame Data')))
 
 		
     def unload(self):
@@ -317,7 +292,7 @@ def _dtc_code_helper(view):
 
 
 def decode_pids_from_bitstring(data, offset, suffix):
-    logger.debug('entering decode_pids_from_bitstring')
+    log.debug('entering decode_pids_from_bitstring')
     pids = []
     for item in data:
         bitstr = sensor.hex_to_bitstr(item)
